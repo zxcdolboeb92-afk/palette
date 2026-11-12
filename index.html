@@ -4,31 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Palette Space</title>
+    <!-- Шрифт -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
     
+    <!-- ВСЕ СТИЛИ ВНУТРИ ФАЙЛА -->
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0a0a0a;
+            background-color: #0a0a0a; /* Черный фон */
             color: #ffffff;
             min-height: 100vh;
             background-image: radial-gradient(circle at 70% 30%, rgba(201, 255, 52, 0.05) 0%, rgba(10, 10, 10, 1) 50%);
         }
-        a, button { text-decoration: none; color: inherit; font-family: inherit; cursor: pointer; border: none; background: none;}
+
+        a, button { text-decoration: none; color: inherit; font-family: inherit; cursor: pointer; border: none; background: none; }
 
         /* ШАПКА */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 40px; background: rgba(10, 10, 10, 0.8);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px 40px; background: #0a0a0a;
+            border-bottom: 1px solid #222;
             position: sticky; top: 0; z-index: 100;
         }
-        .logo { font-weight: 700; font-size: 18px; display: flex; align-items: center; }
-        .logo-icon { color: #c9ff34; margin-right: 8px; font-size: 20px; }
+        .logo { font-weight: 800; font-size: 18px; }
+        .logo span { color: #c9ff34; }
         
         .nav-links { display: flex; gap: 20px; align-items: center; }
-        .nav-links a, .nav-links button { font-size: 14px; color: #a1a1aa; transition: 0.2s; }
+        .nav-links a, .nav-links button { font-size: 14px; color: #a1a1aa; }
         .nav-links a:hover, .nav-links button:hover { color: #fff; }
         
         .btn-primary {
@@ -37,33 +41,26 @@
         }
 
         /* ГЛАВНЫЙ ЭКРАН */
-        .hero { display: flex; max-width: 1200px; margin: 0 auto; padding: 60px 40px; align-items: center; justify-content: space-between; }
-        .hero-content { max-width: 600px; }
-        .hero-title { font-size: 56px; font-weight: 800; line-height: 1.1; letter-spacing: -2px; margin-bottom: 20px; }
+        .hero { max-width: 1200px; margin: 0 auto; padding: 60px 40px; }
+        .hero-title { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
         .hero-subtitle { font-size: 18px; color: #a1a1aa; line-height: 1.6; margin-bottom: 30px; }
-        
-        .stats { display: flex; gap: 40px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 20px; }
-        .stat-number { font-size: 24px; font-weight: 800; }
-        .stat-label { font-size: 13px; color: #a1a1aa; }
 
-        /* КАРТОЧКИ ПАЛИТР */
+        /* КАРТОЧКИ */
         .palette-section { max-width: 1200px; margin: 0 auto; padding: 40px; }
         .section-title { font-size: 32px; font-weight: 800; margin-bottom: 30px; }
         .palette-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
 
         .color-card {
-            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px; padding: 20px; transition: 0.3s;
+            background: #111; border: 1px solid #333;
+            border-radius: 16px; padding: 20px;
         }
-        .color-card:hover { border-color: rgba(255, 255, 255, 0.2); transform: translateY(-3px); }
-
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .card-header h3 { font-size: 18px; margin: 0; }
-        .fav-btn { font-size: 24px; color: #555; transition: 0.2s; }
+        .card-header h3 { font-size: 18px; }
+        .fav-btn { font-size: 24px; color: #555; }
         .fav-btn.active { color: #c9ff34; }
 
         .swatches-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; cursor: pointer; }
-        .color-swatch { width: 45px; height: 45px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); }
+        .color-swatch { width: 45px; height: 45px; border-radius: 50%; }
 
         .strip-container { display: none; flex-direction: column; gap: 8px; }
         .strip-container.active { display: flex; }
@@ -73,51 +70,37 @@
         }
         .color-strip.dark { color: #fff; }
 
-        /* Всплывающее уведомление */
         #toast {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             background: #c9ff34; color: #000; padding: 10px 20px; border-radius: 8px;
-            font-weight: bold; display: none; z-index: 9999; transition: 0.3s;
+            font-weight: bold; display: none; z-index: 9999;
         }
     </style>
 </head>
 <body>
 
     <header class="navbar">
-        <div class="logo"><span class="logo-icon">🎨</span> Palette Space</div>
+        <div class="logo"><span>🎨</span> Palette Space</div>
         <nav class="nav-links">
             <a href="#">Главная</a>
             <a href="#palettes">Палитры ⌄</a>
-            <!-- Кнопка Генератор теперь работает через JS -->
             <button onclick="generateNew()">Генератор</button>
-            <!-- Счетчик избранного -->
             <button id="fav-counter" style="color: #c9ff34; font-weight: bold;">★ 0 / 10</button>
         </nav>
         <button onclick="generateNew()" class="btn-primary">Создать палитру</button>
     </header>
 
     <main class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">Цвета, которые<br>создают будущее</h1>
-            <p class="hero-subtitle">
-                Исследуйте, создавайте и сохраняйте идеальные цветовые палитры. Кликните по кружочкам, чтобы развернуть их в полоски с номерами.
-            </p>
-            <div class="hero-buttons">
-                <a href="#palettes" class="btn-primary" style="display:inline-block;">Смотреть палитры</a>
-            </div>
-            <div class="stats">
-                <div class="stat-item"><div class="stat-number">10K+</div><div class="stat-label">палитр</div></div>
-                <div class="stat-item"><div class="stat-number">500+</div><div class="stat-label">оттенков</div></div>
-                <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">доступ</div></div>
-            </div>
-        </div>
+        <h1 class="hero-title">Цвета, которые<br>создают будущее</h1>
+        <p class="hero-subtitle">
+            Исследуйте, создавайте и сохраняйте идеальные цветовые палитры. Кликните по кружочкам, чтобы развернуть их в полоски с номерами.
+        </p>
+        <a href="#palettes" class="btn-primary" style="display:inline-block; margin-top: 20px;">Смотреть палитры</a>
     </main>
 
     <section id="palettes" class="palette-section">
         <h2 class="section-title">Популярные палитры</h2>
-        <div id="palette-container" class="palette-container">
-            <!-- Сюда будут добавляться карточки -->
-        </div>
+        <div id="palette-container" class="palette-container"></div>
     </section>
 
     <div id="toast">Уведомление</div>
@@ -126,7 +109,6 @@
         let favCount = 0;
         const MAX_FAV = 10;
 
-        // Функция генерации цвета
         function getRandomColor() {
             const letters = '0123456789ABCDEF';
             let color = '#';
@@ -134,7 +116,6 @@
             return color;
         }
 
-        // Проверка на темный цвет
         function isDark(hex) {
             const r = parseInt(hex.substr(1, 2), 16);
             const g = parseInt(hex.substr(3, 2), 16);
@@ -142,7 +123,6 @@
             return (r * 299 + g * 587 + b * 114) / 1000 < 128;
         }
 
-        // Показать уведомление
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.innerText = msg;
@@ -150,17 +130,16 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        // Создать карточку палитры
         function createCard() {
-            const colorCount = Math.floor(Math.random() * 5) + 2; // от 2 до 6
+            const colorCount = Math.floor(Math.random() * 5) + 2;
             let circlesHTML = '';
             let stripsHTML = '';
 
             for (let i = 0; i < colorCount; i++) {
                 const c = getRandomColor();
-                circlesHTML += `<div class="color-swatch" style="background: ${c};" onclick="showToast('Цвет ${c} скопирован!')"></div>`;
+                circlesHTML += `<div class="color-swatch" style="background: ${c};"></div>`;
                 const darkClass = isDark(c) ? 'dark' : '';
-                stripsHTML += `<div class="color-strip ${darkClass}" style="background: ${c};" onclick="showToast('Цвет ${c} скопирован!')">${i + 1}. ${c.toUpperCase()}</div>`;
+                stripsHTML += `<div class="color-strip ${darkClass}" style="background: ${c};">${i + 1}. ${c.toUpperCase()}</div>`;
             }
 
             const card = document.createElement('div');
@@ -180,15 +159,12 @@
             return card;
         }
 
-        // Функция для кнопки "Создать палитру" / "Генератор"
         function generateNew() {
             const container = document.getElementById('palette-container');
             container.insertBefore(createCard(), container.firstChild);
-            document.getElementById('palettes').scrollIntoView({ behavior: 'smooth' });
             showToast('Создана новая палитра!');
         }
 
-        // Избранное
         function toggleFav(btn) {
             if (!btn.classList.contains('active')) {
                 if (favCount < MAX_FAV) {
@@ -196,7 +172,7 @@
                     btn.innerText = '★';
                     favCount++;
                 } else {
-                    showToast('Лимит избранного достигнут (10)');
+                    showToast('Лимит (10)');
                 }
             } else {
                 btn.classList.remove('active');
@@ -206,17 +182,9 @@
             document.getElementById('fav-counter').innerText = `★ ${favCount} / ${MAX_FAV}`;
         }
 
-        // Клик по счетчику в шапке
-        document.getElementById('fav-counter').onclick = function() {
-            showToast(`Вы добавили ${favCount} палитр из ${MAX_FAV}`);
-        };
-
-        // Добавляем 3 стартовые палитры при загрузке
         window.onload = function() {
             const container = document.getElementById('palette-container');
-            for (let i = 0; i < 3; i++) {
-                container.appendChild(createCard());
-            }
+            for (let i = 0; i < 3; i++) container.appendChild(createCard());
         };
     </script>
 </body>
