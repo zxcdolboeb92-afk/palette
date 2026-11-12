@@ -24,7 +24,7 @@
 
         a, button { text-decoration: none; color: inherit; font-family: inherit; cursor: pointer; border: none; background: none; }
 
-        /* --- СЕКРЕТНЫЙ ЖИДКИЙ ОСТРОВОК --- */
+        /* --- СЕКРЕТНЫЙ ОСТРОВОК --- */
         .secret-island {
             position: fixed;
             top: -100px;
@@ -32,7 +32,6 @@
             transform: translateX(-50%);
             background: rgba(20, 20, 20, 0.7);
             backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 40px;
             padding: 15px 40px;
@@ -45,70 +44,36 @@
             transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
             overflow: hidden;
         }
-
-        .secret-island.show {
-            top: 90px;
-        }
-
+        .secret-island.show { top: 90px; }
         .secret-text {
-            font-size: 18px;
-            font-weight: 800;
-            color: #ffffff;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            z-index: 2;
-            white-space: nowrap;
+            font-size: 18px; font-weight: 800; color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); z-index: 2; white-space: nowrap;
         }
-
-        .close-island {
-            font-size: 18px;
-            color: #a1a1aa;
-            transition: 0.2s;
-            z-index: 3;
-            margin-left: 10px;
-        }
-        .close-island:hover { color: #fff; transform: scale(1.2); }
-
-        .island-stars {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-        .island-star {
-            position: absolute;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.4);
-            animation: floatIsland 3s infinite ease-in-out alternate;
-        }
-        @keyframes floatIsland {
-            0% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
-            100% { transform: translateY(-10px) rotate(20deg); opacity: 0.8; }
-        }
+        .close-island { font-size: 18px; color: #a1a1aa; z-index: 3; margin-left: 10px; }
+        .close-island:hover { color: #fff; }
+        .island-stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .island-star { position: absolute; font-size: 12px; color: rgba(255, 255, 255, 0.4); animation: floatIsland 3s infinite ease-in-out alternate; }
+        @keyframes floatIsland { 0% { transform: translateY(0px) rotate(0deg); opacity: 0.2; } 100% { transform: translateY(-10px) rotate(20deg); opacity: 0.8; } }
 
         /* ШАПКА */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 30px; background: rgba(10,10,10,0.9);
-            border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; /* Высокий z-index, чтобы не перекрывали звезды */
+            border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000;
             backdrop-filter: blur(10px);
         }
         .logo { font-weight: 800; font-size: 20px; z-index: 10; position: relative; }
         .logo span { color: var(--accent); }
-        
         .nav-links { display: flex; gap: 20px; align-items: center; z-index: 10; position: relative; }
         .nav-links button { font-size: 14px; color: #a1a1aa; font-weight: 500; transition: 0.2s; }
         .nav-links button:hover { color: #fff; }
         .nav-links button.active-tab { color: var(--accent); }
-        
         .btn-primary {
             background-color: var(--accent); color: #fff !important;
             padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: 0.2s;
-            display: flex; align-items: center; gap: 6px; white-space: nowrap;
-            z-index: 10; position: relative;
+            display: flex; align-items: center; gap: 6px; white-space: nowrap; z-index: 10;
         }
         .btn-primary:hover { background-color: #9d4edd; transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-glow); }
-        .btn-primary .star-icon { font-size: 16px; line-height: 1; }
 
         /* ГЛАВНЫЙ ЭКРАН */
         .hero { padding: 40px 30px; position: relative; min-height: 350px; display: flex; align-items: center; }
@@ -117,10 +82,7 @@
         .hero-subtitle { font-size: 18px; color: #a1a1aa; line-height: 1.6; }
 
         /* ЗВЕЗДОЧКИ */
-        .stars-container { 
-            position: absolute; top: 0; right: 0; width: 100%; height: 100%; 
-            pointer-events: none; z-index: 1; overflow: hidden;
-        }
+        .stars-container { position: absolute; top: 0; right: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
         .star {
             position: absolute; pointer-events: auto; cursor: crosshair; user-select: none;
             text-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 20px currentColor; 
@@ -131,8 +93,8 @@
         .star.flying { opacity: 0; transform: scale(4) rotate(360deg); filter: blur(5px); }
         @keyframes float { 0% { transform: translateY(0px) rotate(0deg); } 100% { transform: translateY(-15px) rotate(10deg); } }
 
-        /* СЕКЦИЯ ЦВЕТОВОГО КРУГА */
-        .itten-section { padding: 0 30px 30px; position: relative; z-index: 10; /* Выше звезд, чтобы работал клик */ }
+        /* КРУГ ИТТЕНА */
+        .itten-section { padding: 0 30px 30px; position: relative; z-index: 10; }
         .itten-container {
             background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(12px);
             border: 1px solid rgba(184, 100, 255, 0.15); border-radius: 16px; padding: 25px; 
@@ -143,12 +105,9 @@
             width: 180px; height: 180px; border-radius: 50%;
             background: conic-gradient(#ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080, #ff0000);
             box-shadow: 0 0 30px rgba(255,255,255,0.1), inset 0 0 20px rgba(0,0,0,0.5);
-            animation: spin 20s linear infinite;
-            cursor: crosshair;
+            animation: spin 20s linear infinite; cursor: crosshair;
         }
-        /* Останавливаем при наведении */
         .itten-wheel:hover { animation-play-state: paused; box-shadow: 0 0 40px var(--accent-glow); }
-        
         .itten-wheel::after {
             content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 100px; height: 100px; background: #0a0a0a; border-radius: 50%; box-shadow: inset 0 0 10px rgba(0,0,0,1);
@@ -180,8 +139,8 @@
         .color-card {
             background: rgba(255,255,255,0.03); border: 1px solid #333;
             border-radius: 16px; padding: 20px;
-            display: flex; flex-direction: column;
-            transition: 0.3s;
+            display: flex; flex-direction: column; transition: 0.3s;
+            position: relative;
         }
         .color-card:hover { border-color: #555; background: rgba(255,255,255,0.05); }
 
@@ -221,10 +180,43 @@
         .color-strip.dark .badge-pass { color: #fff; background: rgba(0, 255, 0, 0.4); }
         .color-strip.dark .badge-fail { color: #fff; background: rgba(255, 0, 0, 0.4); }
 
-        /* --- ПАНЕЛЬ ЗАМКОВ (Выезжает СПРАВА) --- */
+        /* --- ПАНЕЛЬ ЗАМКОВ (Выезжает ВНУТРИ карточки снизу) --- */
         .lock-panel {
-            display: none; /* Скрыта на телефоне */
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: #151515;
+            border: 1px solid #333;
+            border-top: none;
+            border-radius: 0 0 16px 16px;
+            padding: 15px;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
+        .card-wrapper:hover .lock-panel {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .lock-item {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.05); padding: 8px 12px;
+            border-radius: 8px; cursor: pointer; transition: 0.2s;
+        }
+        .lock-item:hover { background: rgba(255,255,255,0.1); }
+        .lock-color-dot { width: 20px; height: 20px; border-radius: 50%; }
+        .lock-number { font-size: 14px; font-family: monospace; font-weight: bold; color: #a1a1aa; }
+        .lock-icon-btn { font-size: 18px; color: #555; margin-left: auto; }
+        .lock-item.locked .lock-icon-btn { color: var(--accent); }
 
         /* История */
         .history-btns { display: flex; gap: 5px; border-left: 1px solid #333; padding-left: 10px; margin-left: 5px; }
@@ -237,14 +229,12 @@
             font-weight: bold; display: none; z-index: 9999; width: 90%; text-align: center;
         }
 
-        /* --- ВЕРСИЯ ДЛЯ ПК (ЭКРАНЫ ОТ 1024px) --- */
+        /* --- ВЕРСИЯ ДЛЯ ПК --- */
         @media (min-width: 1024px) {
             .navbar { padding: 20px 40px; }
             .nav-links { gap: 25px; }
-            
             .hero { padding: 80px 40px; min-height: 450px; }
             .hero-title { font-size: 64px; }
-            
             .itten-section { padding: 0 40px 40px; }
             .itten-container { gap: 40px; }
             .itten-wheel-wrapper { width: 220px; height: 220px; }
@@ -257,43 +247,6 @@
             .card-header h3 { font-size: 18px; }
             .swatches-row { justify-content: flex-start; }
             .color-swatch { width: 50px; height: 50px; }
-
-            /* Выезд панели справа при наведении */
-            .lock-panel {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                position: absolute;
-                right: -20px; /* Выезжает за правый край карточки */
-                top: 50%;
-                transform: translateY(-50%) translateX(10px); /* Прячем внутрь */
-                background: #111;
-                border: 1px solid #333;
-                border-radius: 16px 0 0 16px; /* Скругление слева */
-                padding: 15px;
-                z-index: 1;
-                opacity: 0;
-                pointer-events: none;
-                transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-                box-shadow: -5px 0 15px rgba(0,0,0,0.5);
-            }
-            /* При наведении выезжает вправо */
-            .card-wrapper:hover .lock-panel {
-                transform: translateY(-50%) translateX(100%);
-                opacity: 1;
-                pointer-events: auto;
-            }
-
-            .lock-item {
-                display: flex; align-items: center; gap: 10px;
-                background: rgba(255,255,255,0.05); padding: 8px 12px;
-                border-radius: 8px; cursor: pointer; transition: 0.2s;
-            }
-            .lock-item:hover { background: rgba(255,255,255,0.1); }
-            .lock-color-dot { width: 20px; height: 20px; border-radius: 50%; }
-            .lock-number { font-size: 14px; font-family: monospace; font-weight: bold; color: #a1a1aa; }
-            .lock-icon-btn { font-size: 18px; color: #555; margin-left: 5px; }
-            .lock-item.locked .lock-icon-btn { color: var(--accent); }
 
             .secret-island { padding: 20px 50px; gap: 20px; }
             .secret-text { font-size: 22px; letter-spacing: 2px; }
@@ -315,7 +268,6 @@
         <nav class="nav-links">
             <button onclick="switchTab('all')" id="tab-all" class="active-tab">Все палитры</button>
             <button onclick="switchTab('fav')" id="tab-fav">Избранное</button>
-            
             <div class="history-btns">
                 <button class="history-btn" id="undoBtn" onclick="undo()" disabled>↶</button>
                 <button class="history-btn" id="redoBtn" onclick="redo()" disabled>↷</button>
@@ -363,10 +315,7 @@
         const MAX_FAV = 20;
         let currentTab = 'all';
         let savedPalettes = JSON.parse(localStorage.getItem('spacePalettes')) || [];
-        
-        // Запоминаем, открывал ли пользователь секретный островок
         let secretUnlocked = localStorage.getItem('secretUnlocked') === 'true';
-
         let history = [];
         let historyIndex = -1;
 
@@ -559,9 +508,7 @@
                     </div>
                     <div class="swatches-row">${circlesHTML}</div>
                     <div class="strip-container">${stripsHTML}</div>
-                </div>
-                <div class="lock-panel">
-                    ${lockPanelHTML}
+                    <div class="lock-panel">${lockPanelHTML}</div>
                 </div>
             `;
 
@@ -656,7 +603,6 @@
                 wrapper.classList.add('hidden');
             }
 
-            // ПРОВЕРКА НА 20 ЗВЕЗД
             if (favCount >= MAX_FAV && !secretUnlocked) {
                 showSecretIsland();
             }
@@ -744,16 +690,13 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        // --- ЛОГИКА СЕКРЕТНОГО ОСТРОВКА ---
         function showSecretIsland() {
             const island = document.getElementById('secretIsland');
             island.classList.add('show');
-            
             if (!secretUnlocked) {
                 localStorage.setItem('secretUnlocked', 'true');
                 secretUnlocked = true;
             }
-
             const starsContainer = document.getElementById('islandStars');
             starsContainer.innerHTML = '';
             for (let i = 0; i < 20; i++) {
@@ -774,7 +717,6 @@
         function initStars() {
             const container = document.getElementById('stars-container');
             const isMobile = window.innerWidth < 1024;
-            // Добавили больше звезд для ПК
             const starCount = isMobile ? 25 : 80;
 
             for (let i = 0; i < starCount; i++) {
@@ -829,7 +771,6 @@
                 }
             }
             
-            // Если при загрузке уже 20 палитр, показываем островок
             if (favCount >= MAX_FAV && !secretUnlocked) {
                 setTimeout(showSecretIsland, 1000);
             }
