@@ -26,29 +26,15 @@
 
         /* --- СЕКРЕТНЫЙ ОСТРОВОК --- */
         .secret-island {
-            position: fixed;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(20, 20, 20, 0.7);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 40px;
-            padding: 15px 40px;
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: rgba(20, 20, 20, 0.7); backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 40px; padding: 15px 40px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-            overflow: hidden;
+            z-index: 9999; display: flex; align-items: center; justify-content: center; gap: 15px;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); overflow: hidden;
         }
         .secret-island.show { top: 90px; }
-        .secret-text {
-            font-size: 18px; font-weight: 800; color: #ffffff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); z-index: 2; white-space: nowrap;
-        }
+        .secret-text { font-size: 18px; font-weight: 800; color: #ffffff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); z-index: 2; white-space: nowrap; }
         .close-island { font-size: 18px; color: #a1a1aa; z-index: 3; margin-left: 10px; }
         .close-island:hover { color: #fff; }
         .island-stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
@@ -93,7 +79,7 @@
         .star.flying { opacity: 0; transform: scale(4) rotate(360deg); filter: blur(5px); }
         @keyframes float { 0% { transform: translateY(0px) rotate(0deg); } 100% { transform: translateY(-15px) rotate(10deg); } }
 
-        /* КРУГ ИТТЕНА */
+        /* КРУГ ИТТЕНА + ПОЛЗУНОК */
         .itten-section { padding: 0 30px 30px; position: relative; z-index: 10; }
         .itten-container {
             background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(12px);
@@ -123,6 +109,27 @@
         
         .itten-controls h3 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
         .itten-controls p { color: #a1a1aa; margin-bottom: 15px; font-size: 14px; }
+        
+        /* СЛАЙДЕР ЦВЕТОВ */
+        .slider-container {
+            display: flex; align-items: center; gap: 15px; margin-bottom: 15px;
+            background: rgba(255,255,255,0.05); padding: 10px 15px; border-radius: 8px;
+            width: fit-content; cursor: ns-resize;
+        }
+        .slider-container label { font-size: 14px; font-weight: 600; color: #fff; }
+        .slider-container span { color: var(--accent); font-weight: 800; font-size: 16px; width: 15px; text-align: center;}
+        input[type=range] {
+            -webkit-appearance: none; width: 150px; background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
+            background: var(--accent); cursor: pointer; margin-top: -6px;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer; background: #333; border-radius: 2px;
+        }
+
         .itten-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
         .itten-btn {
             background: rgba(255,255,255,0.05); border: 1px solid #444; color: #fff;
@@ -136,15 +143,16 @@
         .palette-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 
         .card-wrapper { position: relative; }
+        
         .color-card {
             background: rgba(255,255,255,0.03); border: 1px solid #333;
             border-radius: 16px; padding: 20px;
             display: flex; flex-direction: column; transition: 0.3s;
-            position: relative;
+            position: relative; overflow: hidden;
         }
         .color-card:hover { border-color: #555; background: rgba(255,255,255,0.05); }
 
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; z-index: 2;}
         .card-header h3 { font-size: 16px; }
         .card-actions { display: flex; gap: 15px; }
         .action-btn { font-size: 22px; color: #555; padding: 5px; transition: 0.2s; }
@@ -152,70 +160,55 @@
         .fav-btn.active { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
 
         /* Кружочки */
-        .swatches-row { display: flex; flex-wrap: wrap; gap: 10px; cursor: pointer; }
+        .swatches-row { display: flex; flex-wrap: wrap; gap: 8px; cursor: pointer; z-index: 2;}
         .swatch-wrapper { position: relative; }
-        .color-swatch { width: 45px; height: 45px; border-radius: 50%; }
+        .color-swatch { width: 38px; height: 38px; border-radius: 50%; }
         
         .lock-indicator {
             position: absolute; top: -2px; right: -2px; background: #000; border: 1px solid #555;
-            border-radius: 50%; width: 20px; height: 20px; font-size: 10px;
+            border-radius: 50%; width: 18px; height: 18px; font-size: 9px;
             display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; color: var(--accent);
         }
         .swatch-wrapper.locked .lock-indicator { opacity: 1; }
 
         /* Полоски */
-        .strip-container { display: none; flex-direction: column; gap: 8px; margin-top: 15px; }
+        .strip-container { display: none; flex-direction: column; gap: 5px; margin-top: 10px; z-index: 2;}
         .strip-container.active { display: flex; }
         .color-strip {
             display: flex; justify-content: space-between; align-items: center;
-            height: 40px; border-radius: 8px; padding: 0 15px; 
-            font-family: monospace; font-size: 13px; font-weight: bold; color: #000;
+            height: 35px; border-radius: 6px; padding: 0 10px; 
+            font-family: monospace; font-size: 12px; font-weight: bold; color: #000;
         }
         .color-strip.dark { color: #fff; }
         .contrast-badges { display: flex; gap: 5px; }
-        .badge { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; }
+        .badge { padding: 2px 4px; border-radius: 4px; font-size: 9px; font-weight: 800; }
         .badge-pass { background: rgba(0, 255, 0, 0.2); color: #000; }
         .badge-fail { background: rgba(255, 0, 0, 0.2); color: #000; }
         .color-strip.dark .badge-pass { color: #fff; background: rgba(0, 255, 0, 0.4); }
         .color-strip.dark .badge-fail { color: #fff; background: rgba(255, 0, 0, 0.4); }
 
-        /* --- ПАНЕЛЬ ЗАМКОВ (Выезжает ВНУТРИ карточки снизу) --- */
+        /* --- ПАНЕЛЬ ЗАМКОВ --- */
         .lock-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background: #151515;
-            border: 1px solid #333;
-            border-top: none;
-            border-radius: 0 0 16px 16px;
-            padding: 15px;
-            z-index: 10;
-            opacity: 0;
-            transform: translateY(-10px);
-            pointer-events: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; gap: 8px;
+            max-height: 0; opacity: 0; overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            background: transparent; margin-top: 0;
         }
         .card-wrapper:hover .lock-panel {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
+            max-height: 300px; opacity: 1; margin-top: 15px;
+            padding-top: 15px; border-top: 1px solid #333;
         }
 
         .lock-item {
             display: flex; align-items: center; gap: 10px;
-            background: rgba(255,255,255,0.05); padding: 8px 12px;
+            background: rgba(255,255,255,0.05); padding: 6px 10px;
             border-radius: 8px; cursor: pointer; transition: 0.2s;
         }
         .lock-item:hover { background: rgba(255,255,255,0.1); }
-        .lock-color-dot { width: 20px; height: 20px; border-radius: 50%; }
-        .lock-number { font-size: 14px; font-family: monospace; font-weight: bold; color: #a1a1aa; }
-        .lock-icon-btn { font-size: 18px; color: #555; margin-left: auto; }
+        .lock-color-dot { width: 16px; height: 16px; border-radius: 50%; }
+        .lock-number { font-size: 13px; font-family: monospace; font-weight: bold; color: #a1a1aa; }
+        .lock-icon-btn { font-size: 16px; color: #555; margin-left: auto; }
         .lock-item.locked .lock-icon-btn { color: var(--accent); }
 
         /* История */
@@ -246,7 +239,8 @@
             .color-card { padding: 25px; }
             .card-header h3 { font-size: 18px; }
             .swatches-row { justify-content: flex-start; }
-            .color-swatch { width: 50px; height: 50px; }
+            .color-swatch { width: 42px; height: 42px; }
+            .color-strip { height: 40px; font-size: 13px; padding: 0 15px;}
 
             .secret-island { padding: 20px 50px; gap: 20px; }
             .secret-text { font-size: 22px; letter-spacing: 2px; }
@@ -293,6 +287,14 @@
             <div class="itten-controls">
                 <h3>Круг Иттена</h3>
                 <p>Кликни по кругу или выбери схему:</p>
+                
+                <!-- ПОЛЗУНОК ДЛЯ КОЛИЧЕСТВА ЦВЕТОВ -->
+                <div class="slider-container" id="sliderContainer">
+                    <label for="colorCount">Цветов в палитре:</label>
+                    <span id="colorCountDisplay">3</span>
+                    <input type="range" id="colorCount" min="2" max="8" value="3" oninput="document.getElementById('colorCountDisplay').innerText = this.value">
+                </div>
+
                 <div class="itten-buttons">
                     <button class="itten-btn" onclick="generateItten('complementary')">Комплементарная</button>
                     <button class="itten-btn" onclick="generateItten('triad')">Триада</button>
@@ -394,15 +396,15 @@
             const randomL = Math.floor(Math.random() * 20) + 40; 
 
             const hexColor = hslToHex(angle, randomS, randomL); 
-            createPaletteFromBase(hexColor, 'triad', 'Выбранный вами цвет');
+            
+            let count = parseInt(document.getElementById('colorCount').value);
+            generateColorsFromBase(hexColor, count, 'Выбранный вами цвет');
         });
 
         function generateItten(scheme) {
             const baseHex = getRandomColor();
-            createPaletteFromBase(baseHex, scheme, scheme);
-        }
-
-        function createPaletteFromBase(baseHex, scheme, msgPrefix) {
+            let count = parseInt(document.getElementById('colorCount').value);
+            
             const [h, s, l] = hexToHsl(baseHex);
             let colors = [];
             const niceS = Math.max(30, Math.min(s + (Math.random() * 20 - 10), 90)); 
@@ -411,11 +413,39 @@
             if (scheme === 'complementary') {
                 colors = [hslToHex(h, niceS, niceL), hslToHex((h + 180) % 360, niceS, niceL)];
             } else if (scheme === 'triad') {
-                colors = [hslToHex(h, niceS, niceL), hslToHex((h + 120) % 360, niceS, Math.min(niceL + 10, 80)), hslToHex((h + 240) % 360, Math.max(niceS - 10, 30), Math.max(niceL - 10, 30))];
+                colors = [hslToHex(h, niceS, niceL), hslToHex((h + 120) % 360, niceS, niceL), hslToHex((h + 240) % 360, niceS, niceL)];
             } else if (scheme === 'tetrad') {
                 colors = [hslToHex(h, niceS, niceL), hslToHex((h + 90) % 360, niceS, niceL), hslToHex((h + 180) % 360, niceS, niceL), hslToHex((h + 270) % 360, niceS, niceL)];
             } else if (scheme === 'analogous') {
                 colors = [hslToHex((h - 30 + 360) % 360, niceS, niceL), hslToHex(h, niceS, niceL), hslToHex((h + 30) % 360, niceS, niceL)];
+            }
+
+            while (colors.length < count) {
+                let shift = (colors.length * 45) % 360;
+                colors.push(hslToHex((h + shift) % 360, niceS, niceL));
+            }
+            colors = colors.slice(0, count);
+
+            const container = document.getElementById('palette-container');
+            const card = buildCard(colors);
+            container.insertBefore(card, container.firstChild);
+            
+            addToHistory(colors);
+            
+            if (currentTab !== 'all') switchTab('all');
+            document.getElementById('palettes').scrollIntoView({ behavior: 'smooth' });
+            showToast(`Создана палитра: ${scheme} (${count} цв.)`);
+        }
+
+        function generateColorsFromBase(baseHex, count, msgPrefix) {
+            const [h, s, l] = hexToHsl(baseHex);
+            const niceS = Math.max(30, Math.min(s + (Math.random() * 20 - 10), 90)); 
+            const niceL = Math.max(30, Math.min(l + (Math.random() * 20 - 10), 70));
+            let colors = [];
+
+            const angleStep = 360 / count;
+            for (let i = 0; i < count; i++) {
+                colors.push(hslToHex((h + i * angleStep) % 360, niceS, niceL));
             }
 
             const container = document.getElementById('palette-container');
@@ -426,7 +456,7 @@
             
             if (currentTab !== 'all') switchTab('all');
             document.getElementById('palettes').scrollIntoView({ behavior: 'smooth' });
-            showToast(`Создана палитра: ${msgPrefix}`);
+            showToast(`Создана палитра: ${msgPrefix} (${count} цв.)`);
         }
 
         function addToHistory(colors) {
@@ -618,8 +648,8 @@
 
         function generateNew() {
             const firstCard = document.querySelector('.card-wrapper:not(.hidden)');
+            let colorCount = parseInt(document.getElementById('colorCount').value);
             let newColors = [];
-            let colorCount = Math.floor(Math.random() * 5) + 2;
 
             if (firstCard) {
                 const oldColors = JSON.parse(firstCard.getAttribute('data-colors'));
@@ -635,9 +665,15 @@
                     }
                 });
 
-                if (!hasLocked && newColors.length !== colorCount) {
+                if (!hasLocked) {
                     newColors = [];
                     for (let i = 0; i < colorCount; i++) newColors.push(getRandomColor());
+                } else {
+                     if (newColors.length < colorCount) {
+                         while(newColors.length < colorCount) newColors.push(getRandomColor());
+                     } else {
+                         newColors = newColors.slice(0, colorCount);
+                     }
                 }
             } else {
                 for (let i = 0; i < colorCount; i++) newColors.push(getRandomColor());
@@ -649,7 +685,7 @@
             
             addToHistory(newColors);
             if (currentTab !== 'all') switchTab('all');
-            showToast('Создана новая палитра!');
+            showToast(`Создана новая палитра (${colorCount} цв.)!`);
             updateCounter();
         }
 
@@ -752,6 +788,32 @@
             }
         }
 
+        // --- УПРАВЛЕНИЕ ПОЛЗУНКОМ КОЛЕСИКОМ МЫШИ ---
+        // Теперь обработчик висит на самом контейнере и на самом инпуте, чтобы точно перехватить колесо
+        const colorCountInput = document.getElementById('colorCount');
+        const colorCountDisplay = document.getElementById('colorCountDisplay');
+
+        function handleWheel(e) {
+            e.preventDefault(); // Жестко блокируем прокрутку страницы
+            
+            let currentVal = parseInt(colorCountInput.value);
+            
+            if (e.deltaY < 0) {
+                if (currentVal < parseInt(colorCountInput.max)) {
+                    colorCountInput.value = currentVal + 1;
+                }
+            } else {
+                if (currentVal > parseInt(colorCountInput.min)) {
+                    colorCountInput.value = currentVal - 1;
+                }
+            }
+            colorCountDisplay.innerText = colorCountInput.value;
+        }
+
+        // Навешиваем на оба элемента
+        document.getElementById('sliderContainer').addEventListener('wheel', handleWheel, { passive: false });
+        colorCountInput.addEventListener('wheel', handleWheel, { passive: false });
+
         window.onload = function() {
             const container = document.getElementById('palette-container');
             
@@ -764,7 +826,7 @@
             if (savedPalettes.length === 0) {
                 for (let i = 0; i < 3; i++) {
                     const colors = [];
-                    const colorCount = Math.floor(Math.random() * 5) + 2;
+                    const colorCount = Math.floor(Math.random() * 4) + 3;
                     for (let j = 0; j < colorCount; j++) colors.push(getRandomColor());
                     container.appendChild(buildCard(colors));
                     addToHistory(colors);
