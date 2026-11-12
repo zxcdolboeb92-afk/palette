@@ -42,9 +42,10 @@
         .btn-primary {
             background-color: var(--accent); color: #fff !important;
             padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: 0.2s;
-            display: flex; align-items: center; gap: 5px;
+            display: flex; align-items: center; gap: 8px;
         }
         .btn-primary:hover { background-color: #9d4edd; transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-glow); }
+        .btn-primary .star-icon { font-size: 18px; line-height: 1; }
 
         /* ГЛАВНЫЙ ЭКРАН */
         .hero { 
@@ -114,13 +115,20 @@
         .section-title { font-size: 32px; font-weight: 800; margin-bottom: 30px; }
         .palette-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
 
+        /* Обертка карточки для позиционирования панели замков */
+        .card-wrapper {
+            position: relative;
+            animation: fadeIn 0.5s ease;
+        }
+        .card-wrapper.hidden { display: none !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .color-card {
             background: rgba(255,255,255,0.03); border: 1px solid #333;
-            border-radius: 16px; padding: 20px; transition: 0.3s; animation: fadeIn 0.5s ease;
-            position: relative;
+            border-radius: 16px; padding: 20px; transition: 0.3s;
+            position: relative; z-index: 2; height: 100%;
         }
-        .color-card.hidden { display: none !important; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .card-wrapper:hover .color-card { border-color: #555; background: rgba(255,255,255,0.05); }
 
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .card-header h3 { font-size: 18px; }
@@ -130,22 +138,22 @@
         .action-btn:hover { transform: scale(1.15); color: #fff; }
         .fav-btn.active { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
 
-        /* Кружочки с замочками */
+        /* Кружочки */
         .swatches-row { display: flex; flex-wrap: wrap; gap: 10px; cursor: pointer; }
         .swatch-wrapper { position: relative; }
         .color-swatch { width: 45px; height: 45px; border-radius: 50%; transition: 0.2s; display: flex; justify-content: center; align-items: center; }
         .swatch-wrapper:hover .color-swatch { transform: scale(1.1); }
         
-        .lock-icon {
+        /* Визуальный индикатор замка на самом кружочке (просто для отображения статуса) */
+        .lock-indicator {
             position: absolute; top: -5px; right: -5px; background: #000; border: 1px solid #555;
             border-radius: 50%; width: 20px; height: 20px; font-size: 10px;
             display: flex; justify-content: center; align-items: center;
             opacity: 0; transition: 0.2s; pointer-events: none;
         }
-        .swatch-wrapper:hover .lock-icon { opacity: 1; }
-        .swatch-wrapper.locked .lock-icon { opacity: 1; border-color: var(--accent); color: var(--accent); }
+        .swatch-wrapper.locked .lock-indicator { opacity: 1; border-color: var(--accent); color: var(--accent); }
 
-        /* Развернутые полоски с контрастом */
+        /* Развернутые полоски */
         .strip-container { display: none; flex-direction: column; gap: 10px; margin-top: 10px; }
         .strip-container.active { display: flex; }
         .color-strip {
@@ -163,6 +171,74 @@
         .badge-fail { background: rgba(255, 0, 0, 0.2); border-color: rgba(255, 0, 0, 0.5); color: #000; }
         .color-strip.dark .badge-pass { color: #fff; background: rgba(0, 255, 0, 0.4); }
         .color-strip.dark .badge-fail { color: #fff; background: rgba(255, 0, 0, 0.4); }
+
+        /* --- ЖИДКИЙ ОСТРОВ (ПАНЕЛЬ ЗАМКОВ) --- */
+        .lock-panel {
+            position: absolute;
+            left: 0; top: 50%;
+            transform: translateY(-50%) translateX(-10px); /* Прячем чуть левее */
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 0 16px 16px 0; /* Скругление только справа */
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1; /* Под карточкой */
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+        }
+
+        /* Выезд при наведении на всю обертку */
+        .card-wrapper:hover .lock-panel {
+            transform: translateY(-50%) translateX(-100%); /* Выезжаем влево */
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Элемент внутри панели */
+        .lock-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.05);
+            padding: 5px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            user-select: none;
+        }
+        .lock-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Сам цвет в панели */
+        .lock-color-dot {
+            width: 20px; height: 20px; border-radius: 50%;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
+        }
+
+        /* Номер цвета */
+        .lock-number {
+            font-size: 12px;
+            font-family: monospace;
+            font-weight: bold;
+            color: #a1a1aa;
+            width: 15px;
+        }
+
+        /* Иконка замка в панели */
+        .lock-icon-btn {
+            font-size: 14px;
+            color: #555;
+            transition: 0.2s;
+        }
+        .lock-item.locked .lock-icon-btn {
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
 
         /* История в шапке */
         .history-btns { display: flex; gap: 5px; margin-left: 15px; border-left: 1px solid #333; padding-left: 15px; }
@@ -192,7 +268,7 @@
 
             <button id="fav-counter" style="color: var(--accent); font-weight: 800; cursor: default; margin-left: 15px;">★ 0 / 20</button>
         </nav>
-       <button onclick="generateNew()" class="btn-primary"><span style="font-size: 18px; line-height: 1;">✦</span> Создать палитру</button>
+        <button onclick="generateNew()" class="btn-primary"><span class="star-icon">✦</span> Создать палитру</button>
     </header>
 
     <main class="hero">
@@ -389,12 +465,13 @@
         function buildCard(colors, isSaved = false) {
             let circlesHTML = '';
             let stripsHTML = '';
+            let lockPanelHTML = '';
 
             colors.forEach((c, i) => {
                 circlesHTML += `
-                    <div class="swatch-wrapper" onclick="toggleLock(this, event)">
+                    <div class="swatch-wrapper" id="swatch-${i}">
                         <div class="color-swatch" style="background: ${c};" title="Скопировать: ${c}"></div>
-                        <div class="lock-icon">🔒</div>
+                        <div class="lock-indicator">🔒</div>
                     </div>
                 `;
                 
@@ -409,49 +486,68 @@
                         </div>
                     </div>
                 `;
+
+                // Наполняем панель замков
+                lockPanelHTML += `
+                    <div class="lock-item" id="lock-item-${i}" onclick="toggleLock(${i}, this, event)" title="Заблокировать/Разблокировать цвет">
+                        <div class="lock-color-dot" style="background: ${c};"></div>
+                        <div class="lock-number">${i + 1}</div>
+                        <div class="lock-icon-btn">🔒</div>
+                    </div>
+                `;
             });
 
-            const card = document.createElement('div');
-            card.className = 'color-card';
-            card.setAttribute('data-fav', isSaved ? 'true' : 'false');
-            card.setAttribute('data-colors', JSON.stringify(colors));
+            const wrapper = document.createElement('div');
+            wrapper.className = 'card-wrapper';
+            wrapper.setAttribute('data-fav', isSaved ? 'true' : 'false');
+            wrapper.setAttribute('data-colors', JSON.stringify(colors));
 
-            card.innerHTML = `
-                <div class="card-header">
-                    <h3>Палитра</h3>
-                    <div class="card-actions">
-                        <button class="action-btn fav-btn ${isSaved ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav(this)" title="В избранное">${isSaved ? '★' : '☆'}</button>
-                        <button class="action-btn" onclick="event.stopPropagation(); downloadPalette(this)" title="Скачать">⬇</button>
-                    </div>
+            wrapper.innerHTML = `
+                <div class="lock-panel">
+                    ${lockPanelHTML}
                 </div>
-                <div class="swatches-row">${circlesHTML}</div>
-                <div class="strip-container">${stripsHTML}</div>
+                <div class="color-card">
+                    <div class="card-header">
+                        <h3>Палитра</h3>
+                        <div class="card-actions">
+                            <button class="action-btn fav-btn ${isSaved ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav(this)" title="В избранное">${isSaved ? '★' : '☆'}</button>
+                            <button class="action-btn" onclick="event.stopPropagation(); downloadPalette(this)" title="Скачать">⬇</button>
+                        </div>
+                    </div>
+                    <div class="swatches-row">${circlesHTML}</div>
+                    <div class="strip-container">${stripsHTML}</div>
+                </div>
             `;
 
-            const circlesRow = card.querySelector('.swatches-row');
-            const stripsCol = card.querySelector('.strip-container');
+            const circlesRow = wrapper.querySelector('.swatches-row');
+            const stripsCol = wrapper.querySelector('.strip-container');
 
+            // Разворот палитры при клике на кружки
             circlesRow.onclick = function(e) {
-                if(e.target.closest('.swatch-wrapper')) return; 
                 circlesRow.style.display = 'none';
                 stripsCol.classList.add('active');
             };
 
+            // Свернуть обратно
             stripsCol.onclick = function(e) {
                 if(e.target.classList.contains('color-strip')) return; 
                 circlesRow.style.display = 'flex';
                 stripsCol.classList.remove('active');
             };
 
-            return card;
+            return wrapper;
         }
 
-        function toggleLock(element, event) {
+        // Переключение замка (из панели)
+        function toggleLock(index, element, event) {
             event.stopPropagation();
             element.classList.toggle('locked');
-            const color = element.querySelector('.color-swatch').style.backgroundColor;
-            navigator.clipboard.writeText(rgbToHex(color));
-            showToast(`Цвет скопирован!`);
+            
+            // Синхронизируем визуальный замочек на самом кружочке
+            const swatchWrapper = element.closest('.card-wrapper').querySelector(`#swatch-${index}`);
+            if (swatchWrapper) {
+                swatchWrapper.classList.toggle('locked');
+            }
         }
 
         function rgbToHex(rgb) {
@@ -462,8 +558,8 @@
         }
 
         function downloadPalette(btn) {
-            const card = btn.closest('.color-card');
-            const colors = JSON.parse(card.getAttribute('data-colors'));
+            const wrapper = btn.closest('.card-wrapper');
+            const colors = JSON.parse(wrapper.getAttribute('data-colors'));
             
             const canvas = document.createElement('canvas');
             canvas.width = 1000;
@@ -498,15 +594,15 @@
         }
 
         function toggleFav(btn) {
-            const card = btn.closest('.color-card');
-            const isCurrentlyFav = card.getAttribute('data-fav') === 'true';
-            const currentColors = JSON.parse(card.getAttribute('data-colors'));
+            const wrapper = btn.closest('.card-wrapper');
+            const isCurrentlyFav = wrapper.getAttribute('data-fav') === 'true';
+            const currentColors = JSON.parse(wrapper.getAttribute('data-colors'));
 
             if (!isCurrentlyFav) {
                 if (favCount < MAX_FAV) {
                     btn.classList.add('active');
                     btn.innerText = '★';
-                    card.setAttribute('data-fav', 'true');
+                    wrapper.setAttribute('data-fav', 'true');
                     savedPalettes.push({ colors: currentColors });
                     saveToLocalStorage();
                     favCount++;
@@ -516,7 +612,7 @@
             } else {
                 btn.classList.remove('active');
                 btn.innerText = '☆';
-                card.setAttribute('data-fav', 'false');
+                wrapper.setAttribute('data-fav', 'false');
                 const index = savedPalettes.findIndex(p => p.colors.join('') === currentColors.join(''));
                 if (index !== -1) {
                     savedPalettes.splice(index, 1);
@@ -525,8 +621,8 @@
                 favCount--;
             }
             updateCounter();
-            if (currentTab === 'fav' && card.getAttribute('data-fav') === 'false') {
-                card.classList.add('hidden');
+            if (currentTab === 'fav' && wrapper.getAttribute('data-fav') === 'false') {
+                wrapper.classList.add('hidden');
             }
         }
 
@@ -539,17 +635,17 @@
         }
 
         function generateNew() {
-            const firstCard = document.querySelector('.color-card:not(.hidden)');
+            const firstCard = document.querySelector('.card-wrapper:not(.hidden)');
             let newColors = [];
             let colorCount = Math.floor(Math.random() * 5) + 2;
 
             if (firstCard) {
                 const oldColors = JSON.parse(firstCard.getAttribute('data-colors'));
-                const swatchWrappers = firstCard.querySelectorAll('.swatch-wrapper');
+                const lockItems = firstCard.querySelectorAll('.lock-item');
                 let hasLocked = false;
 
                 oldColors.forEach((c, i) => {
-                    if (swatchWrappers[i].classList.contains('locked')) {
+                    if (lockItems[i].classList.contains('locked')) {
                         newColors.push(c);
                         hasLocked = true;
                     } else {
@@ -583,7 +679,7 @@
             if(tab === 'all') document.getElementById('tab-all').classList.add('active-tab');
             if(tab === 'fav') document.getElementById('tab-fav').classList.add('active-tab');
 
-            const cards = document.querySelectorAll('.color-card');
+            const cards = document.querySelectorAll('.card-wrapper');
             const title = document.getElementById('section-title');
 
             if (tab === 'all') {
