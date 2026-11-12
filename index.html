@@ -8,7 +8,6 @@
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             font-family: 'Inter', sans-serif;
             background-color: #0a0a0a;
@@ -17,59 +16,42 @@
             overflow-x: hidden;
             background-image: radial-gradient(circle at 70% 30%, rgba(201, 255, 52, 0.05) 0%, rgba(10, 10, 10, 1) 50%);
         }
-
         a, button { text-decoration: none; color: inherit; font-family: inherit; cursor: pointer; border: none; background: none; }
 
         /* ШАПКА */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 20px 40px; background: rgba(10,10,10,0.9);
-            border-bottom: 1px solid #222;
-            position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 100;
             backdrop-filter: blur(10px);
         }
         .logo { font-weight: 800; font-size: 18px; }
         .logo span { color: #c9ff34; }
         
         .nav-links { display: flex; gap: 20px; align-items: center; }
-        .nav-links a, .nav-links button { font-size: 14px; color: #a1a1aa; font-weight: 500; transition: 0.2s; }
-        .nav-links a:hover, .nav-links button:hover { color: #fff; }
-        
+        .nav-links button { font-size: 14px; color: #a1a1aa; font-weight: 500; transition: 0.2s; }
+        .nav-links button:hover { color: #fff; }
         .nav-links button.active-tab { color: #c9ff34; }
         
         .btn-primary {
             background-color: #c9ff34; color: #000 !important;
-            padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px;
-            transition: 0.2s;
+            padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: 0.2s;
         }
         .btn-primary:hover { background-color: #b8eb25; transform: translateY(-1px); }
 
-        /* ГЛАВНЫЙ ЭКРАН С ИНТЕРАКТИВОМ */
-        .hero { 
-            position: relative; max-width: 1200px; margin: 0 auto; padding: 80px 40px; 
-            min-height: 400px; display: flex; align-items: center;
-        }
+        /* ГЛАВНЫЙ ЭКРАН */
+        .hero { position: relative; max-width: 1200px; margin: 0 auto; padding: 80px 40px; min-height: 400px; display: flex; align-items: center; }
         .hero-content { max-width: 600px; position: relative; z-index: 2; }
-        .hero-title { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 20px; letter-spacing: -2px;}
-        .hero-subtitle { font-size: 18px; color: #a1a1aa; line-height: 1.6; margin-bottom: 30px; }
+        .hero-title { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 20px; letter-spacing: -2px; }
+        .hero-subtitle { font-size: 18px; color: #a1a1aa; line-height: 1.6; }
 
-        /* ИНТЕРАКТИВНЫЕ ЗВЕЗДОЧКИ */
-        .stars-container {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; overflow: hidden; z-index: 1;
-        }
+        /* ЗВЕЗДОЧКИ */
+        .stars-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
         .star {
-            position: absolute;
-            color: rgba(255, 255, 255, 0.2); /* Полупрозрачные */
-            font-size: 24px;
-            pointer-events: auto; /* Чтобы с ними можно было взаимодействовать */
-            cursor: crosshair;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s;
-            user-select: none;
+            position: absolute; color: rgba(255, 255, 255, 0.2); font-size: 24px;
+            pointer-events: auto; cursor: crosshair; transition: 0.3s; user-select: none;
         }
-        /* Эффект при наведении (отталкивание) */
         .star:hover { transform: scale(1.5) rotate(45deg); color: rgba(201, 255, 52, 0.8); }
-        /* Эффект при клике (взрыв) */
         .star.clicked { transform: scale(3) rotate(180deg); color: #c9ff34; opacity: 0; }
 
         /* КАРТОЧКИ */
@@ -82,9 +64,7 @@
             border-radius: 16px; padding: 20px; transition: 0.3s;
         }
         .color-card:hover { border-color: #555; transform: translateY(-3px); background: rgba(255,255,255,0.05); }
-        
-        /* Скрытие карточек в зависимости от вкладки */
-        .color-card.hidden { display: none; }
+        .color-card.hidden { display: none !important; }
 
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .card-header h3 { font-size: 18px; }
@@ -92,18 +72,17 @@
         .fav-btn:hover { transform: scale(1.1); }
         .fav-btn.active { color: #c9ff34; }
 
-        .swatches-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; cursor: pointer; }
+        .swatches-row { display: flex; flex-wrap: wrap; gap: 10px; cursor: pointer; }
         .color-swatch { width: 45px; height: 45px; border-radius: 50%; transition: 0.2s; }
         .color-swatch:hover { transform: scale(1.1); }
 
-        /* БОЛЕЕ СКРУГЛЕННЫЕ ПОЛОСКИ */
-        .strip-container { display: none; flex-direction: column; gap: 10px; margin-top: 10px;}
+        /* СКРУГЛЕННЫЕ ПОЛОСКИ */
+        .strip-container { display: none; flex-direction: column; gap: 10px; margin-top: 10px; }
         .strip-container.active { display: flex; }
         .color-strip {
             display: flex; align-items: center; height: 45px; 
             border-radius: 12px; /* Более скругленные */
-            padding: 0 20px;
-            font-family: monospace; font-size: 15px; font-weight: bold; color: #000;
+            padding: 0 20px; font-family: monospace; font-size: 15px; font-weight: bold; color: #000;
             cursor: pointer; transition: 0.2s;
         }
         .color-strip:hover { transform: translateX(5px); }
@@ -123,7 +102,7 @@
         <nav class="nav-links">
             <button onclick="switchTab('all')" id="tab-all" class="active-tab">Все палитры</button>
             <button onclick="switchTab('fav')" id="tab-fav">Избранное</button>
-            <button onclick="switchTab('gen')" id="tab-gen">Генератор</button>
+            <button onclick="generateNew()">Генератор</button>
             <button id="fav-counter" style="color: #c9ff34; font-weight: 800; cursor: default;">★ 0 / 20</button>
         </nav>
         <button onclick="generateNew()" class="btn-primary">Создать палитру</button>
@@ -132,11 +111,8 @@
     <main class="hero">
         <div class="hero-content">
             <h1 class="hero-title">Цвета, которые<br>создают будущее</h1>
-            <p class="hero-subtitle">
-                Исследуйте, создавайте и сохраняйте идеальные цветовые палитры. Поиграйте со звездочками справа!
-            </p>
+            <p class="hero-subtitle">Исследуйте, создавайте и сохраняйте идеальные палитры. Поиграйте со звездочками!</p>
         </div>
-        <!-- Контейнер для интерактивных звезд -->
         <div class="stars-container" id="stars-container"></div>
     </main>
 
@@ -149,7 +125,8 @@
 
     <script>
         let favCount = 0;
-        const MAX_FAV = 20; // Увеличили до 20
+        const MAX_FAV = 20; // Лимит 20
+        let currentTab = 'all';
 
         function getRandomColor() {
             const letters = '0123456789ABCDEF';
@@ -172,7 +149,7 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        // --- ЛОГИКА СОЗДАНИЯ КАРТОЧЕК ---
+        // СОЗДАНИЕ КАРТОЧКИ
         function createCard() {
             const colorCount = Math.floor(Math.random() * 5) + 2; // 2-6 цветов
             let circlesHTML = '';
@@ -180,7 +157,7 @@
 
             for (let i = 0; i < colorCount; i++) {
                 const c = getRandomColor();
-                circlesHTML += `<div class="color-swatch" style="background: ${c};" title="Скопировать цвет" onclick="event.stopPropagation(); showToast('Цвет ${c.toUpperCase()} скопирован!')"></div>`;
+                circlesHTML += `<div class="color-swatch" style="background: ${c};" title="Скопировать" onclick="event.stopPropagation(); showToast('Цвет ${c.toUpperCase()} скопирован!')"></div>`;
                 const darkClass = isDark(c) ? 'dark' : '';
                 stripsHTML += `<div class="color-strip ${darkClass}" style="background: ${c};" onclick="event.stopPropagation(); showToast('Цвет ${c.toUpperCase()} скопирован!')">${i + 1}. ${c.toUpperCase()}</div>`;
             }
@@ -193,28 +170,27 @@
                     <h3>Палитра</h3>
                     <button class="fav-btn" onclick="event.stopPropagation(); toggleFav(this)">☆</button>
                 </div>
-                <!-- Кружки -->
                 <div class="swatches-row">
                     ${circlesHTML}
                 </div>
-                <!-- Полоски -->
                 <div class="strip-container">
                     ${stripsHTML}
                 </div>
             `;
 
-            // Логика разворачивания/сворачивания по клику на область
             const circlesRow = card.querySelector('.swatches-row');
             const stripsCol = card.querySelector('.strip-container');
 
-            // Клик по кружкам -> показать полоски
+            // Развернуть полоски
             circlesRow.onclick = function() {
                 circlesRow.style.display = 'none';
                 stripsCol.classList.add('active');
             };
 
-            // Клик по полоскам (в пустое место) -> вернуть кружки
-            stripsCol.onclick = function() {
+            // Свернуть обратно в кружки
+            stripsCol.onclick = function(e) {
+                // Если кликнули по самой полоске - не сворачиваем (там копирование)
+                if(e.target.classList.contains('color-strip')) return; 
                 circlesRow.style.display = 'flex';
                 stripsCol.classList.remove('active');
             };
@@ -224,19 +200,14 @@
 
         function generateNew() {
             const container = document.getElementById('palette-container');
-            const newCard = createCard();
-            container.insertBefore(newCard, container.firstChild);
-            
-            // Если мы не на вкладке "Все", переключим на неё, чтобы увидеть новую палитру
+            container.insertBefore(createCard(), container.firstChild);
             if (currentTab !== 'all') switchTab('all');
-            
             showToast('Создана новая палитра!');
         }
 
-        // --- ИЗБРАННОЕ ---
+        // ИЗБРАННОЕ
         function toggleFav(btn) {
             const card = btn.closest('.color-card');
-            
             if (!btn.classList.contains('active')) {
                 if (favCount < MAX_FAV) {
                     btn.classList.add('active');
@@ -244,7 +215,7 @@
                     card.setAttribute('data-fav', 'true');
                     favCount++;
                 } else {
-                    showToast(`Лимит избранного достигнут (${MAX_FAV})`);
+                    showToast(`Лимит избранного (${MAX_FAV})`);
                 }
             } else {
                 btn.classList.remove('active');
@@ -254,24 +225,19 @@
             }
             document.getElementById('fav-counter').innerText = `★ ${favCount} / ${MAX_FAV}`;
             
-            // Если мы на вкладке избранное, скрываем карточку сразу после снятия лайка
             if (currentTab === 'fav' && card.getAttribute('data-fav') === 'false') {
                 card.classList.add('hidden');
             }
         }
 
-        // --- ВКЛАДКИ ---
-        let currentTab = 'all';
-
+        // ВКЛАДКИ
         function switchTab(tab) {
             currentTab = tab;
-            
-            // Обновляем активные кнопки в меню
             document.getElementById('tab-all').classList.remove('active-tab');
             document.getElementById('tab-fav').classList.remove('active-tab');
-            document.getElementById('tab-gen').classList.remove('active-tab');
             
-            document.getElementById('tab-' + tab).classList.add('active-tab');
+            if(tab === 'all') document.getElementById('tab-all').classList.add('active-tab');
+            if(tab === 'fav') document.getElementById('tab-fav').classList.add('active-tab');
 
             const cards = document.querySelectorAll('.color-card');
             const title = document.getElementById('section-title');
@@ -279,69 +245,45 @@
             if (tab === 'all') {
                 title.innerText = 'Все палитры';
                 cards.forEach(c => c.classList.remove('hidden'));
-            } 
-            else if (tab === 'fav') {
+            } else if (tab === 'fav') {
                 title.innerText = 'Ваше избранное';
                 cards.forEach(c => {
-                    if (c.getAttribute('data-fav') === 'true') {
-                        c.classList.remove('hidden');
-                    } else {
-                        c.classList.add('hidden');
-                    }
+                    if (c.getAttribute('data-fav') === 'true') c.classList.remove('hidden');
+                    else c.classList.add('hidden');
                 });
-                if (favCount === 0) showToast('Вы пока не добавили ни одной палитры в избранное');
-            }
-            else if (tab === 'gen') {
-                // "Генератор" просто создает новую палитру и перекидывает на "Все"
-                generateNew();
+                if (favCount === 0) showToast('В избранном пока пусто');
             }
         }
 
-        // --- ИНТЕРАКТИВНЫЕ ЗВЕЗДОЧКИ ---
+        // ЗВЕЗДЫ
         function initStars() {
             const container = document.getElementById('stars-container');
-            const starCount = 40; // Количество звезд
-
-            for (let i = 0; i < starCount; i++) {
+            for (let i = 0; i < 40; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-                star.innerText = ['✦', '✧', '★', '☆'][Math.floor(Math.random() * 4)]; // Разные символы
-                
-                // Случайная позиция в пределах контейнера
-                const x = Math.random() * 100;
-                const y = Math.random() * 100;
-                star.style.left = x + '%';
-                star.style.top = y + '%';
-                
-                // Случайный размер
-                const size = Math.random() * 20 + 10;
-                star.style.fontSize = size + 'px';
-                
-                // Случайная прозрачность
+                star.innerText = ['✦', '✧', '★', '☆'][Math.floor(Math.random() * 4)];
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.fontSize = (Math.random() * 20 + 10) + 'px';
                 star.style.opacity = Math.random() * 0.5 + 0.1;
 
-                // Эффект при клике на звезду
                 star.onclick = function(e) {
                     e.stopPropagation();
                     star.classList.add('clicked');
-                    // Возвращаем звезду в исходное состояние через полсекунды
                     setTimeout(() => {
                         star.classList.remove('clicked');
-                        // Перемещаем в новое место
                         star.style.left = (Math.random() * 100) + '%';
                         star.style.top = (Math.random() * 100) + '%';
                     }, 400);
                 };
-
                 container.appendChild(star);
             }
         }
 
-        // Запуск при загрузке
         window.onload = function() {
             const container = document.getElementById('palette-container');
             for (let i = 0; i < 3; i++) container.appendChild(createCard());
-            initStars(); // Создаем звезды
+            initStars();
         };
     </script>
 </body>
