@@ -103,7 +103,6 @@
 
         .itten-wheel {
             width: 200px; height: 200px; border-radius: 50%; position: relative;
-            /* Используем CSS переменную для вращения, чтобы брать актуальный угол */
             background: conic-gradient(
                 #ff0000, #ff8000, #ffff00, #80ff00, 
                 #00ff00, #00ff80, #00ffff, #0080ff, 
@@ -111,12 +110,14 @@
             );
             box-shadow: 0 0 30px rgba(255,255,255,0.1), inset 0 0 20px rgba(0,0,0,0.5);
             cursor: crosshair;
+            /* Анимация вращения */
             animation: spin 20s linear infinite;
             transition: box-shadow 0.3s;
         }
 
+        /* ОСТАНОВКА ПРИ НАВЕДЕНИИ */
         .itten-wheel:hover {
-            animation: spin 3s linear infinite;
+            animation-play-state: paused; /* Останавливаем анимацию */
             box-shadow: 0 0 40px var(--accent-glow), inset 0 0 20px rgba(0,0,0,0.5);
         }
 
@@ -297,24 +298,9 @@
             return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
         }
 
-        // --- ИСПРАВЛЕННЫЙ КЛИК ПО КРУГУ ---
+        // --- КЛИК ПО КРУГУ ---
         const colorWheel = document.getElementById('colorWheel');
         
-        // Нам нужно знать текущий угол поворота круга, чтобы клик работал точно
-        // Браузер не отдает угол анимации напрямую, поэтому мы перехватываем его через requestAnimationFrame
-        let currentRotation = 0;
-        let lastTime = performance.now();
-        
-        // Функция для отслеживания вращения (20 секунд на 360 градусов = 18 градусов в секунду)
-        function trackRotation(time) {
-            const delta = time - lastTime;
-            currentRotation += (18 / 1000) * delta; // 18 градусов в секунду
-            if (currentRotation >= 360) currentRotation -= 360;
-            lastTime = time;
-            requestAnimationFrame(trackRotation);
-        }
-        requestAnimationFrame(trackRotation);
-
         colorWheel.addEventListener('click', function(e) {
             const rect = this.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
@@ -324,18 +310,14 @@
             const y = e.clientY - centerY;
             
             // Получаем угол клика
-            let clickAngle = Math.atan2(y, x) * (180 / Math.PI);
-            if (clickAngle < 0) clickAngle += 360;
+            let angle = Math.atan2(y, x) * (180 / Math.PI);
+            if (angle < 0) angle += 360;
             
-            // Вычитаем угол вращения круга, чтобы клик совпадал с цветом на экране
-            let finalAngle = clickAngle - currentRotation;
-            if (finalAngle < 0) finalAngle += 360;
+            // Так как круг остановлен при наведении, мы можем брать угол напрямую без учета вращения
+            const randomS = Math.floor(Math.random() * 30) + 40; 
+            const randomL = Math.floor(Math.random() * 20) + 40; 
 
-            // Добавляем случайное отклонение по яркости и насыщенности для разнообразия
-            const randomS = Math.floor(Math.random() * 30) + 40; // от 40 до 70
-            const randomL = Math.floor(Math.random() * 20) + 40; // от 40 до 60
-
-            const hexColor = hslToHex(finalAngle, randomS, randomL); 
+            const hexColor = hslToHex(angle, randomS, randomL); 
 
             createPaletteFromBase(hexColor, 'triad', 'Выбранный вами цвет');
         });
@@ -349,7 +331,6 @@
             const [h, s, l] = hexToHsl(baseHex);
             let colors = [];
 
-            // Теперь цвета будут более разнообразными по яркости
             const niceS = Math.max(30, Math.min(s + (Math.random() * 20 - 10), 90)); 
             const niceL = Math.max(30, Math.min(l + (Math.random() * 20 - 10), 70));
 
