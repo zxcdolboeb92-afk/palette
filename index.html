@@ -14,8 +14,16 @@
             color: #ffffff;
             min-height: 100vh;
             overflow-x: hidden;
-            background-image: radial-gradient(circle at 70% 30%, rgba(201, 255, 52, 0.05) 0%, rgba(10, 10, 10, 1) 50%);
+            /* Фиолетовый градиент на фоне */
+            background-image: radial-gradient(circle at 70% 30%, rgba(170, 0, 255, 0.08) 0%, rgba(10, 10, 10, 1) 50%);
         }
+        
+        /* Фиолетовые переменные */
+        :root {
+            --accent: #b864ff; /* Неоновый фиолетовый */
+            --accent-glow: rgba(184, 100, 255, 0.4);
+        }
+
         a, button { text-decoration: none; color: inherit; font-family: inherit; cursor: pointer; border: none; background: none; }
 
         /* ШАПКА */
@@ -26,18 +34,18 @@
             backdrop-filter: blur(10px);
         }
         .logo { font-weight: 800; font-size: 18px; }
-        .logo span { color: #c9ff34; }
+        .logo span { color: var(--accent); }
         
         .nav-links { display: flex; gap: 20px; align-items: center; }
         .nav-links button { font-size: 14px; color: #a1a1aa; font-weight: 500; transition: 0.2s; }
         .nav-links button:hover { color: #fff; }
-        .nav-links button.active-tab { color: #c9ff34; }
+        .nav-links button.active-tab { color: var(--accent); }
         
         .btn-primary {
-            background-color: #c9ff34; color: #000 !important;
+            background-color: var(--accent); color: #fff !important;
             padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: 0.2s;
         }
-        .btn-primary:hover { background-color: #b8eb25; transform: translateY(-1px); }
+        .btn-primary:hover { background-color: #9d4edd; transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-glow); }
 
         /* ГЛАВНЫЙ ЭКРАН */
         .hero { position: relative; max-width: 1200px; margin: 0 auto; padding: 80px 40px; min-height: 400px; display: flex; align-items: center; }
@@ -45,21 +53,21 @@
         .hero-title { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 20px; letter-spacing: -2px; }
         .hero-subtitle { font-size: 18px; color: #a1a1aa; line-height: 1.6; }
 
-        /* ОБЪЁМНЫЕ ЗВЕЗДОЧКИ */
-        .stars-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        /* ЗВЕЗДОЧКИ С АНИМАЦИЕЙ ПЕРЕЛЕТА */
+        .stars-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
         
         .star {
             position: absolute; 
             pointer-events: auto; 
             cursor: crosshair; 
             user-select: none;
-            /* 3D-эффект: тень + свечение */
+            /* 3D-эффект */
             text-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 20px currentColor; 
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s, text-shadow 0.3s;
+            /* Плавная анимация для полета */
+            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
             animation: float 4s infinite ease-in-out alternate;
         }
 
-        /* Каждая звезда парит с разной скоростью */
         .star:nth-child(even) { animation-duration: 5s; animation-delay: 1s; }
         .star:nth-child(3n) { animation-duration: 6s; animation-delay: 2s; }
 
@@ -71,14 +79,14 @@
         .star:hover { 
             transform: scale(1.6) rotate(45deg); 
             color: #ffffff;
-            text-shadow: 0 0 30px #fff, 0 0 60px #c9ff34; /* Яркое свечение */
+            text-shadow: 0 0 30px #fff, 0 0 60px var(--accent); 
         }
         
-        .star.clicked { 
-            transform: scale(3) rotate(180deg); 
-            color: #c9ff34; 
-            opacity: 0; 
-            text-shadow: 0 0 50px #c9ff34;
+        /* Класс для улетающей звезды */
+        .star.flying {
+            opacity: 0;
+            transform: scale(4) rotate(360deg);
+            filter: blur(5px);
         }
 
         /* КАРТОЧКИ */
@@ -95,15 +103,15 @@
 
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .card-header h3 { font-size: 18px; }
+        
         .fav-btn { font-size: 24px; color: #555; transition: 0.2s; }
         .fav-btn:hover { transform: scale(1.1); }
-        .fav-btn.active { color: #c9ff34; text-shadow: 0 0 10px rgba(201,255,52,0.5); }
+        .fav-btn.active { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
 
         .swatches-row { display: flex; flex-wrap: wrap; gap: 10px; cursor: pointer; }
         .color-swatch { width: 45px; height: 45px; border-radius: 50%; transition: 0.2s; }
         .color-swatch:hover { transform: scale(1.1); }
 
-        /* СКРУГЛЕННЫЕ ПОЛОСКИ */
         .strip-container { display: none; flex-direction: column; gap: 10px; margin-top: 10px; }
         .strip-container.active { display: flex; }
         .color-strip {
@@ -117,8 +125,8 @@
 
         #toast {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: #c9ff34; color: #000; padding: 10px 20px; border-radius: 8px;
-            font-weight: bold; display: none; z-index: 9999; box-shadow: 0 5px 15px rgba(201,255,52,0.3);
+            background: var(--accent); color: #fff; padding: 10px 20px; border-radius: 8px;
+            font-weight: bold; display: none; z-index: 9999; box-shadow: 0 5px 15px var(--accent-glow);
         }
     </style>
 </head>
@@ -130,7 +138,7 @@
             <button onclick="switchTab('all')" id="tab-all" class="active-tab">Все палитры</button>
             <button onclick="switchTab('fav')" id="tab-fav">Избранное</button>
             <button onclick="generateNew()">Генератор</button>
-            <button id="fav-counter" style="color: #c9ff34; font-weight: 800; cursor: default;">★ 0 / 20</button>
+            <button id="fav-counter" style="color: var(--accent); font-weight: 800; cursor: default;">★ 0 / 20</button>
         </nav>
         <button onclick="generateNew()" class="btn-primary">Создать палитру</button>
     </header>
@@ -155,8 +163,8 @@
         const MAX_FAV = 20;
         let currentTab = 'all';
         
-        // МАССИВ ДЛЯ СОХРАНЕНИЯ ИЗБРАННОГО (Будем хранить уникальные ID палитр)
-        let savedFavorites = JSON.parse(localStorage.getItem('myPalettesFavs')) || [];
+        // ХРАНИМ САМИ ЦВЕТА ПАЛИТР В ПАМЯТИ БРАУЗЕРА
+        let savedPalettes = JSON.parse(localStorage.getItem('spacePalettes')) || [];
 
         function getRandomColor() {
             const letters = '0123456789ABCDEF';
@@ -179,39 +187,43 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        // Сохранение в память браузера
         function saveToLocalStorage() {
-            localStorage.setItem('myPalettesFavs', JSON.stringify(savedFavorites));
+            localStorage.setItem('spacePalettes', JSON.stringify(savedPalettes));
         }
 
         // СОЗДАНИЕ КАРТОЧКИ
-        function createCard() {
-            const colorCount = Math.floor(Math.random() * 5) + 2;
+        function createCard(isSaved = false, savedIndex = -1) {
+            let colors = [];
+            
+            // Если карточка восстанавливается из памяти - берем сохраненные цвета
+            if (isSaved && savedIndex !== -1) {
+                colors = savedPalettes[savedIndex].colors;
+            } else {
+                // Иначе генерируем новые
+                const colorCount = Math.floor(Math.random() * 5) + 2;
+                for (let i = 0; i < colorCount; i++) colors.push(getRandomColor());
+            }
+
             let circlesHTML = '';
             let stripsHTML = '';
-            
-            // Генерируем уникальный ID для каждой палитры на основе времени и случая
-            const paletteId = 'pal_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
 
-            for (let i = 0; i < colorCount; i++) {
-                const c = getRandomColor();
+            colors.forEach((c, i) => {
                 circlesHTML += `<div class="color-swatch" style="background: ${c};" title="Скопировать" onclick="event.stopPropagation(); showToast('Цвет ${c.toUpperCase()} скопирован!')"></div>`;
                 const darkClass = isDark(c) ? 'dark' : '';
                 stripsHTML += `<div class="color-strip ${darkClass}" style="background: ${c};" onclick="event.stopPropagation(); showToast('Цвет ${c.toUpperCase()} скопирован!')">${i + 1}. ${c.toUpperCase()}</div>`;
-            }
+            });
 
             const card = document.createElement('div');
             card.className = 'color-card';
-            card.setAttribute('data-id', paletteId);
             
-            // Проверяем, есть ли этот ID в сохраненных избранных
-            const isFav = savedFavorites.includes(paletteId);
-            card.setAttribute('data-fav', isFav ? 'true' : 'false');
+            // Присваиваем статус избранного
+            card.setAttribute('data-fav', isSaved ? 'true' : 'false');
+            if (isSaved) favCount++;
 
             card.innerHTML = `
                 <div class="card-header">
                     <h3>Палитра</h3>
-                    <button class="fav-btn ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav(this)">${isFav ? '★' : '☆'}</button>
+                    <button class="fav-btn ${isSaved ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav(this)">${isSaved ? '★' : '☆'}</button>
                 </div>
                 <div class="swatches-row">
                     ${circlesHTML}
@@ -220,8 +232,6 @@
                     ${stripsHTML}
                 </div>
             `;
-
-            if (isFav) favCount++; // Обновляем счетчик, если палитра уже в избранном
 
             const circlesRow = card.querySelector('.swatches-row');
             const stripsCol = card.querySelector('.strip-container');
@@ -242,17 +252,34 @@
 
         function generateNew() {
             const container = document.getElementById('palette-container');
-            container.insertBefore(createCard(), container.firstChild);
+            const newCard = createCard(false);
+            
+            // Извлекаем цвета из новой карточки, чтобы сохранить их, если добавят в избранное
+            const swatches = newCard.querySelectorAll('.color-swatch');
+            const colors = Array.from(swatches).map(s => rgbToHex(s.style.backgroundColor));
+            newCard.setAttribute('data-colors', JSON.stringify(colors));
+
+            container.insertBefore(newCard, container.firstChild);
             if (currentTab !== 'all') switchTab('all');
             showToast('Создана новая палитра!');
             updateCounter();
         }
 
-        // ИЗБРАННОЕ (С СОХРАНЕНИЕМ)
+        function rgbToHex(rgb) {
+            if(rgb.startsWith('#')) return rgb;
+            const parts = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            if (!parts) return rgb;
+            return "#" + ((1 << 24) + (parseInt(parts[1]) << 16) + (parseInt(parts[2]) << 8) + parseInt(parts[3])).toString(16).slice(1).toUpperCase();
+        }
+
+        // ИЗБРАННОЕ
         function toggleFav(btn) {
             const card = btn.closest('.color-card');
-            const paletteId = card.getAttribute('data-id');
             const isCurrentlyFav = card.getAttribute('data-fav') === 'true';
+
+            // Достаем цвета этой карточки
+            const swatches = card.querySelectorAll('.color-swatch');
+            const currentColors = Array.from(swatches).map(s => rgbToHex(s.style.backgroundColor));
 
             if (!isCurrentlyFav) {
                 if (favCount < MAX_FAV) {
@@ -260,8 +287,8 @@
                     btn.innerText = '★';
                     card.setAttribute('data-fav', 'true');
                     
-                    // Добавляем ID в массив и сохраняем
-                    savedFavorites.push(paletteId);
+                    // Сохраняем цвета в память
+                    savedPalettes.push({ colors: currentColors });
                     saveToLocalStorage();
                     favCount++;
                 } else {
@@ -272,9 +299,12 @@
                 btn.innerText = '☆';
                 card.setAttribute('data-fav', 'false');
                 
-                // Удаляем ID из массива и сохраняем
-                savedFavorites = savedFavorites.filter(id => id !== paletteId);
-                saveToLocalStorage();
+                // Удаляем из памяти (ищем по совпадению цветов)
+                const index = savedPalettes.findIndex(p => p.colors.join('') === currentColors.join(''));
+                if (index !== -1) {
+                    savedPalettes.splice(index, 1);
+                    saveToLocalStorage();
+                }
                 favCount--;
             }
             
@@ -314,35 +344,45 @@
             }
         }
 
-        // ОБЪЁМНЫЕ ЗВЕЗДЫ
+        // ЗВЕЗДЫ С ПЕРЕЛЕТОМ
         function initStars() {
             const container = document.getElementById('stars-container');
             for (let i = 0; i < 40; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-                // Разные символы для объема
                 star.innerText = ['✦', '✧', '★', '☆', '✴'][Math.floor(Math.random() * 5)];
                 star.style.left = Math.random() * 100 + '%';
                 star.style.top = Math.random() * 100 + '%';
                 
-                // Разный размер и цвет для глубины
                 star.style.fontSize = (Math.random() * 25 + 15) + 'px';
                 
-                // Даем звездам легкий цветовой оттенок (белый, зеленый, синий)
-                const colors = ['#ffffff', '#c9ff34', '#a1a1aa'];
+                // Фиолетовые и белые оттенки для звезд
+                const colors = ['#ffffff', 'var(--accent)', '#a1a1aa'];
                 star.style.color = colors[Math.floor(Math.random() * colors.length)];
-                
-                // Начальная прозрачность
                 star.style.opacity = Math.random() * 0.4 + 0.2;
 
                 star.onclick = function(e) {
                     e.stopPropagation();
-                    star.classList.add('clicked');
+                    
+                    // Улетаем в случайную сторону
+                    const randomX = (Math.random() - 0.5) * 500;
+                    const randomY = (Math.random() - 0.5) * 500;
+                    
+                    star.classList.add('flying');
+                    star.style.transform = `translate(${randomX}px, ${randomY}px) scale(4) rotate(360deg)`;
+                    
                     setTimeout(() => {
-                        star.classList.remove('clicked');
+                        // Возвращаем обратно в новое место
+                        star.classList.remove('flying');
+                        star.style.transition = 'none';
+                        star.style.transform = 'none';
                         star.style.left = (Math.random() * 100) + '%';
                         star.style.top = (Math.random() * 100) + '%';
-                    }, 400);
+                        star.style.opacity = Math.random() * 0.4 + 0.2;
+                        
+                        // Восстанавливаем анимацию
+                        setTimeout(() => star.style.transition = 'all 1.2s cubic-bezier(0.25, 1, 0.5, 1)', 50);
+                    }, 1200);
                 };
                 container.appendChild(star);
             }
@@ -351,8 +391,20 @@
         window.onload = function() {
             const container = document.getElementById('palette-container');
             
-            // Создаем стартовые палитры
-            for (let i = 0; i < 3; i++) container.appendChild(createCard());
+            // 1. Сначала восстанавливаем сохраненные палитры из памяти
+            savedPalettes.forEach((p, index) => {
+                container.appendChild(createCard(true, index));
+            });
+
+            // 2. Если ничего не сохранено (первый заход), создаем 3 стартовые
+            if (savedPalettes.length === 0) {
+                for (let i = 0; i < 3; i++) {
+                    const card = createCard(false);
+                    const swatches = card.querySelectorAll('.color-swatch');
+                    card.setAttribute('data-colors', JSON.stringify(Array.from(swatches).map(s => rgbToHex(s.style.backgroundColor))));
+                    container.appendChild(card);
+                }
+            }
             
             initStars();
             updateCounter();
