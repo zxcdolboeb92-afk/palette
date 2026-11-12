@@ -45,7 +45,7 @@
         }
         .btn-primary:hover { background-color: #9d4edd; transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-glow); }
 
-        /* ГЛАВНЫЙ ЭКРАН (УВЕЛИЧИЛИ ВЫСОТУ) */
+        /* ГЛАВНЫЙ ЭКРАН */
         .hero { 
             position: relative; max-width: 1200px; margin: 0 auto; padding: 80px 40px; 
             min-height: 450px; display: flex; align-items: center; 
@@ -56,16 +56,9 @@
 
         /* ЗВЕЗДОЧКИ */
         .stars-container { 
-            position: absolute; 
-            top: 0; 
-            right: 0; /* Сдвигаем вправо, чтобы не мешать тексту */
-            width: 50%; 
-            height: 100%; 
-            pointer-events: none; 
-            z-index: 1; 
-            overflow: visible; /* Позволяем летать за края */
+            position: absolute; top: 0; right: 0; width: 50%; height: 100%; 
+            pointer-events: none; z-index: 1; overflow: visible;
         }
-        
         .star {
             position: absolute; pointer-events: auto; cursor: crosshair; user-select: none;
             text-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 20px currentColor; 
@@ -81,7 +74,7 @@
         /* --- СЕКЦИЯ ЦВЕТОВОГО КРУГА ИТТЕНА --- */
         .itten-section {
             max-width: 1200px; margin: 0 auto; padding: 0 40px 40px;
-            position: relative; z-index: 5; /* Поднимаем выше звезд */
+            position: relative; z-index: 5;
         }
         .itten-container {
             background: rgba(30, 30, 30, 0.8); backdrop-filter: blur(10px);
@@ -89,19 +82,58 @@
             display: flex; gap: 40px; align-items: center; flex-wrap: wrap;
         }
         
+        /* АНИМИРОВАННЫЙ КРУГ */
+        .itten-wheel-wrapper {
+            position: relative;
+            width: 200px; height: 200px;
+            display: flex; justify-content: center; align-items: center;
+        }
+
         .itten-wheel {
-            width: 200px; height: 200px; border-radius: 50%; position: relative; flex-shrink: 0;
+            width: 200px; height: 200px; border-radius: 50%; position: relative;
             background: conic-gradient(
                 #ff0000, #ff8000, #ffff00, #80ff00, 
                 #00ff00, #00ff80, #00ffff, #0080ff, 
                 #0000ff, #8000ff, #ff00ff, #ff0080, #ff0000
             );
             box-shadow: 0 0 30px rgba(255,255,255,0.1), inset 0 0 20px rgba(0,0,0,0.5);
-            display: flex; justify-content: center; align-items: center;
+            cursor: crosshair;
+            /* Анимация вращения */
+            animation: spin 20s linear infinite;
+            transition: box-shadow 0.3s;
         }
+
+        /* Ускорение при наведении */
+        .itten-wheel:hover {
+            animation: spin 3s linear infinite;
+            box-shadow: 0 0 40px var(--accent-glow), inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Чтобы внутренний круг не вращался вместе со спектром */
         .itten-wheel::after {
-            content: ''; width: 120px; height: 120px; background: #0a0a0a; border-radius: 50%;
+            content: ''; position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 120px; height: 120px; background: #0a0a0a; border-radius: 50%;
             box-shadow: inset 0 0 10px rgba(0,0,0,1);
+            pointer-events: none;
+        }
+
+        /* Подсказка внутри круга */
+        .itten-wheel-wrapper::before {
+            content: 'Кликни по кругу';
+            position: absolute;
+            z-index: 10;
+            font-size: 12px;
+            color: #a1a1aa;
+            text-align: center;
+            pointer-events: none;
+            font-weight: 600;
+            line-height: 1.2;
         }
 
         .itten-controls { flex: 1; min-width: 300px; }
@@ -182,10 +214,12 @@
     <!-- СЕКЦИЯ ЦВЕТОВОГО КРУГА -->
     <section class="itten-section">
         <div class="itten-container">
-            <div class="itten-wheel" title="Цветовой круг Иттена"></div>
+            <div class="itten-wheel-wrapper">
+                <div class="itten-wheel" id="colorWheel" title="Кликни в любую точку круга"></div>
+            </div>
             <div class="itten-controls">
                 <h3>Генератор по кругу Иттена</h3>
-                <p>Выберите схему, чтобы сгенерировать гармоничную палитру на основе случайного базового цвета.</p>
+                <p>Кликни по кругу, чтобы выбрать базовый цвет, или выбери готовую схему ниже.</p>
                 <div class="itten-buttons">
                     <button class="itten-btn" onclick="generateItten('complementary')">Комплементарная</button>
                     <button class="itten-btn" onclick="generateItten('triad')">Триада</button>
@@ -247,8 +281,35 @@
             return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
         }
 
+        // --- ИНТЕРАКТИВНЫЙ КЛИК ПО КРУГУ ---
+        const colorWheel = document.getElementById('colorWheel');
+        colorWheel.addEventListener('click', function(e) {
+            const rect = this.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Вычисляем угол клика
+            const x = e.clientX - centerX;
+            const y = e.clientY - centerY;
+            
+            // Math.atan2 возвращает угол в радианах, переводим в градусы и нормализуем (0-360)
+            let angle = Math.atan2(y, x) * (180 / Math.PI);
+            if (angle < 0) angle += 360;
+            
+            // Конвертируем угол в цвет (по кругу)
+            const hexColor = hslToHex(angle, 70, 50); // Насыщенность 70%, Яркость 50%
+
+            // Генерируем палитру на основе выбранного цвета (схема Триада)
+            createPaletteFromBase(hexColor, 'triad', 'Выбранный вами цвет');
+        });
+
+        // --- ГЕНЕРАЦИЯ ПО СХЕМАМ ИТТЕНА ---
         function generateItten(scheme) {
             const baseHex = getRandomColor();
+            createPaletteFromBase(baseHex, scheme, scheme);
+        }
+
+        function createPaletteFromBase(baseHex, scheme, msgPrefix) {
             const [h, s, l] = hexToHsl(baseHex);
             let colors = [];
 
@@ -271,7 +332,7 @@
             
             if (currentTab !== 'all') switchTab('all');
             document.getElementById('palettes').scrollIntoView({ behavior: 'smooth' });
-            showToast(`Создана палитра по схеме: ${scheme}`);
+            showToast(`Создана палитра: ${msgPrefix}`);
         }
 
         function isDark(hex) {
@@ -409,12 +470,10 @@
 
         function initStars() {
             const container = document.getElementById('stars-container');
-            // Звезды теперь распределяются по правой стороне
             for (let i = 0; i < 35; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 star.innerText = ['✦', '✧', '★', '☆', '✴'][Math.floor(Math.random() * 5)];
-                // Позиционируем от 10% до 100% ширины контейнера (он и так справа)
                 star.style.left = (Math.random() * 90 + 10) + '%';
                 star.style.top = (Math.random() * 90 + 5) + '%';
                 star.style.fontSize = (Math.random() * 25 + 15) + 'px';
