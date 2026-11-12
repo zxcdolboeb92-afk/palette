@@ -1,101 +1,314 @@
-/* --- БАЗОВЫЙ ТЕМНЫЙ СТИЛЬ --- */
+/* СБРОС СТИЛЕЙ */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* БАЗОВЫЕ НАСТРОЙКИ */
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
     background-color: #0a0a0a;
     color: #ffffff;
     min-height: 100vh;
-    /* Глубокий космический фон */
+    overflow-x: hidden;
     background-image: radial-gradient(circle at 70% 30%, rgba(201, 255, 52, 0.05) 0%, rgba(10, 10, 10, 1) 50%);
 }
 
-/* Делаем все заголовки большими и жирными */
-h1, h2, h3 {
-    font-weight: 800;
-    letter-spacing: -1px;
-    line-height: 1.1;
-    margin-bottom: 20px;
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
-h1 { font-size: 56px; }
-h2 { font-size: 36px; }
-h3 { font-size: 24px; }
-
-/* Текст делаем светло-серым, чтобы не отвлекал */
-p {
-    color: #a1a1aa;
-    font-size: 16px;
-    line-height: 1.6;
-    margin-bottom: 20px;
+:root {
+    --accent: #c9ff34;
+    --text-muted: #a1a1aa;
 }
 
-/* --- СТИЛИ ДЛЯ ВАШИХ КНОПОК --- */
-/* Чтобы это сработало, в HTML у кнопок должен быть тег <button> или <a> */
-button, .btn {
-    background-color: #c9ff34; /* Тот самый неоновый цвет */
-    color: #000000;
-    border: none;
+/* ШАПКА */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+}
+
+.logo-icon {
+    color: var(--accent);
+    font-size: 20px;
+    margin-right: 8px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    font-size: 14px;
+    color: var(--text-muted);
+    transition: color 0.2s;
+}
+
+.nav-links a:hover {
+    color: #fff;
+}
+
+/* КНОПКИ */
+.btn {
+    padding: 10px 20px;
     border-radius: 8px;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: inherit;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-button:hover, .btn:hover {
+.btn-primary {
+    background-color: var(--accent);
+    color: #000;
+    border: none;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
     background-color: #b8eb25;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     box-shadow: 0 4px 15px rgba(201, 255, 52, 0.3);
 }
 
-/* Вторичная кнопка (если нужна прозрачная с рамкой) */
-.btn-outline {
+.btn-secondary {
     background-color: transparent;
-    color: #ffffff;
+    color: #fff;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
-.btn-outline:hover {
+
+.btn-secondary:hover {
     background-color: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: none;
 }
 
-/* --- СТИЛИ ДЛЯ ВАШИХ БЛОКОВ С ЦВЕТАМИ (ПАЛИТРЫ) --- */
-/* Предполагаю, что у вас есть блоки, где показываются цвета */
-.color-card {
-    background-color: rgba(255, 255, 255, 0.03);
+/* ГЛАВНЫЙ ЭКРАН */
+.hero {
+    display: flex;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 80px 40px;
+    min-height: calc(100vh - 80px);
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hero-content {
+    flex: 1;
+    max-width: 600px;
+    z-index: 2;
+}
+
+.hero-title {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 30px;
+}
+
+.hero-subtitle {
+    font-size: 18px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 500px;
+    margin-bottom: 40px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 60px;
+}
+
+.hero-buttons .btn {
+    padding: 14px 28px;
+    font-size: 16px;
+}
+
+/* СТАТИСТИКА */
+.stats {
+    display: flex;
+    gap: 50px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 30px;
+}
+
+.stat-number {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* ВИЗУАЛЬНАЯ ЧАСТЬ */
+.hero-visual {
+    flex: 1;
+    position: relative;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.glow-sphere {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(201, 255, 52, 0.15) 0%, rgba(201, 255, 52, 0) 70%);
+    border-radius: 50%;
+    position: absolute;
+    filter: blur(40px);
+    animation: pulse 4s infinite alternate;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.1); opacity: 1; }
+}
+
+.floating-icon {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 20px;
-    backdrop-filter: blur(10px); /* Эффект матового стекла */
-    transition: border-color 0.2s ease;
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: float 6s infinite ease-in-out;
+}
+
+.icon-1 { top: 20%; left: 30%; animation-delay: 0s; }
+.icon-2 { top: 60%; left: 80%; animation-delay: 1s; }
+.icon-3 { top: 70%; left: 20%; animation-delay: 2s; }
+.icon-4 { top: 15%; left: 70%; animation-delay: 3s; }
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+/* --- СЕКЦИЯ С ПАЛИТРАМИ --- */
+.palette-section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 60px 40px 100px;
+}
+
+.section-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 40px;
+    letter-spacing: -1px;
+}
+
+.palette-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.color-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
 }
 
 .color-card:hover {
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.05);
 }
 
-/* Если у вас есть контейнер, чтобы выстроить палитры в ряд */
-.palette-container {
+.swatches-row {
     display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-top: 40px;
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
-/* Квадратики самих цветов */
 .color-swatch {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%; /* Делаем их круглыми для красоты */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    margin-bottom: 15px;
-    border: 2px solid rgba(255,255,255,0.1);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1), 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.color-card h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.color-card p {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* АДАПТИВНОСТЬ */
+@media (max-width: 1024px) {
+    .hero {
+        flex-direction: column;
+        padding: 40px 20px;
+        text-align: center;
+    }
+    
+    .hero-title {
+        font-size: 48px;
+    }
+    
+    .hero-subtitle {
+        margin: 0 auto 30px auto;
+    }
+    
+    .hero-buttons, .stats {
+        justify-content: center;
+    }
+
+    .hero-visual {
+        display: none;
+    }
+    
+    .nav-links {
+        display: none;
+    }
+
+    .palette-container {
+        grid-template-columns: 1fr;
+    }
 }
