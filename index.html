@@ -19,9 +19,9 @@
             <a href="#">Главная</a>
             <a href="#">Палитры ⌄</a>
             <a href="#">Генератор</a>
-            <a href="#">Избранное</a>
+            <!-- Счетчик избранного -->
+            <a href="#" id="fav-counter" style="color: var(--accent); font-weight: bold;">★ 0 / 10</a>
         </nav>
-        <!-- Добавили id="create-btn" -->
         <button id="create-btn" class="btn btn-primary">Создать палитру</button>
     </header>
 
@@ -33,12 +33,11 @@
                 будущее
             </h1>
             <p class="hero-subtitle">
-                Исследуйте, создавайте и сохраняйте идеальные цветовые палитры для ваших дизайн-проектов. Нажмите на любой кружок, чтобы скопировать цвет.
+                Исследуйте, создавайте и сохраняйте идеальные цветовые палитры. Кликните по палитре, чтобы развернуть её в полоски с номерами, или добавьте в избранное.
             </p>
             
             <div class="hero-buttons">
                 <a href="#palettes" class="btn btn-primary">Смотреть палитры</a>
-                <!-- Добавили id="random-btn" -->
                 <button id="random-btn" class="btn btn-secondary">Случайный цвет</button>
             </div>
 
@@ -59,7 +58,6 @@
         </div>
 
         <div class="hero-visual">
-            <!-- Добавили id="glow" для смены цвета фона -->
             <div id="glow" class="glow-sphere"></div>
             <div class="floating-icon icon-1">🎨</div>
             <div class="floating-icon icon-2">🖌️</div>
@@ -70,46 +68,11 @@
 
     <section id="palettes" class="palette-section">
         <h2 class="section-title">Популярные палитры</h2>
-        <!-- Добавили id="palette-container" -->
         <div id="palette-container" class="palette-container">
-            
-            <!-- Палитра 1 -->
-            <div class="color-card">
-                <div class="swatches-row">
-                    <div class="color-swatch" style="background: #c9ff34;" title="Кликни, чтобы скопировать"></div>
-                    <div class="color-swatch" style="background: #1a1a1a;" title="Кликни, чтобы скопировать"></div>
-                    <div class="color-swatch" style="background: #ffffff;" title="Кликни, чтобы скопировать"></div>
-                </div>
-                <h3>Neon Void</h3>
-                <p>Кислотный акцент на глубоком черном</p>
-            </div>
-
-            <!-- Палитра 2 -->
-            <div class="color-card">
-                <div class="swatches-row">
-                    <div class="color-swatch" style="background: #ff5733;" title="Кликни, чтобы скопировать"></div>
-                    <div class="color-swatch" style="background: #2d00f7;" title="Кликни, чтобы скопировать"></div>
-                    <div class="color-swatch" style="background: #f20089;" title="Кликни, чтобы скопировать"></div>
-                </div>
-                <h3>Cyber Sunset</h3>
-                <p>Яркие неоновые цвета для смелых идей</p>
-            </div>
-
-            <!-- Палитра 3 -->
-            <div class="color-card">
-                <div class="swatches-row">
-                    <div class="color-swatch" style="background: #00f5d4;" title="Кликни, чтобы скопировать"></div>
-                    <div class="color-swatch" style="background: #00bbf9;" title="Кликни, чтобы скопировать"></div>
-                    <div class="color-swatch" style="background: #9b5de5;" title="Кликни, чтобы скопировать"></div>
-                </div>
-                <h3>Deep Ocean</h3>
-                <p>Холодные оттенки для технологичных сайтов</p>
-            </div>
-
+            <!-- Карточки будут генерироваться здесь -->
         </div>
     </section>
 
-    <!-- ПОДКЛЮЧАЕМ СКРИПТ -->
     <script src="script.js"></script>
 </body>
 </html>
