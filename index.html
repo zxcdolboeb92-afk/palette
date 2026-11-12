@@ -20,9 +20,14 @@
             --card-border: #333;
             --card-hover: rgba(255,255,255,0.05);
             --input-bg: rgba(255,255,255,0.05);
-            --panel-bg: #151515;
-            --panel-border: #333;
+            --panel-bg: rgba(20, 20, 20, 0.7); /* Для жидкого стекла */
+            --panel-border: rgba(255, 255, 255, 0.1);
             --bg-gradient: radial-gradient(circle at 70% 30%, rgba(170, 0, 255, 0.08) 0%, rgba(10, 10, 10, 1) 50%);
+            
+            /* Цвета звездочек */
+            --star-color-1: #ffffff;
+            --star-color-2: #b864ff;
+            --star-color-3: #a1a1aa;
         }
 
         body.light-theme {
@@ -33,9 +38,14 @@
             --card-border: #e4e4e7;
             --card-hover: #f4f4f5;
             --input-bg: #f4f4f5;
-            --panel-bg: #ffffff;
-            --panel-border: #e4e4e7;
+            --panel-bg: rgba(255, 255, 255, 0.7); /* Светлое жидкое стекло */
+            --panel-border: rgba(0, 0, 0, 0.1);
             --bg-gradient: radial-gradient(circle at 70% 30%, rgba(184, 100, 255, 0.15) 0%, rgba(244, 244, 245, 1) 50%);
+            
+            /* Темные звездочки для светлой темы */
+            --star-color-1: #7c3aed; 
+            --star-color-2: #9333ea;
+            --star-color-3: #6b7280;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -51,85 +61,48 @@
 
         a, button { text-decoration: none; color: inherit; font-family: inherit; cursor: pointer; border: none; background: none; }
 
-        /* --- СЕКРЕТНЫЙ ОСТРОВОК (Признание) --- */
+        /* --- СЕКРЕТНЫЙ ОСТРОВОК --- */
         .secret-island {
             position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
-            background: rgba(20, 20, 20, 0.7); backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 40px; padding: 15px 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
+            background: var(--panel-bg); backdrop-filter: blur(15px);
+            border: 1px solid var(--panel-border); border-radius: 40px; padding: 15px 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.1);
             z-index: 9999; display: flex; align-items: center; justify-content: center; gap: 15px;
             transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); overflow: hidden;
-            color: #fff;
         }
         .secret-island.show { top: 90px; }
-        .secret-text { font-size: 18px; font-weight: 800; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); z-index: 2; white-space: nowrap; }
-        .close-island { font-size: 18px; color: #a1a1aa; z-index: 3; margin-left: 10px; }
-        .close-island:hover { color: #fff; }
+        .secret-text { font-size: 18px; font-weight: 800; color: var(--text-main); text-shadow: 0 0 10px rgba(128, 128, 128, 0.3); z-index: 2; white-space: nowrap; }
+        .close-island { font-size: 18px; color: var(--text-muted); z-index: 3; margin-left: 10px; }
+        .close-island:hover { color: var(--text-main); }
         .island-stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-        .island-star { position: absolute; font-size: 12px; color: rgba(255, 255, 255, 0.4); animation: floatIsland 3s infinite ease-in-out alternate; }
+        .island-star { position: absolute; font-size: 12px; color: var(--accent); animation: floatIsland 3s infinite ease-in-out alternate; opacity: 0.6;}
         @keyframes floatIsland { 0% { transform: translateY(0px) rotate(0deg); opacity: 0.2; } 100% { transform: translateY(-10px) rotate(20deg); opacity: 0.8; } }
 
         /* --- ПЕРЕКЛЮЧАТЕЛЬ ТЕМ --- */
         .theme-toggle {
-            position: relative;
-            width: 64px;
-            height: 32px;
-            background: rgba(20, 20, 20, 0.5);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 6px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            z-index: 1000;
-            transition: background 0.4s;
+            position: relative; width: 64px; height: 32px;
+            background: rgba(128, 128, 128, 0.2); backdrop-filter: blur(10px);
+            border: 1px solid var(--panel-border); border-radius: 20px;
+            cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 1000; transition: background 0.4s;
         }
-        .light-theme .theme-toggle {
-            background: rgba(255, 255, 255, 0.6);
-            border-color: rgba(0,0,0,0.1);
-        }
-
         .theme-toggle::before {
-            content: '';
-            position: absolute;
-            top: 2px; left: 2px;
-            width: 26px; height: 26px;
-            background: var(--accent);
-            border-radius: 50%;
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            box-shadow: 0 0 10px var(--accent-glow);
-            z-index: 1;
+            content: ''; position: absolute; top: 2px; left: 2px; width: 26px; height: 26px;
+            background: var(--accent); border-radius: 50%; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 0 10px var(--accent-glow); z-index: 1;
         }
-        /* Двигаем кружок в светлой теме */
         .light-theme .theme-toggle::before {
-            transform: translateX(32px);
-            background: #ffcc00;
-            box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+            transform: translateX(32px); background: #ffcc00; box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
         }
-
         .theme-icon { font-size: 14px; z-index: 2; pointer-events: none; transition: opacity 0.3s; }
-        .icon-moon { opacity: 1; }
-        .icon-sun { opacity: 0.3; }
-        
-        .light-theme .icon-moon { opacity: 0.3; }
-        .light-theme .icon-sun { opacity: 1; }
+        .icon-moon { opacity: 1; } .icon-sun { opacity: 0.3; }
+        .light-theme .icon-moon { opacity: 0.3; } .light-theme .icon-sun { opacity: 1; }
 
-        /* Анимации внутри тумблера */
-        .theme-animations {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            border-radius: 20px; overflow: hidden; pointer-events: none; z-index: 0;
-        }
-        .theme-animations span {
-            position: absolute; font-size: 8px; transition: opacity 0.4s;
-        }
+        .theme-animations { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 20px; overflow: hidden; pointer-events: none; z-index: 0; }
+        .theme-animations span { position: absolute; font-size: 8px; transition: opacity 0.4s; }
         .anim-star { color: #fff; opacity: 0.6; animation: float 2s infinite alternate; }
         .anim-flower { color: #ffcc00; opacity: 0; animation: float 2s infinite alternate; }
-        .light-theme .anim-star { opacity: 0; }
-        .light-theme .anim-flower { opacity: 1; }
-
+        .light-theme .anim-star { opacity: 0; } .light-theme .anim-flower { opacity: 1; }
         @keyframes float { 0% { transform: translateY(0) scale(0.8); } 100% { transform: translateY(-3px) scale(1.2); } }
 
         /* --- ШАПКА --- */
@@ -137,21 +110,18 @@
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 30px; background: var(--bg-color);
             border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 1000;
-            backdrop-filter: blur(10px); flex-wrap: wrap; gap: 10px;
-            transition: background 0.4s, border 0.4s;
+            backdrop-filter: blur(10px); flex-wrap: wrap; gap: 10px; transition: background 0.4s, border 0.4s;
         }
-        .logo { font-weight: 800; font-size: 20px; z-index: 10; position: relative; color: var(--text-main); }
+        .logo { font-weight: 800; font-size: 20px; color: var(--text-main); }
         .logo span { color: var(--accent); }
-        
-        .nav-links { display: flex; gap: 15px; align-items: center; z-index: 10; position: relative; flex-wrap: wrap; }
+        .nav-links { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
         .nav-links button { font-size: 14px; color: var(--text-muted); font-weight: 500; transition: 0.2s; }
         .nav-links button:hover { color: var(--text-main); }
         .nav-links button.active-tab { color: var(--accent); }
-        
         .btn-primary {
             background-color: var(--accent); color: #fff !important;
             padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: 0.2s;
-            display: flex; align-items: center; gap: 6px; white-space: nowrap; z-index: 10;
+            display: flex; align-items: center; gap: 6px; white-space: nowrap;
         }
         .btn-primary:hover { background-color: #9d4edd; transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-glow); }
 
@@ -165,23 +135,21 @@
         .stars-container { position: absolute; top: 0; right: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
         .star {
             position: absolute; pointer-events: auto; cursor: crosshair; user-select: none;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 20px currentColor; 
+            text-shadow: 0 2px 5px rgba(0,0,0,0.1); 
             transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
             animation: floatStar 4s infinite ease-in-out alternate;
         }
-        .star:hover { transform: scale(1.6) rotate(45deg); color: var(--text-main); text-shadow: 0 0 30px var(--text-main); }
+        .star:hover { transform: scale(1.6) rotate(45deg); text-shadow: 0 0 20px currentColor; }
         .star.flying { opacity: 0; transform: scale(4) rotate(360deg); filter: blur(5px); }
         @keyframes floatStar { 0% { transform: translateY(0px) rotate(0deg); } 100% { transform: translateY(-15px) rotate(10deg); } }
 
         /* --- СЕКЦИИ --- */
         .itten-section, .photo-section { padding: 0 30px 30px; position: relative; z-index: 10; display: none; }
         .itten-section.active, .photo-section.active { display: block; }
-        
         .itten-container, .photo-container {
             background: var(--card-bg); backdrop-filter: blur(12px);
             border: 1px solid var(--card-border); border-radius: 16px; padding: 25px; 
-            display: flex; gap: 30px; align-items: center; flex-wrap: wrap;
-            transition: background 0.4s, border 0.4s;
+            display: flex; gap: 30px; align-items: center; flex-wrap: wrap; transition: 0.4s;
         }
         
         /* Круг Иттена */
@@ -189,19 +157,16 @@
         .itten-wheel {
             width: 180px; height: 180px; border-radius: 50%;
             background: conic-gradient(#ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080, #ff0000);
-            box-shadow: 0 0 30px rgba(255,255,255,0.1), inset 0 0 20px rgba(0,0,0,0.5);
-            animation: spin 20s linear infinite; cursor: crosshair;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1); animation: spin 20s linear infinite; cursor: crosshair;
         }
         .itten-wheel:hover { animation-play-state: paused; box-shadow: 0 0 40px var(--accent-glow); }
         .itten-wheel::after {
             content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 100px; height: 100px; background: var(--bg-color); border-radius: 50%; box-shadow: inset 0 0 10px rgba(0,0,0,1);
-            pointer-events: none; transition: background 0.4s;
+            width: 100px; height: 100px; background: var(--bg-color); border-radius: 50%; pointer-events: none; transition: 0.4s;
         }
         .itten-wheel-wrapper::before {
             content: '✦'; position: absolute; z-index: 10; font-size: 35px; color: var(--accent);
-            text-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 20px var(--accent); pointer-events: none;
-            animation: spin-center 10s linear infinite reverse; 
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3); pointer-events: none; animation: spin-center 10s linear infinite reverse; 
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes spin-center { 50% { transform: rotate(-180deg) scale(1.2); } 100% { transform: rotate(-360deg) scale(1); } }
@@ -213,7 +178,7 @@
         .slider-container {
             display: flex; align-items: center; gap: 15px; margin-bottom: 15px;
             background: var(--input-bg); padding: 10px 15px; border-radius: 8px;
-            width: fit-content; cursor: ns-resize; transition: background 0.4s;
+            width: fit-content; cursor: ns-resize; transition: 0.4s;
         }
         .slider-container label { font-size: 14px; font-weight: 600; color: var(--text-main); }
         .slider-container span { color: var(--accent); font-weight: 800; font-size: 16px; width: 15px; text-align: center;}
@@ -314,34 +279,41 @@
         .history-btn:hover:not(:disabled) { color: var(--text-main); }
         .history-btn:disabled { opacity: 0.3; }
 
-        /* --- МОДАЛЬНОЕ ОКНО ПРЕДПРОСМОТРА --- */
+        /* --- ЖИДКИЙ ОСТРОВ ПРЕДПРОСМОТРА --- */
         .preview-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); /* Размытие всего фона */
             z-index: 10000; display: none; justify-content: center; align-items: center;
         }
         .preview-modal.active { display: flex; }
         
         .preview-island {
-            background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 24px;
+            background: var(--panel-bg); /* Автоматически берет цвет темы */
+            backdrop-filter: blur(20px); /* Эффект жидкого стекла */
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--panel-border); border-radius: 24px;
             width: 900px; max-width: 95%; max-height: 90vh; overflow-y: auto;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); /* Мягкая тень */
             display: flex; flex-direction: column; position: relative;
-            color: var(--text-main); transition: background 0.4s;
+            color: var(--text-main); transition: background 0.4s, border 0.4s;
         }
 
         .preview-header { padding: 20px; border-bottom: 1px solid var(--panel-border); display: flex; justify-content: space-between; align-items: center; }
-        .preview-header h3 { font-size: 20px; font-weight: 800; }
+        .preview-header h3 { font-size: 20px; font-weight: 800; color: var(--text-main); }
         .close-preview { font-size: 24px; color: var(--text-muted); cursor: pointer; background: none; border: none; }
         .close-preview:hover { color: var(--text-main); }
 
-        .preview-controls { padding: 20px; display: flex; gap: 20px; flex-wrap: wrap; align-items: center; background: var(--card-bg); border-bottom: 1px solid var(--panel-border); }
-        .bg-colors { display: flex; gap: 10px; }
+        .preview-controls { padding: 20px; display: flex; gap: 20px; flex-wrap: wrap; align-items: center; background: var(--input-bg); border-bottom: 1px solid var(--panel-border); }
+        .bg-colors { display: flex; gap: 10px; align-items: center; }
         .bg-color-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
         .bg-color-btn:hover { transform: scale(1.1); }
         .bg-color-btn.active { border-color: var(--text-main); box-shadow: 0 0 10px rgba(128,128,128,0.5); }
-        
+        /* Белая кнопка с рамкой */
+        .bg-color-btn.white-btn { border: 2px solid #ccc; }
+        .bg-color-btn.white-btn.active { border-color: var(--accent); }
+
         .bg-shade-control { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+        .bg-shade-control span { color: var(--text-muted); }
         .bg-shade-control input { width: 100px; }
 
         .preview-canvas {
@@ -352,7 +324,7 @@
         .mockup-ui {
             background: var(--mockup-bg, #fff); color: var(--mockup-text, #000);
             padding: 30px; border-radius: 16px; width: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: all 0.3s;
         }
         .mockup-title { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
         .mockup-text { font-size: 14px; line-height: 1.5; margin-bottom: 20px; opacity: 0.8; }
@@ -393,7 +365,7 @@
 </head>
 <body>
 
-    <!-- МОДАЛЬНОЕ ОКНО ПРЕДПРОСМОТРА -->
+    <!-- ЖИДКИЙ ОСТРОВ ПРЕДПРОСМОТРА -->
     <div class="preview-modal" id="previewModal">
         <div class="preview-island">
             <div class="preview-header">
@@ -409,10 +381,11 @@
                     <button class="bg-color-btn" style="background: #007aff;" onclick="setPreviewBg('#007aff', this)"></button>
                     <button class="bg-color-btn" style="background: #af52de;" onclick="setPreviewBg('#af52de', this)"></button>
                     <button class="bg-color-btn" style="background: #000000;" onclick="setPreviewBg('#000000', this)"></button>
-                    <button class="bg-color-btn" style="background: #ffffff;" onclick="setPreviewBg('#ffffff', this)"></button>
+                    <!-- Белый цвет теперь с рамкой -->
+                    <button class="bg-color-btn white-btn" style="background: #ffffff;" onclick="setPreviewBg('#ffffff', this)"></button>
                 </div>
                 <div class="bg-shade-control">
-                    <span style="font-size: 12px; color: var(--text-muted);">Оттенок:</span>
+                    <span>Оттенок:</span>
                     <input type="range" id="bgShade" min="-50" max="50" value="0" oninput="updatePreviewShade(this.value)">
                 </div>
             </div>
@@ -449,7 +422,6 @@
         </nav>
 
         <div style="display: flex; gap: 15px; align-items: center;">
-            <!-- ПЕРЕКЛЮЧАТЕЛЬ ТЕМ -->
             <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
                 <div class="theme-animations">
                     <span class="anim-star" style="top: 10%; left: 20%;">✦</span>
@@ -473,7 +445,6 @@
         <div class="stars-container" id="stars-container"></div>
     </main>
 
-    <!-- ВКЛАДКА: КРУГ ИТТЕНА -->
     <section class="itten-section" id="section-itten">
         <div class="itten-container">
             <div class="itten-wheel-wrapper">
@@ -497,7 +468,6 @@
         </div>
     </section>
 
-    <!-- ВКЛАДКА: ИЗ ФОТО -->
     <section class="photo-section" id="section-photo">
         <div class="photo-container">
             <div class="photo-controls">
@@ -535,6 +505,9 @@
             } else {
                 localStorage.setItem('theme', 'dark');
             }
+            // Пересоздаем звезды, чтобы они взяли новые цвета
+            document.getElementById('stars-container').innerHTML = '';
+            initStars();
         }
 
         let favCount = 0;
@@ -1012,12 +985,16 @@
             const container = document.getElementById('stars-container');
             const isMobile = window.innerWidth < 1024;
             const starCount = isMobile ? 25 : 80;
+            
+            // Берем цвета из CSS-переменных в зависимости от темы
+            const isLight = document.body.classList.contains('light-theme');
+            const colors = isLight ? ['#7c3aed', '#9333ea', '#6b7280'] : ['#ffffff', 'var(--accent)', '#a1a1aa'];
+
             for (let i = 0; i < starCount; i++) {
                 const star = document.createElement('div'); star.className = 'star';
                 star.innerText = ['✦', '✧', '★', '☆', '✴'][Math.floor(Math.random() * 5)];
                 star.style.left = (Math.random() * 90 + 10) + '%'; star.style.top = (Math.random() * 90 + 5) + '%';
                 star.style.fontSize = (Math.random() * (isMobile ? 15 : 20) + (isMobile ? 10 : 12)) + 'px';
-                const colors = ['#ffffff', 'var(--accent)', '#a1a1aa'];
                 star.style.color = colors[Math.floor(Math.random() * colors.length)];
                 star.style.opacity = Math.random() * 0.5 + 0.2;
 
