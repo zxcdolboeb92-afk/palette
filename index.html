@@ -24,246 +24,203 @@
 
         a, button { text-decoration: none; color: inherit; font-family: inherit; cursor: pointer; border: none; background: none; }
 
+        /* --- МОБИЛЬНАЯ ВЕРСИЯ (ПО УМОЛЧАНИЮ) --- */
+        
         /* ШАПКА */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 20px; background: rgba(10,10,10,0.9);
+            padding: 12px 15px; background: rgba(10,10,10,0.9);
             border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 100;
             backdrop-filter: blur(10px);
+            flex-wrap: wrap; gap: 10px;
         }
-        .logo { font-weight: 800; font-size: 18px; white-space: nowrap; }
+        .logo { font-weight: 800; font-size: 16px; }
         .logo span { color: var(--accent); }
         
-        .nav-links { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
-        .nav-links button { font-size: 14px; color: #a1a1aa; font-weight: 500; transition: 0.2s; }
-        .nav-links button:hover { color: #fff; }
+        .nav-links { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; width: 100%; justify-content: space-between; margin-top: 5px; }
+        .nav-links button { font-size: 13px; color: #a1a1aa; font-weight: 500; }
         .nav-links button.active-tab { color: var(--accent); }
         
         .btn-primary {
             background-color: var(--accent); color: #fff !important;
-            padding: 10px 15px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: 0.2s;
-            display: flex; align-items: center; gap: 6px; white-space: nowrap;
+            padding: 10px 15px; border-radius: 8px; font-weight: 600; font-size: 14px;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            width: 100%; margin-top: 10px;
         }
-        .btn-primary:hover { background-color: #9d4edd; transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-glow); }
-        .btn-primary .star-icon { font-size: 16px; line-height: 1; }
 
         /* ГЛАВНЫЙ ЭКРАН */
-        .hero { 
-            position: relative; max-width: 1200px; margin: 0 auto; padding: 60px 20px; 
-            min-height: 350px; display: flex; align-items: center; 
-        }
-        .hero-content { max-width: 600px; position: relative; z-index: 2; }
-        .hero-title { font-size: 42px; font-weight: 800; line-height: 1.1; margin-bottom: 15px; letter-spacing: -1px; }
-        .hero-subtitle { font-size: 16px; color: #a1a1aa; line-height: 1.6; }
+        .hero { padding: 30px 15px; position: relative; }
+        .hero-title { font-size: 32px; font-weight: 800; line-height: 1.2; margin-bottom: 10px; }
+        .hero-subtitle { font-size: 14px; color: #a1a1aa; line-height: 1.5; }
 
         /* ЗВЕЗДОЧКИ */
-        .stars-container { 
-            position: absolute; top: 0; right: 0; width: 50%; height: 100%; 
-            pointer-events: none; z-index: 1; overflow: visible;
-        }
+        .stars-container { position: absolute; top: 0; right: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
         .star {
             position: absolute; pointer-events: auto; cursor: crosshair; user-select: none;
             text-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 20px currentColor; 
             transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
             animation: float 4s infinite ease-in-out alternate;
         }
-        .star:hover { transform: scale(1.6) rotate(45deg); color: #ffffff; text-shadow: 0 0 30px #fff, 0 0 60px var(--accent); }
         .star.flying { opacity: 0; transform: scale(4) rotate(360deg); filter: blur(5px); }
         @keyframes float { 0% { transform: translateY(0px) rotate(0deg); } 100% { transform: translateY(-15px) rotate(10deg); } }
 
-        /* СЕКЦИЯ ЦВЕТОВОГО КРУГА */
-        .itten-section { max-width: 1200px; margin: 0 auto; padding: 0 20px 30px; position: relative; z-index: 5; }
+        /* СЕКЦИЯ КРУГА */
+        .itten-section { padding: 0 15px 20px; }
         .itten-container {
-            background: rgba(10, 10, 10, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(184, 100, 255, 0.15); border-radius: 20px; padding: 20px; 
-            display: flex; gap: 20px; align-items: center; flex-wrap: wrap;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 0 20px rgba(184, 100, 255, 0.05);
-            justify-content: center; /* Центрируем на мобилках */
+            background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(12px);
+            border: 1px solid rgba(184, 100, 255, 0.15); border-radius: 16px; padding: 20px; 
+            display: flex; flex-direction: column; gap: 20px; align-items: center;
+            text-align: center;
         }
-        .itten-wheel-wrapper { position: relative; width: 180px; height: 180px; display: flex; justify-content: center; align-items: center; }
+        .itten-wheel-wrapper { position: relative; width: 160px; height: 160px; display: flex; justify-content: center; align-items: center; }
         .itten-wheel {
-            width: 180px; height: 180px; border-radius: 50%; position: relative;
+            width: 160px; height: 160px; border-radius: 50%;
             background: conic-gradient(#ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080, #ff0000);
             box-shadow: 0 0 30px rgba(255,255,255,0.1), inset 0 0 20px rgba(0,0,0,0.5);
-            cursor: crosshair; animation: spin 20s linear infinite; transition: box-shadow 0.3s;
+            animation: spin 20s linear infinite;
         }
-        .itten-wheel:active { animation-play-state: paused; box-shadow: 0 0 40px var(--accent-glow), inset 0 0 20px rgba(0,0,0,0.5); }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
         .itten-wheel::after {
             content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 100px; height: 100px; background: #0a0a0a; border-radius: 50%; box-shadow: inset 0 0 10px rgba(0,0,0,1);
+            width: 90px; height: 90px; background: #0a0a0a; border-radius: 50%; box-shadow: inset 0 0 10px rgba(0,0,0,1);
             pointer-events: none;
         }
         .itten-wheel-wrapper::before {
-            content: '✦'; position: absolute; z-index: 10; font-size: 35px; color: var(--accent);
+            content: '✦'; position: absolute; z-index: 10; font-size: 30px; color: var(--accent);
             text-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 20px var(--accent); pointer-events: none;
             animation: spin-center 10s linear infinite reverse; 
         }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes spin-center { 50% { transform: rotate(-180deg) scale(1.2); } 100% { transform: rotate(-360deg) scale(1); } }
         
-        .itten-controls { flex: 1; min-width: 280px; text-align: center; }
-        .itten-controls h3 { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
-        .itten-controls p { color: #a1a1aa; margin-bottom: 15px; font-size: 14px; }
+        .itten-controls h3 { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
+        .itten-controls p { color: #a1a1aa; margin-bottom: 15px; font-size: 13px; }
         .itten-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
         .itten-btn {
             background: rgba(255,255,255,0.05); border: 1px solid #444; color: #fff;
-            padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: 0.2s;
+            padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 500;
         }
-        .itten-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); color: var(--accent); }
 
         /* КАРТОЧКИ */
-        .palette-section { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .section-title { font-size: 24px; font-weight: 800; margin-bottom: 20px; }
-        .palette-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .palette-section { padding: 15px; }
+        .section-title { font-size: 22px; font-weight: 800; margin-bottom: 15px; }
+        .palette-container { display: flex; flex-direction: column; gap: 15px; }
 
-        .card-wrapper {
-            position: relative;
-            animation: fadeIn 0.5s ease;
-        }
-        .card-wrapper.hidden { display: none !important; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
+        .card-wrapper { position: relative; }
         .color-card {
             background: rgba(255,255,255,0.03); border: 1px solid #333;
-            border-radius: 16px; padding: 15px; transition: 0.3s;
-            position: relative; z-index: 2; height: 100%;
+            border-radius: 16px; padding: 15px;
+            display: flex; flex-direction: column;
         }
-        .card-wrapper:hover .color-card { border-color: #555; background: rgba(255,255,255,0.05); }
 
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .card-header h3 { font-size: 16px; }
-        .card-actions { display: flex; gap: 15px; align-items: center; }
-        
-        .action-btn { font-size: 22px; color: #555; transition: 0.2s; padding: 4px; }
-        .action-btn:hover { transform: scale(1.15); color: #fff; }
-        .fav-btn.active { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+        .card-actions { display: flex; gap: 15px; }
+        .action-btn { font-size: 24px; color: #555; padding: 5px; }
+        .fav-btn.active { color: var(--accent); }
 
         /* Кружочки */
-        .swatches-row { display: flex; flex-wrap: wrap; gap: 10px; cursor: pointer; justify-content: center; }
+        .swatches-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
         .swatch-wrapper { position: relative; }
-        .color-swatch { width: 50px; height: 50px; border-radius: 50%; transition: 0.2s; display: flex; justify-content: center; align-items: center; }
-        .swatch-wrapper:active .color-swatch { transform: scale(1.1); }
+        .color-swatch { width: 50px; height: 50px; border-radius: 50%; }
         
         .lock-indicator {
             position: absolute; top: -2px; right: -2px; background: #000; border: 1px solid #555;
             border-radius: 50%; width: 20px; height: 20px; font-size: 10px;
             display: flex; justify-content: center; align-items: center;
-            opacity: 0; transition: 0.2s; pointer-events: none;
+            opacity: 0; pointer-events: none; color: var(--accent);
         }
-        .swatch-wrapper.locked .lock-indicator { opacity: 1; border-color: var(--accent); color: var(--accent); }
+        .swatch-wrapper.locked .lock-indicator { opacity: 1; }
 
-        /* Развернутые полоски */
-        .strip-container { display: none; flex-direction: column; gap: 8px; margin-top: 10px; }
+        /* Полоски (если развернуть) */
+        .strip-container { display: none; flex-direction: column; gap: 8px; margin-top: 15px; }
         .strip-container.active { display: flex; }
         .color-strip {
             display: flex; justify-content: space-between; align-items: center;
-            height: 45px; border-radius: 10px; padding: 0 15px; 
+            height: 45px; border-radius: 8px; padding: 0 15px; 
             font-family: monospace; font-size: 13px; font-weight: bold; color: #000;
-            cursor: pointer; transition: 0.2s;
         }
-        .color-strip:hover { transform: translateX(5px); }
         .color-strip.dark { color: #fff; }
-
-        .contrast-badges { display: flex; gap: 5px; font-family: 'Inter', sans-serif; }
-        .badge { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; border: 1px solid transparent; }
-        .badge-pass { background: rgba(0, 255, 0, 0.2); border-color: rgba(0, 255, 0, 0.5); color: #000; }
-        .badge-fail { background: rgba(255, 0, 0, 0.2); border-color: rgba(255, 0, 0, 0.5); color: #000; }
+        .contrast-badges { display: flex; gap: 5px; }
+        .badge { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; }
+        .badge-pass { background: rgba(0, 255, 0, 0.2); color: #000; }
+        .badge-fail { background: rgba(255, 0, 0, 0.2); color: #000; }
         .color-strip.dark .badge-pass { color: #fff; background: rgba(0, 255, 0, 0.4); }
         .color-strip.dark .badge-fail { color: #fff; background: rgba(255, 0, 0, 0.4); }
 
-        /* --- ЖИДКИЙ ОСТРОВ (ПАНЕЛЬ ЗАМКОВ) --- */
+        /* ПАНЕЛЬ ЗАМКОВ (Встроена в карточку на телефоне) */
         .lock-panel {
-            position: static; /* На мобильных панель будет прямо в карточке */
-            background: rgba(255,255,255,0.03);
-            border: 1px solid #333;
-            border-top: none;
-            border-radius: 0 0 16px 16px;
-            padding: 10px 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: -5px; /* Прилипает к карточке снизу */
-            z-index: 1;
-            transition: 0.3s;
+            display: flex; flex-direction: column; gap: 8px;
+            margin-top: 15px; padding-top: 15px; border-top: 1px solid #333;
         }
-
         .lock-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255,255,255,0.05);
-            padding: 8px 10px;
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.05); padding: 10px;
             border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-            user-select: none;
         }
-        .lock-item:hover { background: rgba(255,255,255,0.1); }
-        .lock-item:active { background: rgba(255,255,255,0.15); }
+        .lock-color-dot { width: 20px; height: 20px; border-radius: 50%; }
+        .lock-number { font-size: 14px; font-family: monospace; font-weight: bold; color: #a1a1aa; }
+        .lock-icon-btn { font-size: 18px; color: #555; margin-left: auto; }
+        .lock-item.locked .lock-icon-btn { color: var(--accent); }
 
-        .lock-color-dot { width: 20px; height: 20px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2); }
-        .lock-number { font-size: 13px; font-family: monospace; font-weight: bold; color: #a1a1aa; width: 20px; }
-        .lock-icon-btn { font-size: 16px; color: #555; transition: 0.2s; margin-left: auto;}
-        .lock-item.locked .lock-icon-btn { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
-
-        /* История в шапке */
-        .history-btns { display: flex; gap: 5px; margin-left: 5px; border-left: 1px solid #333; padding-left: 5px; }
-        .history-btn { color: #a1a1aa; font-size: 18px; font-weight: bold; transition: 0.2s; padding: 0 5px;}
-        .history-btn:hover:not(:disabled) { color: #fff; }
-        .history-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        /* История */
+        .history-btns { display: flex; gap: 5px; }
+        .history-btn { color: #a1a1aa; font-size: 20px; padding: 0 5px; }
+        .history-btn:disabled { opacity: 0.3; }
 
         #toast {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--accent); color: #fff; padding: 10px 20px; border-radius: 8px;
-            font-weight: bold; display: none; z-index: 9999; box-shadow: 0 5px 15px var(--accent-glow);
-            width: 90%; text-align: center;
+            background: var(--accent); color: #fff; padding: 12px 20px; border-radius: 8px;
+            font-weight: bold; display: none; z-index: 9999; width: 90%; text-align: center;
         }
 
-        /* --- МЕДИА-ЗАПРОСЫ ДЛЯ ПК И ПЛАНШЕТОВ --- */
+        /* --- ВЕРСИЯ ДЛЯ ПК (ЭКРАНЫ ОТ 769px) --- */
         @media (min-width: 769px) {
-            .navbar { padding: 20px 40px; }
-            .nav-links { gap: 20px; }
-            .hero { padding: 80px 40px; min-height: 450px; }
+            .navbar { padding: 20px 40px; flex-wrap: nowrap; }
+            .nav-links { width: auto; margin-top: 0; flex-wrap: nowrap; }
+            .btn-primary { width: auto; margin-top: 0; }
+            
+            .hero { padding: 80px 40px; min-height: 450px; display: flex; align-items: center; }
             .hero-title { font-size: 56px; letter-spacing: -2px; }
+            .hero-subtitle { font-size: 18px; }
+
             .itten-section { padding: 0 40px 40px; }
-            .itten-container { justify-content: flex-start; gap: 40px; }
+            .itten-container { flex-direction: row; text-align: left; gap: 40px; justify-content: flex-start; }
             .itten-wheel-wrapper { width: 200px; height: 200px; }
             .itten-wheel { width: 200px; height: 200px; }
             .itten-wheel::after { width: 120px; height: 120px; }
             .itten-wheel-wrapper::before { font-size: 40px; }
-            .itten-controls { text-align: left; }
+            .itten-controls h3 { font-size: 24px; }
+            .itten-controls p { font-size: 15px; }
             .itten-buttons { justify-content: flex-start; }
+            .itten-btn { padding: 10px 16px; font-size: 14px; }
+
             .palette-section { padding: 40px; }
             .section-title { font-size: 32px; margin-bottom: 30px; }
-            .palette-container { gap: 20px; }
-            .color-card { padding: 20px; }
-            .card-header h3 { font-size: 18px; }
+            .palette-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+            
+            .color-card { padding: 20px; display: block; height: 100%; }
             .swatches-row { justify-content: flex-start; }
             .color-swatch { width: 45px; height: 45px; }
-            .lock-indicator { top: -5px; right: -5px; }
+            .card-header h3 { font-size: 18px; }
+            .action-btn { font-size: 20px; }
 
-            /* Включаем Жидкий Остров (Выезд слева) только для ПК */
+            /* Возвращаем Жидкий Остров на ПК */
             .lock-panel {
                 position: absolute;
                 left: 0; top: 50%;
                 transform: translateY(-50%) translateX(-10px);
-                background: #111;
-                border: 1px solid #333;
-                border-radius: 0 16px 16px 0;
-                padding: 15px 10px;
-                margin-top: 0;
-                box-shadow: 5px 0 15px rgba(0,0,0,0.5);
-                z-index: 1;
-                opacity: 0;
-                pointer-events: none;
+                background: #111; border: 1px solid #333;
+                border-radius: 0 16px 16px 0; padding: 15px 10px;
+                margin-top: 0; border-top: 1px solid #333;
+                z-index: 1; opacity: 0; pointer-events: none;
                 transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+                box-shadow: 5px 0 15px rgba(0,0,0,0.5);
             }
             .card-wrapper:hover .lock-panel {
                 transform: translateY(-50%) translateX(-100%);
-                opacity: 1;
-                pointer-events: auto;
+                opacity: 1; pointer-events: auto;
             }
-            .lock-icon-btn { margin-left: 0; }
+            .lock-item { padding: 5px 10px; }
         }
     </style>
 </head>
@@ -276,18 +233,18 @@
             <button onclick="switchTab('fav')" id="tab-fav">Избранное</button>
             
             <div class="history-btns">
-                <button class="history-btn" id="undoBtn" onclick="undo()" title="Назад" disabled>↶</button>
-                <button class="history-btn" id="redoBtn" onclick="redo()" title="Вперед" disabled>↷</button>
+                <button class="history-btn" id="undoBtn" onclick="undo()" disabled>↶</button>
+                <button class="history-btn" id="redoBtn" onclick="redo()" disabled>↷</button>
             </div>
-
             <button id="fav-counter" style="color: var(--accent); font-weight: 800; cursor: default;">★ 0/20</button>
         </nav>
+        <button onclick="generateNew()" class="btn-primary"><span class="star-icon">✦</span> Создать палитру</button>
     </header>
 
     <main class="hero">
         <div class="hero-content">
             <h1 class="hero-title">Цвета, которые<br>создают будущее</h1>
-            <p class="hero-subtitle">Блокируйте понравившиеся цвета, проверяйте контрастность и скачивайте палитры в один клик.</p>
+            <p class="hero-subtitle">Блокируйте цвета, проверяйте контрастность и скачивайте палитры.</p>
         </div>
         <div class="stars-container" id="stars-container"></div>
     </main>
@@ -295,7 +252,7 @@
     <section class="itten-section">
         <div class="itten-container">
             <div class="itten-wheel-wrapper">
-                <div class="itten-wheel" id="colorWheel" title="Кликни в любую точку круга"></div>
+                <div class="itten-wheel" id="colorWheel"></div>
             </div>
             <div class="itten-controls">
                 <h3>Круг Иттена</h3>
@@ -386,8 +343,6 @@
         }
 
         const colorWheel = document.getElementById('colorWheel');
-        
-        // На мобилках касание не должно останавливать навигацию, поэтому используем touchstart + click
         colorWheel.addEventListener('click', function(e) {
             const rect = this.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
@@ -446,28 +401,18 @@
         }
 
         function undo() {
-            if (historyIndex > 0) {
-                historyIndex--;
-                renderHistoryState();
-            }
+            if (historyIndex > 0) { historyIndex--; renderHistoryState(); }
         }
 
         function redo() {
-            if (historyIndex < history.length - 1) {
-                historyIndex++;
-                renderHistoryState();
-            }
+            if (historyIndex < history.length - 1) { historyIndex++; renderHistoryState(); }
         }
 
         function renderHistoryState() {
             const container = document.getElementById('palette-container');
             container.innerHTML = ''; 
-            
-            const card = buildCard(history[historyIndex]);
-            container.appendChild(card);
-            
+            container.appendChild(buildCard(history[historyIndex]));
             savedPalettes.forEach(p => container.appendChild(buildCard(p.colors, true)));
-
             updateHistoryButtons();
             updateCounter();
         }
@@ -485,7 +430,7 @@
             colors.forEach((c, i) => {
                 circlesHTML += `
                     <div class="swatch-wrapper" id="swatch-${i}">
-                        <div class="color-swatch" style="background: ${c};" title="Скопировать: ${c}"></div>
+                        <div class="color-swatch" style="background: ${c};"></div>
                         <div class="lock-indicator">🔒</div>
                     </div>
                 `;
@@ -502,9 +447,8 @@
                     </div>
                 `;
 
-                // Наполняем панель замков
                 lockPanelHTML += `
-                    <div class="lock-item" id="lock-item-${i}" onclick="toggleLock(${i}, this, event)" title="Заблокировать/Разблокировать цвет">
+                    <div class="lock-item" id="lock-item-${i}" onclick="toggleLock(${i}, this, event)">
                         <div class="lock-color-dot" style="background: ${c};"></div>
                         <div class="lock-number">${i + 1}</div>
                         <div class="lock-icon-btn">🔒</div>
@@ -517,33 +461,34 @@
             wrapper.setAttribute('data-fav', isSaved ? 'true' : 'false');
             wrapper.setAttribute('data-colors', JSON.stringify(colors));
 
+            // На телефоне панель замков находится ВНУТРИ карточки, на ПК она выезжает (через CSS)
             wrapper.innerHTML = `
                 <div class="color-card">
                     <div class="card-header">
                         <h3>Палитра</h3>
                         <div class="card-actions">
-                            <button class="action-btn fav-btn ${isSaved ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav(this)" title="В избранное">${isSaved ? '★' : '☆'}</button>
-                            <button class="action-btn" onclick="event.stopPropagation(); downloadPalette(this)" title="Скачать">⬇</button>
+                            <button class="action-btn fav-btn ${isSaved ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav(this)">${isSaved ? '★' : '☆'}</button>
+                            <button class="action-btn" onclick="event.stopPropagation(); downloadPalette(this)">⬇</button>
                         </div>
                     </div>
                     <div class="swatches-row">${circlesHTML}</div>
                     <div class="strip-container">${stripsHTML}</div>
-                </div>
-                <div class="lock-panel">
-                    ${lockPanelHTML}
+                    
+                    <!-- Панель замков (на мобильных просто лежит снизу) -->
+                    <div class="lock-panel">
+                        ${lockPanelHTML}
+                    </div>
                 </div>
             `;
 
             const circlesRow = wrapper.querySelector('.swatches-row');
             const stripsCol = wrapper.querySelector('.strip-container');
 
-            // Разворот палитры при клике на кружки
-            circlesRow.onclick = function(e) {
+            circlesRow.onclick = function() {
                 circlesRow.style.display = 'none';
                 stripsCol.classList.add('active');
             };
 
-            // Свернуть обратно
             stripsCol.onclick = function(e) {
                 if(e.target.classList.contains('color-strip')) return; 
                 circlesRow.style.display = 'flex';
@@ -553,23 +498,11 @@
             return wrapper;
         }
 
-        // Переключение замка
         function toggleLock(index, element, event) {
             event.stopPropagation();
             element.classList.toggle('locked');
-            
-            // Синхронизируем визуальный замочек на самом кружочке
             const swatchWrapper = element.closest('.card-wrapper').querySelector(`#swatch-${index}`);
-            if (swatchWrapper) {
-                swatchWrapper.classList.toggle('locked');
-            }
-        }
-
-        function rgbToHex(rgb) {
-            if(rgb.startsWith('#')) return rgb;
-            const parts = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-            if (!parts) return rgb;
-            return "#" + ((1 << 24) + (parseInt(parts[1]) << 16) + (parseInt(parts[2]) << 8) + parseInt(parts[3])).toString(16).slice(1).toUpperCase();
+            if (swatchWrapper) swatchWrapper.classList.toggle('locked');
         }
 
         function downloadPalette(btn) {
@@ -588,7 +521,6 @@
             colors.forEach((c, i) => {
                 ctx.fillStyle = c;
                 ctx.fillRect(0, i * stripeHeight, 1000, stripeHeight);
-                
                 ctx.fillStyle = isDark(c) ? '#ffffff' : '#000000';
                 ctx.font = 'bold 40px Inter, sans-serif';
                 ctx.textAlign = 'center';
@@ -681,7 +613,6 @@
             container.insertBefore(newCard, container.firstChild);
             
             addToHistory(newColors);
-            
             if (currentTab !== 'all') switchTab('all');
             showToast('Создана новая палитра!');
             updateCounter();
@@ -727,7 +658,7 @@
         function initStars() {
             const container = document.getElementById('stars-container');
             const isMobile = window.innerWidth < 768;
-            const starCount = isMobile ? 15 : 35; // Меньше звезд на телефоне, чтобы не лагало
+            const starCount = isMobile ? 15 : 35;
 
             for (let i = 0; i < starCount; i++) {
                 const star = document.createElement('div');
