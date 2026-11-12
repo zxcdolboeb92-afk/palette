@@ -1,0 +1,532 @@
+<!-- language: HTML+CSS+JS, file: palette.html -->
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Palette Studio</title>
+<style>
+  :root {
+    --golden: 0.618033988749895;
+  }
+  html[data-theme="dark"] {
+    --bg: #1e1e22; --panel: #26262c; --text: #e6e6e6;
+    --muted: #8a8a8a; --accent: #66ff99; --border: #333; --input: #1a1a1f;
+  }
+  html[data-theme="light"] {
+    --bg: #f9f8f6; --panel: #ffffff; --text: #1a1a1f;
+    --muted: #6a6a72; --accent: #1ba85f; --border: #e0ddd6; --input: #f0efea;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh;
+    transition: background .2s, color .2s;
+  }
+  header {
+    padding: 16px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px; position: sticky; top: 0;
+    background: var(--bg); z-index: 10;
+  }
+  h1 { margin: 0; font-size: 20px; color: var(--accent); letter-spacing: .5px; }
+  .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  button, .file-label {
+    background: var(--accent); color: #111; border: 0; padding: 9px 14px;
+    border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px;
+    transition: opacity .15s; font-family: inherit;
+  }
+  button:hover { opacity: 0.85; }
+  button.ghost, .file-label.ghost {
+    background: transparent; color: var(--text); border: 1px solid var(--border);
+  }
+  button.icon { padding: 9px 11px; }
+  label { color: var(--muted); font-size: 13px; display: flex; gap: 6px; align-items: center; }
+  input[type=number] {
+    background: var(--input); border: 1px solid var(--border); color: var(--text);
+    padding: 6px 8px; border-radius: 6px; width: 60px; font-family: inherit;
+  }
+  main { padding: 24px; max-width: 1200px; margin: 0 auto; }
+  .row { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+  .col-main { flex: 1 1 640px; min-width: 320px; }
+  .col-side { flex: 0 1 280px; min-width: 260px; }
+
+  #palette { display: flex; flex-direction: column; gap: 12px; }
+  .swatch {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 88px; border-radius: 16px; padding: 0 22px;
+    cursor: pointer; user-select: none; position: relative;
+    transition: transform .12s; overflow: hidden;
+  }
+  .swatch:hover { transform: scale(1.008); }
+  .swatch .hex { font-family: "Consolas", monospace; font-size: 21px; font-weight: 600; }
+  .swatch .grade { font-size: 11px; opacity: 0.75; margin-left: 10px; padding: 2px 6px;
+    border: 1px solid currentColor; border-radius: 4px; vertical-align: middle; }
+  .swatch .tools { display: flex; gap: 8px; align-items: center; opacity: 0.85; }
+  .swatch .tools button {
+    background: rgba(255,255,255,0.15); color: inherit; padding: 4px 8px;
+    font-size: 12px; border-radius: 6px;
+  }
+  html[data-theme="light"] .swatch .tools button { background: rgba(0,0,0,0.08); }
+
+  .panel {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; margin-bottom: 14px;
+  }
+  .panel h3 { margin: 0 0 10px; font-size: 14px; color: var(--muted); font-weight: 600; }
+  .fav-item {
+    display: flex; align-items: center; gap: 8px; padding: 6px 0;
+    border-bottom: 1px solid var(--border); cursor: pointer;
+  }
+  .fav-item:last-child { border-bottom: 0; }
+  .fav-dots { display: flex; gap: 2px; }
+  .fav-dot { width: 16px; height: 16px; border-radius: 4px; }
+  .fav-item .label { flex: 1; font-size: 12px; color: var(--muted);
+    font-family: "Consolas", monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fav-item button { background: transparent; color: var(--muted); padding: 2px 6px; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: #111; padding: 10px 20px;
+    border-radius: 8px; font-weight: 600; opacity: 0; pointer-events: none;
+    transition: opacity .25s; z-index: 100;
+  }
+  .toast.show { opacity: 1; }
+  #export-area {
+    background: var(--input); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px; font-family: "Consolas", monospace; font-size: 12px;
+    white-space: pre-wrap; color: var(--text); min-height: 100px;
+    margin-top: 14px; overflow-x: auto;
+  }
+  .dropzone {
+    border: 2px dashed var(--border); border-radius: 12px; padding: 24px;
+    text-align: center; color: var(--muted); font-size: 13px;
+    cursor: pointer; transition: border-color .15s, color .15s;
+    margin-top: 14px;
+  }
+  .dropzone.drag { border-color: var(--accent); color: var(--accent); }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎨 Palette Studio</h1>
+  <div class="controls">
+    <label>Цветов: <input type="number" id="num" min="2" max="10" value="5"></label>
+    <button id="gen">🎲 Сгенерировать</button>
+    <button id="fav" class="ghost">⭐ Сохранить</button>
+    <button id="share" class="ghost">🔗 Ссылка</button>
+    <button id="theme" class="icon ghost" title="Тема">🌓</button>
+  </div>
+</header>
+
+<main>
+  <div class="row">
+    <div class="col-main">
+      <div id="palette"></div>
+
+      <div class="dropzone" id="dropzone">
+        📷 Перетащи фото сюда — вытащу палитру<br>
+        <small>или нажми, чтобы выбрать файл</small>
+        <input type="file" id="file" accept="image/*" class="hidden">
+      </div>
+
+      <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="ghost" id="css">📄 CSS</button>
+        <button class="ghost" id="tailwind">🌊 Tailwind</button>
+        <button class="ghost" id="json">🧩 JSON</button>
+        <button class="ghost" id="png">🖼 PNG</button>
+        <button class="ghost" id="svg">✏️ SVG</button>
+      </div>
+      <div id="export-area">Жми «Сгенерировать» — или копируй hex кликом по свотчу.</div>
+    </div>
+
+    <div class="col-side">
+      <div class="panel">
+        <h3>⭐ Избранное</h3>
+        <div id="favorites"><span style="font-size:12px;color:var(--muted)">Пока пусто</span></div>
+      </div>
+      <div class="panel">
+        <h3>ℹ️ Как пользоваться</h3>
+        <div style="font-size:12px; color:var(--muted); line-height:1.6">
+          • Клик по свотчу — копия hex<br>
+          • Кнопка 🎨 — изменить цвет<br>
+          • 📷 — палитра из фото<br>
+          • ⭐ — сохранить в избранное<br>
+          • 🔗 — ссылка на палитру
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ============ Утилиты ============
+  const GOLDEN = 0.618033988749895;
+  const $ = id => document.getElementById(id);
+  const paletteEl = $('palette');
+  const exportEl = $('export-area');
+  const toastEl = $('toast');
+  const favoritesEl = $('favorites');
+
+  let current = [];
+
+  function hlsToHex(h, l, s) {
+    const a = s * Math.min(l, 1 - l);
+    const f = n => {
+      const k = (n + h * 12) % 12;
+      const c = l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+      return Math.round(c * 255).toString(16).padStart(2, '0');
+    };
+    return '#' + f(0) + f(8) + f(4);
+  }
+
+  function rgbToHex(r, g, b) {
+    return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+  }
+
+  function hexToRgb(hex) {
+    return [parseInt(hex.slice(1,3),16), parseInt(hex.slice(3,5),16), parseInt(hex.slice(5,7),16)];
+  }
+
+  function generateColors(n) {
+    const out = [];
+    let h = Math.random();
+    for (let i = 0; i < n; i++) {
+      h = (h + GOLDEN) % 1;
+      out.push(hlsToHex(h, 0.65 + Math.random()*0.25, 0.35 + Math.random()*0.35));
+    }
+    return out;
+  }
+
+  function contrastText(hex) {
+    const [r,g,b] = hexToRgb(hex);
+    return ((r*299 + g*587 + b*114) / 1000) > 140 ? '#2a2a2a' : '#ffffff';
+  }
+
+  function wcagGrade(hex) {
+    const rel = c => { c/=255; return c<=0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4); };
+    const [r,g,b] = hexToRgb(hex).map(rel);
+    const L = 0.2126*r + 0.7152*g + 0.0722*b;
+    const ratio = Math.max((1.05)/(L+0.05), (L+0.05)/0.05);
+    return ratio >= 7 ? 'AAA' : ratio >= 4.5 ? 'AA' : '';
+  }
+
+  function showToast(text) {
+    toastEl.textContent = text;
+    toastEl.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toastEl.classList.remove('show'), 1700);
+  }
+
+  // ============ Рендер палитры ============
+  function render(colors) {
+    current = colors.slice();
+    paletteEl.innerHTML = '';
+    colors.forEach((hex, idx) => {
+      const grade = wcagGrade(hex);
+      const div = document.createElement('div');
+      div.className = 'swatch';
+      div.style.background = hex;
+      div.style.color = contrastText(hex);
+      div.innerHTML = `
+        <span class="hex">${hex.toUpperCase()}
+          ${grade ? `<span class="grade">${grade}</span>` : ''}
+        </span>
+        <span class="tools">
+          <input type="color" value="${hex}" data-idx="${idx}"
+                 style="width:28px;height:28px;border:0;border-radius:6px;cursor:pointer;background:transparent">
+          <button data-copy="${hex}" title="Копировать">📋</button>
+        </span>
+      `;
+      // клик по свотчу — копия
+      div.addEventListener('click', e => {
+        if (e.target.closest('input') || e.target.closest('button')) return;
+        navigator.clipboard.writeText(hex.toUpperCase());
+        showToast(`Скопировано: ${hex.toUpperCase()}`);
+      });
+      // кнопка копирования
+      div.querySelector('button[data-copy]').addEventListener('click', e => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(hex.toUpperCase());
+        showToast(`Скопировано: ${hex.toUpperCase()}`);
+      });
+      // редактирование цвета
+      div.querySelector('input[type=color]').addEventListener('input', e => {
+        e.stopPropagation();
+        const newHex = e.target.value;
+        current[idx] = newHex;
+        render(current);  // перерисовать (быстро для ≤10 цветов)
+        updateUrl();
+      });
+      paletteEl.appendChild(div);
+    });
+    exportEl.textContent = 'Палитра готова. Жми CSS / Tailwind / JSON / PNG / SVG.';
+    updateUrl();
+  }
+
+  // ============ URL ============
+  function updateUrl() {
+    const params = new URLSearchParams(location.search);
+    params.set('colors', current.map(c => c.slice(1)).join(','));
+    history.replaceState(null, '', '?' + params.toString());
+  }
+
+  function readUrl() {
+    const v = new URLSearchParams(location.search).get('colors');
+    if (!v) return null;
+    const arr = v.split(',').map(x => '#' + x.replace(/^#/, '')).filter(x => /^#[0-9a-f]{6}$/i.test(x));
+    return arr.length ? arr : null;
+  }
+
+  // ============ Избранное ============
+  const FAV_KEY = 'palette-studio:favorites';
+
+  function loadFavs() {
+    try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); }
+    catch { return []; }
+  }
+  function saveFavs(arr) { localStorage.setItem(FAV_KEY, JSON.stringify(arr)); }
+
+  function renderFavs() {
+    const favs = loadFavs();
+    if (!favs.length) {
+      favoritesEl.innerHTML = '<span style="font-size:12px;color:var(--muted)">Пока пусто</span>';
+      return;
+    }
+    favoritesEl.innerHTML = '';
+    favs.forEach((fav, i) => {
+      const div = document.createElement('div');
+      div.className = 'fav-item';
+      div.innerHTML = `
+        <div class="fav-dots">
+          ${fav.map(c => `<div class="fav-dot" style="background:${c}"></div>`).join('')}
+        </div>
+        <div class="label">${fav[0].toUpperCase()}</div>
+        <button data-del="${i}" title="Удалить">✕</button>
+      `;
+      div.addEventListener('click', e => {
+        if (e.target.matches('[data-del]')) return;
+        render(fav.slice());
+        showToast('Палитра из избранного');
+      });
+      div.querySelector('[data-del]').addEventListener('click', e => {
+        e.stopPropagation();
+        const arr = loadFavs();
+        arr.splice(i, 1);
+        saveFavs(arr);
+        renderFavs();
+        showToast('Удалено');
+      });
+      favoritesEl.appendChild(div);
+    });
+  }
+
+  $('fav').addEventListener('click', () => {
+    if (!current.length) return;
+    const favs = loadFavs();
+    if (favs.some(f => f.join(',') === current.join(','))) {
+      showToast('Уже в избранном');
+      return;
+    }
+    favs.unshift(current.slice());
+    if (favs.length > 50) favs.length = 50;
+    saveFavs(favs);
+    renderFavs();
+    showToast('⭐ Сохранено');
+  });
+
+  // ============ Экспорт ============
+  $('css').addEventListener('click', () => {
+    if (!current.length) return;
+    const css = ':root {\n' + current.map((c,i) => `  --color-${i+1}: ${c};`).join('\n') + '\n}';
+    exportEl.textContent = css;
+    navigator.clipboard.writeText(css);
+    showToast('CSS скопирован');
+  });
+
+  $('tailwind').addEventListener('click', () => {
+    if (!current.length) return;
+    const tw = 'module.exports = {\n  theme: {\n    extend: {\n      colors: {\n'
+      + current.map((c,i) => `        color${i+1}: '${c}',`).join('\n')
+      + '\n      }\n    }\n  }\n}';
+    exportEl.textContent = tw;
+    navigator.clipboard.writeText(tw);
+    showToast('Tailwind скопирован');
+  });
+
+  $('json').addEventListener('click', () => {
+    if (!current.length) return;
+    const obj = { palette: current, generatedAt: new Date().toISOString() };
+    const txt = JSON.stringify(obj, null, 2);
+    exportEl.textContent = txt;
+    navigator.clipboard.writeText(txt);
+    showToast('JSON скопирован');
+  });
+
+  $('png').addEventListener('click', () => {
+    if (!current.length) return;
+    const W = 800, M = 40, BLOCK = 90, GAP = 15, H = M*2 + current.length*(BLOCK+GAP);
+    const c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#1e1e22'; ctx.fillRect(0,0,W,H);
+    current.forEach((hex, i) => {
+      const y = M + i*(BLOCK+GAP);
+      ctx.fillStyle = hex;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(M, y, W-2*M, BLOCK, 20); else ctx.rect(M,y,W-2*M,BLOCK);
+      ctx.fill();
+      ctx.fillStyle = contrastText(hex);
+      ctx.font = 'bold 26px Consolas, monospace';
+      ctx.fillText(hex.toUpperCase(), M+40, y+BLOCK/2+8);
+    });
+    c.toBlob(b => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(b); a.download = 'palette.png'; a.click();
+      showToast('PNG скачан');
+    });
+  });
+
+  $('svg').addEventListener('click', () => {
+    if (!current.length) return;
+    const W = 800, M = 40, BLOCK = 90, GAP = 15, H = M*2 + current.length*(BLOCK+GAP);
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+    svg += `<rect width="${W}" height="${H}" fill="#1e1e22"/>`;
+    current.forEach((hex, i) => {
+      const y = M + i*(BLOCK+GAP);
+      svg += `<rect x="${M}" y="${y}" width="${W-2*M}" height="${BLOCK}" rx="20" fill="${hex}"/>`;
+      svg += `<text x="${M+40}" y="${y+BLOCK/2+8}" font-family="Consolas, monospace" font-size="26" font-weight="bold" fill="${contrastText(hex)}">${hex.toUpperCase()}</text>`;
+    });
+    svg += '</svg>';
+    exportEl.textContent = svg;
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'palette.svg'; a.click();
+    showToast('SVG скачан');
+  });
+
+  // ============ Фото → палитра ============
+  function paletteFromImage(img) {
+    const cv = document.createElement('canvas');
+    const S = 100;
+    cv.width = S; cv.height = S;
+    const ctx = cv.getContext('2d');
+    ctx.drawImage(img, 0, 0, S, S);
+    const data = ctx.getImageData(0, 0, S, S).data;
+
+    // квантуем RGB-куб на 4 уровня на канал → 64 корзины
+    const buckets = new Map();
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i], g = data[i+1], b = data[i+2];
+      const kr = r >> 6, kg = g >> 6, kb = b >> 6;  // 0..3
+      const key = (kr<<4)|(kg<<2)|kb;
+      const cur = buckets.get(key) || { r:0, g:0, b:0, n:0 };
+      cur.r += r; cur.g += g; cur.b += b; cur.n += 1;
+      buckets.set(key, cur);
+    }
+    // сортировка по частоте, берём топ N
+    const sorted = [...buckets.values()].sort((a,b) => b.n - a.n).slice(0, 8);
+    const n = Math.min(parseInt($('num').value) || 5, sorted.length);
+    return sorted.slice(0, n).map(b => {
+      let [r,g,b2] = [Math.round(b.r/b.n), Math.round(b.g/b.n), Math.round(b.b/b.n)];
+      // осветляем до пастели: поднимаем L через HLS
+      const [h, l, s] = rgbToHls(r, g, b2);
+      const ll = Math.min(0.9, Math.max(0.7, l));
+      const ss = Math.min(0.6, Math.max(0.3, s));
+      const [nr, ng, nb] = hlsToRgb(h, ll, ss);
+      return rgbToHex(nr, ng, nb);
+    });
+  }
+
+  function rgbToHls(r, g, b) {
+    r/=255; g/=255; b/=255;
+    const max = Math.max(r,g,b), min = Math.min(r,g,b);
+    let h, s, l = (max+min)/2;
+    if (max === min) { h = s = 0; }
+    else {
+      const d = max - min;
+      s = l > 0.5 ? d/(2-max-min) : d/(max+min);
+      switch (max) {
+        case r: h = (g-b)/d + (g<b?6:0); break;
+        case g: h = (b-r)/d + 2; break;
+        case b: h = (r-g)/d + 4; break;
+      }
+      h /= 6;
+    }
+    return [h, l, s];
+  }
+  function hlsToRgb(h, l, s) {
+    const a = s*Math.min(l, 1-l);
+    const f = n => {
+      const k = (n+h*12)%12;
+      return Math.round((l - a*Math.max(-1, Math.min(k-3, 9-k, 1)))*255);
+    };
+    return [f(0), f(8), f(4)];
+  }
+
+  const dz = $('dropzone');
+  const fileInput = $('file');
+
+  dz.addEventListener('click', () => fileInput.click());
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.classList.remove('drag');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) handleImageFile(f);
+  });
+  fileInput.addEventListener('change', e => {
+    const f = e.target.files[0];
+    if (f) handleImageFile(f);
+  });
+
+  function handleImageFile(file) {
+    const img = new Image();
+    img.onload = () => {
+      const colors = paletteFromImage(img);
+      if (colors.length) {
+        render(colors);
+        showToast('Палитра из фото');
+      }
+    };
+    img.src = URL.createObjectURL(file);
+  }
+
+  // ============ Тема ============
+  const THEME_KEY = 'palette-studio:theme';
+  function applyTheme(t) {
+    document.documentElement.dataset.theme = t;
+    localStorage.setItem(THEME_KEY, t);
+  }
+  $('theme').addEventListener('click', () => {
+    const cur = document.documentElement.dataset.theme;
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  });
+
+  // ============ Кнопки ============
+  $('gen').addEventListener('click', () => {
+    const n = Math.min(10, Math.max(2, parseInt($('num').value) || 5));
+    render(generateColors(n));
+  });
+
+  $('share').addEventListener('click', () => {
+    navigator.clipboard.writeText(location.href);
+    showToast('Ссылка скопирована');
+  });
+
+  // ============ Инициализация ============
+  (function init() {
+    const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
+    applyTheme(savedTheme);
+    renderFavs();
+    const fromUrl = readUrl();
+    if (fromUrl) render(fromUrl);
+    else render(generateColors(5));
+  })();
+</script>
+</body>
+</html>
