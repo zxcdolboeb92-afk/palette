@@ -77,7 +77,6 @@
             position: relative; z-index: 5;
         }
         
-        /* Стиль матового стекла в тематику сайта */
         .itten-container {
             background: rgba(10, 10, 10, 0.4); 
             backdrop-filter: blur(12px);
@@ -86,7 +85,7 @@
             border-radius: 20px; 
             padding: 30px; 
             display: flex; gap: 40px; align-items: center; flex-wrap: wrap;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 0 20px rgba(184, 100, 255, 0.05); /* Легкое внутреннее фиолетовое свечение */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 0 20px rgba(184, 100, 255, 0.05);
             transition: border-color 0.3s, box-shadow 0.3s;
         }
 
@@ -104,6 +103,7 @@
 
         .itten-wheel {
             width: 200px; height: 200px; border-radius: 50%; position: relative;
+            /* Используем CSS переменную для вращения, чтобы брать актуальный угол */
             background: conic-gradient(
                 #ff0000, #ff8000, #ffff00, #80ff00, 
                 #00ff00, #00ff80, #00ffff, #0080ff, 
@@ -125,7 +125,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Внутренний круг, который не вращается */
+        /* Внутренний круг */
         .itten-wheel::after {
             content: ''; position: absolute;
             top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -134,7 +134,7 @@
             pointer-events: none;
         }
 
-        /* Звезда в центре круга */
+        /* Звезда в центре */
         .itten-wheel-wrapper::before {
             content: '✦';
             position: absolute;
@@ -297,7 +297,24 @@
             return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
         }
 
+        // --- ИСПРАВЛЕННЫЙ КЛИК ПО КРУГУ ---
         const colorWheel = document.getElementById('colorWheel');
+        
+        // Нам нужно знать текущий угол поворота круга, чтобы клик работал точно
+        // Браузер не отдает угол анимации напрямую, поэтому мы перехватываем его через requestAnimationFrame
+        let currentRotation = 0;
+        let lastTime = performance.now();
+        
+        // Функция для отслеживания вращения (20 секунд на 360 градусов = 18 градусов в секунду)
+        function trackRotation(time) {
+            const delta = time - lastTime;
+            currentRotation += (18 / 1000) * delta; // 18 градусов в секунду
+            if (currentRotation >= 360) currentRotation -= 360;
+            lastTime = time;
+            requestAnimationFrame(trackRotation);
+        }
+        requestAnimationFrame(trackRotation);
+
         colorWheel.addEventListener('click', function(e) {
             const rect = this.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
@@ -306,10 +323,19 @@
             const x = e.clientX - centerX;
             const y = e.clientY - centerY;
             
-            let angle = Math.atan2(y, x) * (180 / Math.PI);
-            if (angle < 0) angle += 360;
+            // Получаем угол клика
+            let clickAngle = Math.atan2(y, x) * (180 / Math.PI);
+            if (clickAngle < 0) clickAngle += 360;
             
-            const hexColor = hslToHex(angle, 70, 50); 
+            // Вычитаем угол вращения круга, чтобы клик совпадал с цветом на экране
+            let finalAngle = clickAngle - currentRotation;
+            if (finalAngle < 0) finalAngle += 360;
+
+            // Добавляем случайное отклонение по яркости и насыщенности для разнообразия
+            const randomS = Math.floor(Math.random() * 30) + 40; // от 40 до 70
+            const randomL = Math.floor(Math.random() * 20) + 40; // от 40 до 60
+
+            const hexColor = hslToHex(finalAngle, randomS, randomL); 
 
             createPaletteFromBase(hexColor, 'triad', 'Выбранный вами цвет');
         });
@@ -323,17 +349,31 @@
             const [h, s, l] = hexToHsl(baseHex);
             let colors = [];
 
-            const niceS = Math.max(40, Math.min(s, 80)); 
-            const niceL = Math.max(40, Math.min(l, 60));
+            // Теперь цвета будут более разнообразными по яркости
+            const niceS = Math.max(30, Math.min(s + (Math.random() * 20 - 10), 90)); 
+            const niceL = Math.max(30, Math.min(l + (Math.random() * 20 - 10), 70));
 
             if (scheme === 'complementary') {
                 colors = [hslToHex(h, niceS, niceL), hslToHex((h + 180) % 360, niceS, niceL)];
             } else if (scheme === 'triad') {
-                colors = [hslToHex(h, niceS, niceL), hslToHex((h + 120) % 360, niceS, niceL), hslToHex((h + 240) % 360, niceS, niceL)];
+                colors = [
+                    hslToHex(h, niceS, niceL), 
+                    hslToHex((h + 120) % 360, niceS, Math.min(niceL + 10, 80)), 
+                    hslToHex((h + 240) % 360, Math.max(niceS - 10, 30), Math.max(niceL - 10, 30))
+                ];
             } else if (scheme === 'tetrad') {
-                colors = [hslToHex(h, niceS, niceL), hslToHex((h + 90) % 360, niceS, niceL), hslToHex((h + 180) % 360, niceS, niceL), hslToHex((h + 270) % 360, niceS, niceL)];
+                colors = [
+                    hslToHex(h, niceS, niceL), 
+                    hslToHex((h + 90) % 360, niceS, niceL), 
+                    hslToHex((h + 180) % 360, niceS, niceL), 
+                    hslToHex((h + 270) % 360, niceS, niceL)
+                ];
             } else if (scheme === 'analogous') {
-                colors = [hslToHex((h - 30 + 360) % 360, niceS, niceL), hslToHex(h, niceS, niceL), hslToHex((h + 30) % 360, niceS, niceL)];
+                colors = [
+                    hslToHex((h - 30 + 360) % 360, niceS, niceL), 
+                    hslToHex(h, niceS, niceL), 
+                    hslToHex((h + 30) % 360, niceS, niceL)
+                ];
             }
 
             const container = document.getElementById('palette-container');
