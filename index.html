@@ -45,14 +45,41 @@
         .hero-title { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 20px; letter-spacing: -2px; }
         .hero-subtitle { font-size: 18px; color: #a1a1aa; line-height: 1.6; }
 
-        /* ЗВЕЗДОЧКИ */
+        /* ОБЪЁМНЫЕ ЗВЕЗДОЧКИ */
         .stars-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        
         .star {
-            position: absolute; color: rgba(255, 255, 255, 0.2); font-size: 24px;
-            pointer-events: auto; cursor: crosshair; transition: 0.3s; user-select: none;
+            position: absolute; 
+            pointer-events: auto; 
+            cursor: crosshair; 
+            user-select: none;
+            /* 3D-эффект: тень + свечение */
+            text-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 20px currentColor; 
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s, text-shadow 0.3s;
+            animation: float 4s infinite ease-in-out alternate;
         }
-        .star:hover { transform: scale(1.5) rotate(45deg); color: rgba(201, 255, 52, 0.8); }
-        .star.clicked { transform: scale(3) rotate(180deg); color: #c9ff34; opacity: 0; }
+
+        /* Каждая звезда парит с разной скоростью */
+        .star:nth-child(even) { animation-duration: 5s; animation-delay: 1s; }
+        .star:nth-child(3n) { animation-duration: 6s; animation-delay: 2s; }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-15px) rotate(10deg); }
+        }
+
+        .star:hover { 
+            transform: scale(1.6) rotate(45deg); 
+            color: #ffffff;
+            text-shadow: 0 0 30px #fff, 0 0 60px #c9ff34; /* Яркое свечение */
+        }
+        
+        .star.clicked { 
+            transform: scale(3) rotate(180deg); 
+            color: #c9ff34; 
+            opacity: 0; 
+            text-shadow: 0 0 50px #c9ff34;
+        }
 
         /* КАРТОЧКИ */
         .palette-section { max-width: 1200px; margin: 0 auto; padding: 40px; }
@@ -70,7 +97,7 @@
         .card-header h3 { font-size: 18px; }
         .fav-btn { font-size: 24px; color: #555; transition: 0.2s; }
         .fav-btn:hover { transform: scale(1.1); }
-        .fav-btn.active { color: #c9ff34; }
+        .fav-btn.active { color: #c9ff34; text-shadow: 0 0 10px rgba(201,255,52,0.5); }
 
         .swatches-row { display: flex; flex-wrap: wrap; gap: 10px; cursor: pointer; }
         .color-swatch { width: 45px; height: 45px; border-radius: 50%; transition: 0.2s; }
@@ -81,8 +108,8 @@
         .strip-container.active { display: flex; }
         .color-strip {
             display: flex; align-items: center; height: 45px; 
-            border-radius: 12px; /* Более скругленные */
-            padding: 0 20px; font-family: monospace; font-size: 15px; font-weight: bold; color: #000;
+            border-radius: 12px; padding: 0 20px; 
+            font-family: monospace; font-size: 15px; font-weight: bold; color: #000;
             cursor: pointer; transition: 0.2s;
         }
         .color-strip:hover { transform: translateX(5px); }
@@ -111,7 +138,7 @@
     <main class="hero">
         <div class="hero-content">
             <h1 class="hero-title">Цвета, которые<br>создают будущее</h1>
-            <p class="hero-subtitle">Исследуйте, создавайте и сохраняйте идеальные палитры. Поиграйте со звездочками!</p>
+            <p class="hero-subtitle">Исследуйте, создавайте и сохраняйте идеальные палитры. Поиграйте с объёмными звездочками!</p>
         </div>
         <div class="stars-container" id="stars-container"></div>
     </main>
@@ -125,8 +152,11 @@
 
     <script>
         let favCount = 0;
-        const MAX_FAV = 20; // Лимит 20
+        const MAX_FAV = 20;
         let currentTab = 'all';
+        
+        // МАССИВ ДЛЯ СОХРАНЕНИЯ ИЗБРАННОГО (Будем хранить уникальные ID палитр)
+        let savedFavorites = JSON.parse(localStorage.getItem('myPalettesFavs')) || [];
 
         function getRandomColor() {
             const letters = '0123456789ABCDEF';
@@ -149,11 +179,19 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
+        // Сохранение в память браузера
+        function saveToLocalStorage() {
+            localStorage.setItem('myPalettesFavs', JSON.stringify(savedFavorites));
+        }
+
         // СОЗДАНИЕ КАРТОЧКИ
         function createCard() {
-            const colorCount = Math.floor(Math.random() * 5) + 2; // 2-6 цветов
+            const colorCount = Math.floor(Math.random() * 5) + 2;
             let circlesHTML = '';
             let stripsHTML = '';
+            
+            // Генерируем уникальный ID для каждой палитры на основе времени и случая
+            const paletteId = 'pal_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
 
             for (let i = 0; i < colorCount; i++) {
                 const c = getRandomColor();
@@ -164,11 +202,16 @@
 
             const card = document.createElement('div');
             card.className = 'color-card';
-            card.setAttribute('data-fav', 'false');
+            card.setAttribute('data-id', paletteId);
+            
+            // Проверяем, есть ли этот ID в сохраненных избранных
+            const isFav = savedFavorites.includes(paletteId);
+            card.setAttribute('data-fav', isFav ? 'true' : 'false');
+
             card.innerHTML = `
                 <div class="card-header">
                     <h3>Палитра</h3>
-                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFav(this)">☆</button>
+                    <button class="fav-btn ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav(this)">${isFav ? '★' : '☆'}</button>
                 </div>
                 <div class="swatches-row">
                     ${circlesHTML}
@@ -178,18 +221,17 @@
                 </div>
             `;
 
+            if (isFav) favCount++; // Обновляем счетчик, если палитра уже в избранном
+
             const circlesRow = card.querySelector('.swatches-row');
             const stripsCol = card.querySelector('.strip-container');
 
-            // Развернуть полоски
             circlesRow.onclick = function() {
                 circlesRow.style.display = 'none';
                 stripsCol.classList.add('active');
             };
 
-            // Свернуть обратно в кружки
             stripsCol.onclick = function(e) {
-                // Если кликнули по самой полоске - не сворачиваем (там копирование)
                 if(e.target.classList.contains('color-strip')) return; 
                 circlesRow.style.display = 'flex';
                 stripsCol.classList.remove('active');
@@ -203,16 +245,24 @@
             container.insertBefore(createCard(), container.firstChild);
             if (currentTab !== 'all') switchTab('all');
             showToast('Создана новая палитра!');
+            updateCounter();
         }
 
-        // ИЗБРАННОЕ
+        // ИЗБРАННОЕ (С СОХРАНЕНИЕМ)
         function toggleFav(btn) {
             const card = btn.closest('.color-card');
-            if (!btn.classList.contains('active')) {
+            const paletteId = card.getAttribute('data-id');
+            const isCurrentlyFav = card.getAttribute('data-fav') === 'true';
+
+            if (!isCurrentlyFav) {
                 if (favCount < MAX_FAV) {
                     btn.classList.add('active');
                     btn.innerText = '★';
                     card.setAttribute('data-fav', 'true');
+                    
+                    // Добавляем ID в массив и сохраняем
+                    savedFavorites.push(paletteId);
+                    saveToLocalStorage();
                     favCount++;
                 } else {
                     showToast(`Лимит избранного (${MAX_FAV})`);
@@ -221,13 +271,22 @@
                 btn.classList.remove('active');
                 btn.innerText = '☆';
                 card.setAttribute('data-fav', 'false');
+                
+                // Удаляем ID из массива и сохраняем
+                savedFavorites = savedFavorites.filter(id => id !== paletteId);
+                saveToLocalStorage();
                 favCount--;
             }
-            document.getElementById('fav-counter').innerText = `★ ${favCount} / ${MAX_FAV}`;
+            
+            updateCounter();
             
             if (currentTab === 'fav' && card.getAttribute('data-fav') === 'false') {
                 card.classList.add('hidden');
             }
+        }
+
+        function updateCounter() {
+            document.getElementById('fav-counter').innerText = `★ ${favCount} / ${MAX_FAV}`;
         }
 
         // ВКЛАДКИ
@@ -255,17 +314,26 @@
             }
         }
 
-        // ЗВЕЗДЫ
+        // ОБЪЁМНЫЕ ЗВЕЗДЫ
         function initStars() {
             const container = document.getElementById('stars-container');
             for (let i = 0; i < 40; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-                star.innerText = ['✦', '✧', '★', '☆'][Math.floor(Math.random() * 4)];
+                // Разные символы для объема
+                star.innerText = ['✦', '✧', '★', '☆', '✴'][Math.floor(Math.random() * 5)];
                 star.style.left = Math.random() * 100 + '%';
                 star.style.top = Math.random() * 100 + '%';
-                star.style.fontSize = (Math.random() * 20 + 10) + 'px';
-                star.style.opacity = Math.random() * 0.5 + 0.1;
+                
+                // Разный размер и цвет для глубины
+                star.style.fontSize = (Math.random() * 25 + 15) + 'px';
+                
+                // Даем звездам легкий цветовой оттенок (белый, зеленый, синий)
+                const colors = ['#ffffff', '#c9ff34', '#a1a1aa'];
+                star.style.color = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Начальная прозрачность
+                star.style.opacity = Math.random() * 0.4 + 0.2;
 
                 star.onclick = function(e) {
                     e.stopPropagation();
@@ -282,8 +350,12 @@
 
         window.onload = function() {
             const container = document.getElementById('palette-container');
+            
+            // Создаем стартовые палитры
             for (let i = 0; i < 3; i++) container.appendChild(createCard());
+            
             initStars();
+            updateCounter();
         };
     </script>
 </body>
