@@ -7,24 +7,51 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0a0a0a;
-            color: #ffffff;
-            min-height: 100vh;
-            overflow-x: hidden;
-            background-image: radial-gradient(circle at 70% 30%, rgba(170, 0, 255, 0.08) 0%, rgba(10, 10, 10, 1) 50%);
-        }
-        
+        /* --- ПЕРЕМЕННЫЕ ТЕМ --- */
         :root {
             --accent: #b864ff;
             --accent-glow: rgba(184, 100, 255, 0.4);
+            
+            /* Темная тема (по умолчанию) */
+            --bg-color: #0a0a0a;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --card-bg: rgba(255,255,255,0.03);
+            --card-border: #333;
+            --card-hover: rgba(255,255,255,0.05);
+            --input-bg: rgba(255,255,255,0.05);
+            --panel-bg: #151515;
+            --panel-border: #333;
+            --bg-gradient: radial-gradient(circle at 70% 30%, rgba(170, 0, 255, 0.08) 0%, rgba(10, 10, 10, 1) 50%);
+        }
+
+        body.light-theme {
+            --bg-color: #f4f4f5;
+            --text-main: #111111;
+            --text-muted: #52525b;
+            --card-bg: #ffffff;
+            --card-border: #e4e4e7;
+            --card-hover: #f4f4f5;
+            --input-bg: #f4f4f5;
+            --panel-bg: #ffffff;
+            --panel-border: #e4e4e7;
+            --bg-gradient: radial-gradient(circle at 70% 30%, rgba(184, 100, 255, 0.15) 0%, rgba(244, 244, 245, 1) 50%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: var(--bg-gradient);
+            transition: background-color 0.4s, color 0.4s;
         }
 
         a, button { text-decoration: none; color: inherit; font-family: inherit; cursor: pointer; border: none; background: none; }
 
-        /* --- СЕКРЕТНЫЙ ОСТРОВОК --- */
+        /* --- СЕКРЕТНЫЙ ОСТРОВОК (Признание) --- */
         .secret-island {
             position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
             background: rgba(20, 20, 20, 0.7); backdrop-filter: blur(15px);
@@ -32,28 +59,95 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
             z-index: 9999; display: flex; align-items: center; justify-content: center; gap: 15px;
             transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); overflow: hidden;
+            color: #fff;
         }
         .secret-island.show { top: 90px; }
-        .secret-text { font-size: 18px; font-weight: 800; color: #ffffff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); z-index: 2; white-space: nowrap; }
+        .secret-text { font-size: 18px; font-weight: 800; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); z-index: 2; white-space: nowrap; }
         .close-island { font-size: 18px; color: #a1a1aa; z-index: 3; margin-left: 10px; }
         .close-island:hover { color: #fff; }
         .island-stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
         .island-star { position: absolute; font-size: 12px; color: rgba(255, 255, 255, 0.4); animation: floatIsland 3s infinite ease-in-out alternate; }
         @keyframes floatIsland { 0% { transform: translateY(0px) rotate(0deg); opacity: 0.2; } 100% { transform: translateY(-10px) rotate(20deg); opacity: 0.8; } }
 
-        /* ШАПКА */
+        /* --- ПЕРЕКЛЮЧАТЕЛЬ ТЕМ --- */
+        .theme-toggle {
+            position: relative;
+            width: 64px;
+            height: 32px;
+            background: rgba(20, 20, 20, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transition: background 0.4s;
+        }
+        .light-theme .theme-toggle {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: 2px; left: 2px;
+            width: 26px; height: 26px;
+            background: var(--accent);
+            border-radius: 50%;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 0 10px var(--accent-glow);
+            z-index: 1;
+        }
+        /* Двигаем кружок в светлой теме */
+        .light-theme .theme-toggle::before {
+            transform: translateX(32px);
+            background: #ffcc00;
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+
+        .theme-icon { font-size: 14px; z-index: 2; pointer-events: none; transition: opacity 0.3s; }
+        .icon-moon { opacity: 1; }
+        .icon-sun { opacity: 0.3; }
+        
+        .light-theme .icon-moon { opacity: 0.3; }
+        .light-theme .icon-sun { opacity: 1; }
+
+        /* Анимации внутри тумблера */
+        .theme-animations {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 20px; overflow: hidden; pointer-events: none; z-index: 0;
+        }
+        .theme-animations span {
+            position: absolute; font-size: 8px; transition: opacity 0.4s;
+        }
+        .anim-star { color: #fff; opacity: 0.6; animation: float 2s infinite alternate; }
+        .anim-flower { color: #ffcc00; opacity: 0; animation: float 2s infinite alternate; }
+        .light-theme .anim-star { opacity: 0; }
+        .light-theme .anim-flower { opacity: 1; }
+
+        @keyframes float { 0% { transform: translateY(0) scale(0.8); } 100% { transform: translateY(-3px) scale(1.2); } }
+
+        /* --- ШАПКА --- */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 30px; background: rgba(10,10,10,0.9);
-            border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000;
-            backdrop-filter: blur(10px);
+            padding: 15px 30px; background: var(--bg-color);
+            border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 1000;
+            backdrop-filter: blur(10px); flex-wrap: wrap; gap: 10px;
+            transition: background 0.4s, border 0.4s;
         }
-        .logo { font-weight: 800; font-size: 20px; z-index: 10; position: relative; }
+        .logo { font-weight: 800; font-size: 20px; z-index: 10; position: relative; color: var(--text-main); }
         .logo span { color: var(--accent); }
-        .nav-links { display: flex; gap: 20px; align-items: center; z-index: 10; position: relative; }
-        .nav-links button { font-size: 14px; color: #a1a1aa; font-weight: 500; transition: 0.2s; }
-        .nav-links button:hover { color: #fff; }
+        
+        .nav-links { display: flex; gap: 15px; align-items: center; z-index: 10; position: relative; flex-wrap: wrap; }
+        .nav-links button { font-size: 14px; color: var(--text-muted); font-weight: 500; transition: 0.2s; }
+        .nav-links button:hover { color: var(--text-main); }
         .nav-links button.active-tab { color: var(--accent); }
+        
         .btn-primary {
             background-color: var(--accent); color: #fff !important;
             padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: 0.2s;
@@ -61,31 +155,36 @@
         }
         .btn-primary:hover { background-color: #9d4edd; transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-glow); }
 
-        /* ГЛАВНЫЙ ЭКРАН */
+        /* --- ГЛАВНЫЙ ЭКРАН --- */
         .hero { padding: 40px 30px; position: relative; min-height: 350px; display: flex; align-items: center; }
         .hero-content { max-width: 600px; position: relative; z-index: 2; }
-        .hero-title { font-size: 52px; font-weight: 800; line-height: 1.1; margin-bottom: 15px; letter-spacing: -2px; }
-        .hero-subtitle { font-size: 18px; color: #a1a1aa; line-height: 1.6; }
+        .hero-title { font-size: 52px; font-weight: 800; line-height: 1.1; margin-bottom: 15px; letter-spacing: -2px; color: var(--text-main); }
+        .hero-subtitle { font-size: 18px; color: var(--text-muted); line-height: 1.6; }
 
-        /* ЗВЕЗДОЧКИ */
+        /* --- ЗВЕЗДОЧКИ --- */
         .stars-container { position: absolute; top: 0; right: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
         .star {
             position: absolute; pointer-events: auto; cursor: crosshair; user-select: none;
             text-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 20px currentColor; 
             transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
-            animation: float 4s infinite ease-in-out alternate;
+            animation: floatStar 4s infinite ease-in-out alternate;
         }
-        .star:hover { transform: scale(1.6) rotate(45deg); color: #ffffff; text-shadow: 0 0 30px #fff, 0 0 60px var(--accent); }
+        .star:hover { transform: scale(1.6) rotate(45deg); color: var(--text-main); text-shadow: 0 0 30px var(--text-main); }
         .star.flying { opacity: 0; transform: scale(4) rotate(360deg); filter: blur(5px); }
-        @keyframes float { 0% { transform: translateY(0px) rotate(0deg); } 100% { transform: translateY(-15px) rotate(10deg); } }
+        @keyframes floatStar { 0% { transform: translateY(0px) rotate(0deg); } 100% { transform: translateY(-15px) rotate(10deg); } }
 
-        /* КРУГ ИТТЕНА + ПОЛЗУНОК */
-        .itten-section { padding: 0 30px 30px; position: relative; z-index: 10; }
-        .itten-container {
-            background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(12px);
-            border: 1px solid rgba(184, 100, 255, 0.15); border-radius: 16px; padding: 25px; 
+        /* --- СЕКЦИИ --- */
+        .itten-section, .photo-section { padding: 0 30px 30px; position: relative; z-index: 10; display: none; }
+        .itten-section.active, .photo-section.active { display: block; }
+        
+        .itten-container, .photo-container {
+            background: var(--card-bg); backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border); border-radius: 16px; padding: 25px; 
             display: flex; gap: 30px; align-items: center; flex-wrap: wrap;
+            transition: background 0.4s, border 0.4s;
         }
+        
+        /* Круг Иттена */
         .itten-wheel-wrapper { position: relative; width: 180px; height: 180px; display: flex; justify-content: center; align-items: center; }
         .itten-wheel {
             width: 180px; height: 180px; border-radius: 50%;
@@ -96,8 +195,8 @@
         .itten-wheel:hover { animation-play-state: paused; box-shadow: 0 0 40px var(--accent-glow); }
         .itten-wheel::after {
             content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 100px; height: 100px; background: #0a0a0a; border-radius: 50%; box-shadow: inset 0 0 10px rgba(0,0,0,1);
-            pointer-events: none;
+            width: 100px; height: 100px; background: var(--bg-color); border-radius: 50%; box-shadow: inset 0 0 10px rgba(0,0,0,1);
+            pointer-events: none; transition: background 0.4s;
         }
         .itten-wheel-wrapper::before {
             content: '✦'; position: absolute; z-index: 10; font-size: 35px; color: var(--accent);
@@ -107,62 +206,66 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes spin-center { 50% { transform: rotate(-180deg) scale(1.2); } 100% { transform: rotate(-360deg) scale(1); } }
         
-        .itten-controls h3 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
-        .itten-controls p { color: #a1a1aa; margin-bottom: 15px; font-size: 14px; }
+        .itten-controls h3, .photo-controls h3 { font-size: 22px; font-weight: 800; margin-bottom: 8px; color: var(--text-main); }
+        .itten-controls p, .photo-controls p { color: var(--text-muted); margin-bottom: 15px; font-size: 14px; }
         
-        /* СЛАЙДЕР ЦВЕТОВ */
+        /* Слайдер */
         .slider-container {
             display: flex; align-items: center; gap: 15px; margin-bottom: 15px;
-            background: rgba(255,255,255,0.05); padding: 10px 15px; border-radius: 8px;
-            width: fit-content; cursor: ns-resize;
+            background: var(--input-bg); padding: 10px 15px; border-radius: 8px;
+            width: fit-content; cursor: ns-resize; transition: background 0.4s;
         }
-        .slider-container label { font-size: 14px; font-weight: 600; color: #fff; }
+        .slider-container label { font-size: 14px; font-weight: 600; color: var(--text-main); }
         .slider-container span { color: var(--accent); font-weight: 800; font-size: 16px; width: 15px; text-align: center;}
-        input[type=range] {
-            -webkit-appearance: none; width: 150px; background: transparent;
-        }
+        input[type=range] { -webkit-appearance: none; width: 150px; background: transparent; }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
-            background: var(--accent); cursor: pointer; margin-top: -6px;
-            box-shadow: 0 0 10px var(--accent-glow);
+            background: var(--accent); cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px var(--accent-glow);
         }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 4px; cursor: pointer; background: #333; border-radius: 2px;
-        }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #888; border-radius: 2px; }
 
         .itten-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
         .itten-btn {
-            background: rgba(255,255,255,0.05); border: 1px solid #444; color: #fff;
-            padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500;
+            background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-main);
+            padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: 0.2s;
         }
-        .itten-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); color: var(--accent); }
+        .itten-btn:hover { background: var(--card-hover); border-color: var(--accent); color: var(--accent); }
 
-        /* КАРТОЧКИ */
+        /* Загрузка фото */
+        .file-upload-wrapper { display: flex; gap: 15px; align-items: center; }
+        .file-upload-btn {
+            background: var(--input-bg); border: 1px dashed var(--text-muted); padding: 20px 30px;
+            border-radius: 12px; text-align: center; cursor: pointer; transition: 0.2s; width: 250px; color: var(--text-main);
+        }
+        .file-upload-btn:hover { border-color: var(--accent); background: rgba(184,100,255,0.1); }
+        .file-upload-btn span { display: block; font-size: 24px; margin-bottom: 10px; }
+        #imageInput { display: none; }
+
+        /* --- КАРТОЧКИ --- */
         .palette-section { padding: 20px 30px; position: relative; z-index: 5; }
-        .section-title { font-size: 28px; font-weight: 800; margin-bottom: 20px; }
+        .section-title { font-size: 28px; font-weight: 800; margin-bottom: 20px; color: var(--text-main); }
         .palette-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 
         .card-wrapper { position: relative; }
-        
         .color-card {
-            background: rgba(255,255,255,0.03); border: 1px solid #333;
-            border-radius: 16px; padding: 20px;
-            display: flex; flex-direction: column; transition: 0.3s;
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 16px; padding: 20px; display: flex; flex-direction: column; transition: 0.3s;
             position: relative; overflow: hidden;
         }
-        .color-card:hover { border-color: #555; background: rgba(255,255,255,0.05); }
+        .color-card:hover { border-color: var(--text-muted); background: var(--card-hover); }
 
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; z-index: 2;}
-        .card-header h3 { font-size: 16px; }
-        .card-actions { display: flex; gap: 15px; }
-        .action-btn { font-size: 22px; color: #555; padding: 5px; transition: 0.2s; }
-        .action-btn:hover { color: #fff; transform: scale(1.1); }
+        .card-header h3 { font-size: 16px; color: var(--text-main); }
+        .card-actions { display: flex; gap: 15px; align-items: center;}
+        .action-btn { font-size: 20px; color: var(--text-muted); padding: 5px; transition: 0.2s; }
+        .action-btn:hover { color: var(--text-main); transform: scale(1.1); }
         .fav-btn.active { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
 
         /* Кружочки */
         .swatches-row { display: flex; flex-wrap: wrap; gap: 8px; cursor: pointer; z-index: 2;}
         .swatch-wrapper { position: relative; }
-        .color-swatch { width: 38px; height: 38px; border-radius: 50%; }
+        .color-swatch { width: 38px; height: 38px; border-radius: 50%; position: relative; cursor: pointer; }
+        .color-input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
         
         .lock-indicator {
             position: absolute; top: -2px; right: -2px; background: #000; border: 1px solid #555;
@@ -188,52 +291,93 @@
         .color-strip.dark .badge-pass { color: #fff; background: rgba(0, 255, 0, 0.4); }
         .color-strip.dark .badge-fail { color: #fff; background: rgba(255, 0, 0, 0.4); }
 
-        /* --- ПАНЕЛЬ ЗАМКОВ --- */
+        /* Панель замков */
         .lock-panel {
             display: flex; flex-direction: column; gap: 8px;
             max-height: 0; opacity: 0; overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            background: transparent; margin-top: 0;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); background: transparent; margin-top: 0;
         }
-        .card-wrapper:hover .lock-panel {
-            max-height: 300px; opacity: 1; margin-top: 15px;
-            padding-top: 15px; border-top: 1px solid #333;
-        }
-
+        .card-wrapper:hover .lock-panel { max-height: 300px; opacity: 1; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--card-border); }
         .lock-item {
-            display: flex; align-items: center; gap: 10px;
-            background: rgba(255,255,255,0.05); padding: 6px 10px;
-            border-radius: 8px; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; gap: 10px; background: var(--input-bg);
+            padding: 6px 10px; border-radius: 8px; cursor: pointer; transition: 0.2s;
         }
-        .lock-item:hover { background: rgba(255,255,255,0.1); }
+        .lock-item:hover { background: var(--card-border); }
         .lock-color-dot { width: 16px; height: 16px; border-radius: 50%; }
-        .lock-number { font-size: 13px; font-family: monospace; font-weight: bold; color: #a1a1aa; }
-        .lock-icon-btn { font-size: 16px; color: #555; margin-left: auto; }
+        .lock-number { font-size: 13px; font-family: monospace; font-weight: bold; color: var(--text-muted); }
+        .lock-icon-btn { font-size: 16px; color: var(--text-muted); margin-left: auto; }
         .lock-item.locked .lock-icon-btn { color: var(--accent); }
 
         /* История */
-        .history-btns { display: flex; gap: 5px; border-left: 1px solid #333; padding-left: 10px; margin-left: 5px; }
-        .history-btn { color: #a1a1aa; font-size: 18px; font-weight: bold; padding: 0 5px;}
+        .history-btns { display: flex; gap: 5px; border-left: 1px solid var(--card-border); padding-left: 10px; margin-left: 5px; }
+        .history-btn { color: var(--text-muted); font-size: 18px; font-weight: bold; padding: 0 5px; transition: 0.2s;}
+        .history-btn:hover:not(:disabled) { color: var(--text-main); }
         .history-btn:disabled { opacity: 0.3; }
+
+        /* --- МОДАЛЬНОЕ ОКНО ПРЕДПРОСМОТРА --- */
+        .preview-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+            z-index: 10000; display: none; justify-content: center; align-items: center;
+        }
+        .preview-modal.active { display: flex; }
+        
+        .preview-island {
+            background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 24px;
+            width: 900px; max-width: 95%; max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; position: relative;
+            color: var(--text-main); transition: background 0.4s;
+        }
+
+        .preview-header { padding: 20px; border-bottom: 1px solid var(--panel-border); display: flex; justify-content: space-between; align-items: center; }
+        .preview-header h3 { font-size: 20px; font-weight: 800; }
+        .close-preview { font-size: 24px; color: var(--text-muted); cursor: pointer; background: none; border: none; }
+        .close-preview:hover { color: var(--text-main); }
+
+        .preview-controls { padding: 20px; display: flex; gap: 20px; flex-wrap: wrap; align-items: center; background: var(--card-bg); border-bottom: 1px solid var(--panel-border); }
+        .bg-colors { display: flex; gap: 10px; }
+        .bg-color-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
+        .bg-color-btn:hover { transform: scale(1.1); }
+        .bg-color-btn.active { border-color: var(--text-main); box-shadow: 0 0 10px rgba(128,128,128,0.5); }
+        
+        .bg-shade-control { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+        .bg-shade-control input { width: 100px; }
+
+        .preview-canvas {
+            padding: 40px; display: flex; justify-content: center; align-items: center;
+            transition: background-color 0.3s; min-height: 400px;
+        }
+
+        .mockup-ui {
+            background: var(--mockup-bg, #fff); color: var(--mockup-text, #000);
+            padding: 30px; border-radius: 16px; width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s;
+        }
+        .mockup-title { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
+        .mockup-text { font-size: 14px; line-height: 1.5; margin-bottom: 20px; opacity: 0.8; }
+        .mockup-btn {
+            padding: 12px 24px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer;
+            display: inline-block; transition: all 0.3s;
+        }
 
         #toast {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             background: var(--accent); color: #fff; padding: 12px 20px; border-radius: 8px;
-            font-weight: bold; display: none; z-index: 9999; width: 90%; text-align: center;
+            font-weight: bold; display: none; z-index: 99999; width: 90%; text-align: center;
         }
 
         /* --- ВЕРСИЯ ДЛЯ ПК --- */
         @media (min-width: 1024px) {
-            .navbar { padding: 20px 40px; }
-            .nav-links { gap: 25px; }
+            .navbar { padding: 20px 40px; flex-wrap: nowrap; }
+            .nav-links { gap: 25px; flex-wrap: nowrap; }
             .hero { padding: 80px 40px; min-height: 450px; }
             .hero-title { font-size: 64px; }
-            .itten-section { padding: 0 40px 40px; }
-            .itten-container { gap: 40px; }
+            .itten-section, .photo-section { padding: 0 40px 40px; }
+            .itten-container, .photo-container { gap: 40px; }
             .itten-wheel-wrapper { width: 220px; height: 220px; }
             .itten-wheel { width: 220px; height: 220px; }
             .itten-wheel::after { width: 130px; height: 130px; }
-
             .palette-section { padding: 40px; }
             .palette-container { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
             .color-card { padding: 25px; }
@@ -241,7 +385,6 @@
             .swatches-row { justify-content: flex-start; }
             .color-swatch { width: 42px; height: 42px; }
             .color-strip { height: 40px; font-size: 13px; padding: 0 15px;}
-
             .secret-island { padding: 20px 50px; gap: 20px; }
             .secret-text { font-size: 22px; letter-spacing: 2px; }
             .secret-island.show { top: 100px; }
@@ -249,6 +392,39 @@
     </style>
 </head>
 <body>
+
+    <!-- МОДАЛЬНОЕ ОКНО ПРЕДПРОСМОТРА -->
+    <div class="preview-modal" id="previewModal">
+        <div class="preview-island">
+            <div class="preview-header">
+                <h3>Предпросмотр палитры</h3>
+                <button class="close-preview" onclick="closePreview()">✕</button>
+            </div>
+            <div class="preview-controls">
+                <div class="bg-colors" id="bgColors">
+                    <button class="bg-color-btn" style="background: #ff3b30;" onclick="setPreviewBg('#ff3b30', this)"></button>
+                    <button class="bg-color-btn" style="background: #ff9500;" onclick="setPreviewBg('#ff9500', this)"></button>
+                    <button class="bg-color-btn" style="background: #ffcc00;" onclick="setPreviewBg('#ffcc00', this)"></button>
+                    <button class="bg-color-btn" style="background: #34c759;" onclick="setPreviewBg('#34c759', this)"></button>
+                    <button class="bg-color-btn" style="background: #007aff;" onclick="setPreviewBg('#007aff', this)"></button>
+                    <button class="bg-color-btn" style="background: #af52de;" onclick="setPreviewBg('#af52de', this)"></button>
+                    <button class="bg-color-btn" style="background: #000000;" onclick="setPreviewBg('#000000', this)"></button>
+                    <button class="bg-color-btn" style="background: #ffffff;" onclick="setPreviewBg('#ffffff', this)"></button>
+                </div>
+                <div class="bg-shade-control">
+                    <span style="font-size: 12px; color: var(--text-muted);">Оттенок:</span>
+                    <input type="range" id="bgShade" min="-50" max="50" value="0" oninput="updatePreviewShade(this.value)">
+                </div>
+            </div>
+            <div class="preview-canvas" id="previewCanvas">
+                <div class="mockup-ui" id="mockupUI">
+                    <div class="mockup-title" id="mockupTitle">Заголовок</div>
+                    <div class="mockup-text" id="mockupText">Это пример текста, чтобы вы могли оценить, как выглядит палитра в реальном интерфейсе.</div>
+                    <button class="mockup-btn" id="mockupBtn">Кнопка действия</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- СЕКРЕТНЫЙ ОСТРОВОК -->
     <div class="secret-island" id="secretIsland">
@@ -262,44 +438,77 @@
         <nav class="nav-links">
             <button onclick="switchTab('all')" id="tab-all" class="active-tab">Все палитры</button>
             <button onclick="switchTab('fav')" id="tab-fav">Избранное</button>
+            <button onclick="switchTab('itten')" id="tab-itten">Круг Иттена</button>
+            <button onclick="switchTab('photo')" id="tab-photo">📷 Из фото</button>
+            
             <div class="history-btns">
                 <button class="history-btn" id="undoBtn" onclick="undo()" disabled>↶</button>
                 <button class="history-btn" id="redoBtn" onclick="redo()" disabled>↷</button>
             </div>
             <button id="fav-counter" style="color: var(--accent); font-weight: 800; cursor: default;">★ 0/20</button>
         </nav>
-        <button onclick="generateNew()" class="btn-primary"><span class="star-icon">✦</span> Создать</button>
+
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <!-- ПЕРЕКЛЮЧАТЕЛЬ ТЕМ -->
+            <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                <div class="theme-animations">
+                    <span class="anim-star" style="top: 10%; left: 20%;">✦</span>
+                    <span class="anim-star" style="bottom: 20%; right: 15%;">✧</span>
+                    <span class="anim-flower" style="top: 15%; left: 60%;">🌸</span>
+                    <span class="anim-flower" style="bottom: 10%; left: 30%;">🌼</span>
+                </div>
+                <span class="theme-icon icon-moon">🌙</span>
+                <span class="theme-icon icon-sun">☀️</span>
+            </div>
+            
+            <button onclick="generateNew()" class="btn-primary"><span class="star-icon">✦</span> Создать</button>
+        </div>
     </header>
 
     <main class="hero">
         <div class="hero-content">
             <h1 class="hero-title">Цвета, которые<br>создают будущее</h1>
-            <p class="hero-subtitle">Блокируйте цвета, проверяйте контрастность и скачивайте палитры.</p>
+            <p class="hero-subtitle">Блокируйте цвета, настраивайте их вручную и смотрите, как они выглядят в интерфейсе.</p>
         </div>
         <div class="stars-container" id="stars-container"></div>
     </main>
 
-    <section class="itten-section">
+    <!-- ВКЛАДКА: КРУГ ИТТЕНА -->
+    <section class="itten-section" id="section-itten">
         <div class="itten-container">
             <div class="itten-wheel-wrapper">
                 <div class="itten-wheel" id="colorWheel"></div>
             </div>
             <div class="itten-controls">
-                <h3>Круг Иттена</h3>
+                <h3>Генератор по кругу Иттена</h3>
                 <p>Кликни по кругу или выбери схему:</p>
-                
-                <!-- ПОЛЗУНОК ДЛЯ КОЛИЧЕСТВА ЦВЕТОВ -->
                 <div class="slider-container" id="sliderContainer">
-                    <label for="colorCount">Цветов в палитре:</label>
+                    <label for="colorCount">Цветов:</label>
                     <span id="colorCountDisplay">3</span>
                     <input type="range" id="colorCount" min="2" max="8" value="3" oninput="document.getElementById('colorCountDisplay').innerText = this.value">
                 </div>
-
                 <div class="itten-buttons">
                     <button class="itten-btn" onclick="generateItten('complementary')">Комплементарная</button>
                     <button class="itten-btn" onclick="generateItten('triad')">Триада</button>
                     <button class="itten-btn" onclick="generateItten('tetrad')">Тетрада</button>
                     <button class="itten-btn" onclick="generateItten('analogous')">Аналогичная</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ВКЛАДКА: ИЗ ФОТО -->
+    <section class="photo-section" id="section-photo">
+        <div class="photo-container">
+            <div class="photo-controls">
+                <h3>Палитра из фотографии</h3>
+                <p>Загрузите любую картинку, и мы вытащим из неё самые яркие цвета!</p>
+                <div class="file-upload-wrapper">
+                    <label class="file-upload-btn">
+                        <span>🖼️</span>
+                        Выбрать фото
+                        <input type="file" id="imageInput" accept="image/*">
+                    </label>
                 </div>
             </div>
         </div>
@@ -313,6 +522,21 @@
     <div id="toast">Уведомление</div>
 
     <script>
+        // --- ИНИЦИАЛИЗАЦИЯ ТЕМЫ ---
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        if (currentTheme === 'light') {
+            document.body.classList.add('light-theme');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            if (document.body.classList.contains('light-theme')) {
+                localStorage.setItem('theme', 'light');
+            } else {
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
         let favCount = 0;
         const MAX_FAV = 20;
         let currentTab = 'all';
@@ -321,21 +545,18 @@
         let history = [];
         let historyIndex = -1;
 
+        // --- УТИЛИТЫ ЦВЕТА ---
         function getRandomColor() {
             const letters = '0123456789ABCDEF';
             let color = '#';
             for (let i = 0; i < 6; i++) color += letters[Math.floor(Math.random() * 16)];
             return color;
         }
-
         function hexToHsl(hex) {
-            let r = parseInt(hex.slice(1, 3), 16) / 255;
-            let g = parseInt(hex.slice(3, 5), 16) / 255;
-            let b = parseInt(hex.slice(5, 7), 16) / 255;
+            let r = parseInt(hex.slice(1, 3), 16) / 255, g = parseInt(hex.slice(3, 5), 16) / 255, b = parseInt(hex.slice(5, 7), 16) / 255;
             let max = Math.max(r, g, b), min = Math.min(r, g, b);
             let h, s, l = (max + min) / 2;
-            if (max === min) { h = s = 0; } 
-            else {
+            if (max === min) { h = s = 0; } else {
                 let d = max - min;
                 s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
                 switch (max) {
@@ -347,7 +568,6 @@
             }
             return [h * 360, s * 100, l * 100];
         }
-
         function hslToHex(h, s, l) {
             l /= 100;
             const a = s * Math.min(l, 1 - l) / 100;
@@ -358,45 +578,74 @@
             };
             return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
         }
-
+        function isDark(hex) {
+            const r = parseInt(hex.substr(1, 2), 16), g = parseInt(hex.substr(3, 2), 16), b = parseInt(hex.substr(5, 2), 16);
+            return (r * 299 + g * 587 + b * 114) / 1000 < 128;
+        }
         function getLuminance(hex) {
             let rgb = hex.replace('#', '').match(/.{1,2}/g).map(val => parseInt(val, 16) / 255);
             rgb = rgb.map(val => val <= 0.03928 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4));
             return 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
         }
-
         function getContrastRatio(hex1, hex2) {
-            const lum1 = getLuminance(hex1);
-            const lum2 = getLuminance(hex2);
-            const brightest = Math.max(lum1, lum2);
-            const darkest = Math.min(lum1, lum2);
-            return (brightest + 0.05) / (darkest + 0.05);
+            const lum1 = getLuminance(hex1), lum2 = getLuminance(hex2);
+            return (Math.max(lum1, lum2) + 0.05) / (Math.min(lum1, lum2) + 0.05);
         }
-
         function getContrastBadge(bgHex, textHex) {
             const ratio = getContrastRatio(bgHex, textHex);
             if (ratio >= 7) return `<span class="badge badge-pass">AAA</span>`;
             if (ratio >= 4.5) return `<span class="badge badge-pass">AA</span>`;
             return `<span class="badge badge-fail">Fail</span>`;
         }
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg; t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
 
+        // --- ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ---
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active-tab'));
+            
+            document.getElementById('section-itten').classList.remove('active');
+            document.getElementById('section-photo').classList.remove('active');
+            document.getElementById('palettes').style.display = 'none';
+
+            if (tab === 'itten') {
+                document.getElementById('tab-itten').classList.add('active-tab');
+                document.getElementById('section-itten').classList.add('active');
+            } else if (tab === 'photo') {
+                document.getElementById('tab-photo').classList.add('active-tab');
+                document.getElementById('section-photo').classList.add('active');
+            } else {
+                document.getElementById('tab-' + tab).classList.add('active-tab');
+                document.getElementById('palettes').style.display = 'block';
+                const cards = document.querySelectorAll('.card-wrapper');
+                const title = document.getElementById('section-title');
+                if (tab === 'all') {
+                    title.innerText = 'Все палитры';
+                    cards.forEach(c => c.classList.remove('hidden'));
+                } else if (tab === 'fav') {
+                    title.innerText = 'Ваше избранное';
+                    cards.forEach(c => {
+                        if (c.getAttribute('data-fav') === 'true') c.classList.remove('hidden');
+                        else c.classList.add('hidden');
+                    });
+                    if (favCount === 0) showToast('В избранном пока пусто');
+                }
+            }
+        }
+
+        // --- ЛОГИКА КРУГА ИТТЕНА ---
         const colorWheel = document.getElementById('colorWheel');
         colorWheel.addEventListener('click', function(e) {
             const rect = this.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            
-            const x = e.clientX - centerX;
-            const y = e.clientY - centerY;
-            
+            const centerX = rect.left + rect.width / 2, centerY = rect.top + rect.height / 2;
+            const x = e.clientX - centerX, y = e.clientY - centerY;
             let angle = Math.atan2(y, x) * (180 / Math.PI);
             if (angle < 0) angle += 360;
-            
-            const randomS = Math.floor(Math.random() * 30) + 40; 
-            const randomL = Math.floor(Math.random() * 20) + 40; 
-
-            const hexColor = hslToHex(angle, randomS, randomL); 
-            
+            const hexColor = hslToHex(angle, Math.floor(Math.random() * 30) + 40, Math.floor(Math.random() * 20) + 40); 
             let count = parseInt(document.getElementById('colorCount').value);
             generateColorsFromBase(hexColor, count, 'Выбранный вами цвет');
         });
@@ -404,37 +653,20 @@
         function generateItten(scheme) {
             const baseHex = getRandomColor();
             let count = parseInt(document.getElementById('colorCount').value);
-            
             const [h, s, l] = hexToHsl(baseHex);
             let colors = [];
             const niceS = Math.max(30, Math.min(s + (Math.random() * 20 - 10), 90)); 
             const niceL = Math.max(30, Math.min(l + (Math.random() * 20 - 10), 70));
 
-            if (scheme === 'complementary') {
-                colors = [hslToHex(h, niceS, niceL), hslToHex((h + 180) % 360, niceS, niceL)];
-            } else if (scheme === 'triad') {
-                colors = [hslToHex(h, niceS, niceL), hslToHex((h + 120) % 360, niceS, niceL), hslToHex((h + 240) % 360, niceS, niceL)];
-            } else if (scheme === 'tetrad') {
-                colors = [hslToHex(h, niceS, niceL), hslToHex((h + 90) % 360, niceS, niceL), hslToHex((h + 180) % 360, niceS, niceL), hslToHex((h + 270) % 360, niceS, niceL)];
-            } else if (scheme === 'analogous') {
-                colors = [hslToHex((h - 30 + 360) % 360, niceS, niceL), hslToHex(h, niceS, niceL), hslToHex((h + 30) % 360, niceS, niceL)];
-            }
+            if (scheme === 'complementary') colors = [hslToHex(h, niceS, niceL), hslToHex((h + 180) % 360, niceS, niceL)];
+            else if (scheme === 'triad') colors = [hslToHex(h, niceS, niceL), hslToHex((h + 120) % 360, niceS, niceL), hslToHex((h + 240) % 360, niceS, niceL)];
+            else if (scheme === 'tetrad') colors = [hslToHex(h, niceS, niceL), hslToHex((h + 90) % 360, niceS, niceL), hslToHex((h + 180) % 360, niceS, niceL), hslToHex((h + 270) % 360, niceS, niceL)];
+            else if (scheme === 'analogous') colors = [hslToHex((h - 30 + 360) % 360, niceS, niceL), hslToHex(h, niceS, niceL), hslToHex((h + 30) % 360, niceS, niceL)];
 
-            while (colors.length < count) {
-                let shift = (colors.length * 45) % 360;
-                colors.push(hslToHex((h + shift) % 360, niceS, niceL));
-            }
+            while (colors.length < count) { colors.push(hslToHex((h + colors.length * 45) % 360, niceS, niceL)); }
             colors = colors.slice(0, count);
 
-            const container = document.getElementById('palette-container');
-            const card = buildCard(colors);
-            container.insertBefore(card, container.firstChild);
-            
-            addToHistory(colors);
-            
-            if (currentTab !== 'all') switchTab('all');
-            document.getElementById('palettes').scrollIntoView({ behavior: 'smooth' });
-            showToast(`Создана палитра: ${scheme} (${count} цв.)`);
+            addPaletteToContainer(colors, `Создана палитра: ${scheme} (${count} цв.)`);
         }
 
         function generateColorsFromBase(baseHex, count, msgPrefix) {
@@ -442,74 +674,106 @@
             const niceS = Math.max(30, Math.min(s + (Math.random() * 20 - 10), 90)); 
             const niceL = Math.max(30, Math.min(l + (Math.random() * 20 - 10), 70));
             let colors = [];
-
             const angleStep = 360 / count;
-            for (let i = 0; i < count; i++) {
-                colors.push(hslToHex((h + i * angleStep) % 360, niceS, niceL));
-            }
-
-            const container = document.getElementById('palette-container');
-            const card = buildCard(colors);
-            container.insertBefore(card, container.firstChild);
-            
-            addToHistory(colors);
-            
-            if (currentTab !== 'all') switchTab('all');
-            document.getElementById('palettes').scrollIntoView({ behavior: 'smooth' });
-            showToast(`Создана палитра: ${msgPrefix} (${count} цв.)`);
+            for (let i = 0; i < count; i++) colors.push(hslToHex((h + i * angleStep) % 360, niceS, niceL));
+            addPaletteToContainer(colors, `Создана палитра: ${msgPrefix} (${count} цв.)`);
         }
 
+        function addPaletteToContainer(colors, msg) {
+            const container = document.getElementById('palette-container');
+            container.insertBefore(buildCard(colors), container.firstChild);
+            addToHistory(colors);
+            switchTab('all');
+            document.getElementById('palettes').scrollIntoView({ behavior: 'smooth' });
+            showToast(msg);
+        }
+
+        // --- ЗАГРУЗКА ИЗ ФОТО ---
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 100; canvas.height = 100;
+                    ctx.drawImage(img, 0, 0, 100, 100);
+                    
+                    const imageData = ctx.getImageData(0, 0, 100, 100).data;
+                    const colorMap = {};
+
+                    for (let i = 0; i < imageData.length; i += 4) {
+                        if (imageData[i+3] < 128) continue;
+                        const r = imageData[i], g = imageData[i+1], b = imageData[i+2];
+                        const quantR = Math.round(r / 20) * 20, quantG = Math.round(g / 20) * 20, quantB = Math.round(b / 20) * 20;
+                        const hex = rgbToHex(quantR, quantG, quantB);
+                        colorMap[hex] = (colorMap[hex] || 0) + 1;
+                    }
+
+                    const sortedColors = Object.keys(colorMap).sort((a, b) => colorMap[b] - colorMap[a]);
+                    const finalColors = [];
+                    for (let hex of sortedColors) {
+                        if (finalColors.length >= 5) break;
+                        let isUnique = true;
+                        for (let c of finalColors) {
+                            if (Math.abs(parseInt(c.slice(1,3),16) - parseInt(hex.slice(1,3),16)) < 20) { isUnique = false; break; }
+                        }
+                        if (isUnique) finalColors.push(hex);
+                    }
+                    while (finalColors.length < 5) finalColors.push(getRandomColor());
+
+                    addPaletteToContainer(finalColors, `Создана палитра из фото! (5 цв.)`);
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function rgbToHex(r, g, b) {
+            return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase();
+        }
+
+        // --- ИСТОРИЯ ---
         function addToHistory(colors) {
             history = history.slice(0, historyIndex + 1);
-            history.push(colors);
-            historyIndex++;
-            updateHistoryButtons();
+            history.push(colors); historyIndex++; updateHistoryButtons();
         }
-
-        function undo() {
-            if (historyIndex > 0) { historyIndex--; renderHistoryState(); }
-        }
-
-        function redo() {
-            if (historyIndex < history.length - 1) { historyIndex++; renderHistoryState(); }
-        }
-
+        function undo() { if (historyIndex > 0) { historyIndex--; renderHistoryState(); } }
+        function redo() { if (historyIndex < history.length - 1) { historyIndex++; renderHistoryState(); } }
         function renderHistoryState() {
             const container = document.getElementById('palette-container');
             container.innerHTML = ''; 
             container.appendChild(buildCard(history[historyIndex]));
             savedPalettes.forEach(p => container.appendChild(buildCard(p.colors, true)));
-            updateHistoryButtons();
-            updateCounter();
+            updateHistoryButtons(); updateCounter();
         }
-
         function updateHistoryButtons() {
             document.getElementById('undoBtn').disabled = historyIndex <= 0;
             document.getElementById('redoBtn').disabled = historyIndex >= history.length - 1;
         }
 
+        // --- КАРТОЧКА ПАЛИТРЫ ---
         function buildCard(colors, isSaved = false) {
-            let circlesHTML = '';
-            let stripsHTML = '';
-            let lockPanelHTML = '';
+            let circlesHTML = '', stripsHTML = '', lockPanelHTML = '';
 
             colors.forEach((c, i) => {
                 circlesHTML += `
                     <div class="swatch-wrapper" id="swatch-${i}">
-                        <div class="color-swatch" style="background: ${c};"></div>
+                        <div class="color-swatch" style="background: ${c};" title="Нажми, чтобы изменить цвет">
+                            <input type="color" class="color-input" value="${c}" onchange="changeColor(this, ${i})">
+                        </div>
                         <div class="lock-indicator">🔒</div>
                     </div>
                 `;
                 
                 const darkClass = isDark(c) ? 'dark' : '';
-                
                 stripsHTML += `
                     <div class="color-strip ${darkClass}" style="background: ${c};" onclick="event.stopPropagation(); showToast('Цвет ${c} скопирован!')">
                         <span>${i + 1}. ${c}</span>
-                        <div class="contrast-badges">
-                            ${getContrastBadge(c, '#000000')}
-                            ${getContrastBadge(c, '#ffffff')}
-                        </div>
+                        <div class="contrast-badges">${getContrastBadge(c, '#000000')}${getContrastBadge(c, '#ffffff')}</div>
                     </div>
                 `;
 
@@ -532,6 +796,7 @@
                     <div class="card-header">
                         <h3>Палитра</h3>
                         <div class="card-actions">
+                            <button class="action-btn" onclick="event.stopPropagation(); openPreview(this)" title="Предпросмотр">👁</button>
                             <button class="action-btn fav-btn ${isSaved ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav(this)">${isSaved ? '★' : '☆'}</button>
                             <button class="action-btn" onclick="event.stopPropagation(); downloadPalette(this)">⬇</button>
                         </div>
@@ -545,11 +810,11 @@
             const circlesRow = wrapper.querySelector('.swatches-row');
             const stripsCol = wrapper.querySelector('.strip-container');
 
-            circlesRow.onclick = function() {
+            circlesRow.onclick = function(e) {
+                if(e.target.tagName === 'INPUT') return;
                 circlesRow.style.display = 'none';
                 stripsCol.classList.add('active');
             };
-
             stripsCol.onclick = function(e) {
                 if(e.target.classList.contains('color-strip')) return; 
                 circlesRow.style.display = 'flex';
@@ -559,6 +824,92 @@
             return wrapper;
         }
 
+        function changeColor(input, index) {
+            const wrapper = input.closest('.card-wrapper');
+            const newColor = input.value.toUpperCase();
+            const colors = JSON.parse(wrapper.getAttribute('data-colors'));
+            
+            colors[index] = newColor;
+            wrapper.setAttribute('data-colors', JSON.stringify(colors));
+
+            const swatch = wrapper.querySelectorAll('.color-swatch')[index];
+            swatch.style.background = newColor;
+            
+            const lockDot = wrapper.querySelectorAll('.lock-color-dot')[index];
+            lockDot.style.background = newColor;
+
+            const strip = wrapper.querySelectorAll('.color-strip')[index];
+            strip.style.background = newColor;
+            if(isDark(newColor)) strip.classList.add('dark'); else strip.classList.remove('dark');
+            strip.querySelector('span').innerText = `${index + 1}. ${newColor}`;
+            strip.querySelector('.contrast-badges').innerHTML = `${getContrastBadge(newColor, '#000000')}${getContrastBadge(newColor, '#ffffff')}`;
+
+            if (wrapper.getAttribute('data-fav') === 'true') {
+                const oldColors = JSON.parse(wrapper.getAttribute('data-colors'));
+                const pIndex = savedPalettes.findIndex(p => p.colors.join('') === oldColors.join(''));
+                if(pIndex !== -1) { savedPalettes[pIndex].colors[index] = newColor; saveToLocalStorage(); }
+            }
+            showToast('Цвет изменен!');
+        }
+
+        // --- ПРЕДПРОСМОТР ---
+        let currentPreviewColors = [];
+        let currentBgBaseColor = '#ffffff';
+        let currentBgShade = 0;
+
+        function openPreview(btn) {
+            const wrapper = btn.closest('.card-wrapper');
+            currentPreviewColors = JSON.parse(wrapper.getAttribute('data-colors'));
+            
+            currentBgBaseColor = '#ffffff'; currentBgShade = 0;
+            document.getElementById('bgShade').value = 0;
+            document.querySelectorAll('.bg-color-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.bg-color-btn[style*="ffffff"]').classList.add('active');
+
+            const sortedByLum = [...currentPreviewColors].sort((a, b) => getLuminance(a) - getLuminance(b));
+            const darkest = sortedByLum[0];
+            const lightest = sortedByLum[sortedByLum.length - 1];
+            
+            let vibrant = currentPreviewColors[0], maxSat = 0;
+            currentPreviewColors.forEach(c => {
+                let [h, s, l] = hexToHsl(c);
+                if (s > maxSat) { maxSat = s; vibrant = c; }
+            });
+
+            const ui = document.getElementById('mockupUI');
+            ui.style.setProperty('--mockup-bg', darkest);
+            ui.style.setProperty('--mockup-text', lightest);
+            ui.style.backgroundColor = darkest;
+            ui.style.color = lightest;
+            
+            const mockupBtn = document.getElementById('mockupBtn');
+            mockupBtn.style.backgroundColor = vibrant;
+            mockupBtn.style.color = isDark(vibrant) ? '#fff' : '#000';
+
+            updatePreviewBg();
+            document.getElementById('previewModal').classList.add('active');
+        }
+
+        function closePreview() { document.getElementById('previewModal').classList.remove('active'); }
+
+        function setPreviewBg(color, btn) {
+            currentBgBaseColor = color; currentBgShade = 0;
+            document.getElementById('bgShade').value = 0;
+            document.querySelectorAll('.bg-color-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            updatePreviewBg();
+        }
+
+        function updatePreviewShade(val) { currentBgShade = parseInt(val); updatePreviewBg(); }
+
+        function updatePreviewBg() {
+            const canvas = document.getElementById('previewCanvas');
+            let [h, s, l] = hexToHsl(currentBgBaseColor);
+            l = Math.max(0, Math.min(100, l + currentBgShade));
+            canvas.style.backgroundColor = hslToHex(h, s, l);
+        }
+
+        // --- ИЗБРАННОЕ, СКАЧИВАНИЕ, БЛОКИРОВКА ---
         function toggleLock(index, element, event) {
             event.stopPropagation();
             element.classList.toggle('locked');
@@ -571,33 +922,22 @@
             const colors = JSON.parse(wrapper.getAttribute('data-colors'));
             
             const canvas = document.createElement('canvas');
-            canvas.width = 1000;
-            canvas.height = 1000;
+            canvas.width = 1000; canvas.height = 1000;
             const ctx = canvas.getContext('2d');
 
-            ctx.fillStyle = '#0a0a0a';
-            ctx.fillRect(0, 0, 1000, 1000);
-
+            ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0, 0, 1000, 1000);
             const stripeHeight = 1000 / colors.length;
             colors.forEach((c, i) => {
-                ctx.fillStyle = c;
-                ctx.fillRect(0, i * stripeHeight, 1000, stripeHeight);
+                ctx.fillStyle = c; ctx.fillRect(0, i * stripeHeight, 1000, stripeHeight);
                 ctx.fillStyle = isDark(c) ? '#ffffff' : '#000000';
-                ctx.font = 'bold 40px Inter, sans-serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
+                ctx.font = 'bold 40px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                 ctx.fillText(c, 500, i * stripeHeight + stripeHeight / 2);
             });
-
-            ctx.fillStyle = 'rgba(255,255,255,0.8)';
-            ctx.font = 'bold 30px Inter, sans-serif';
-            ctx.textAlign = 'right';
+            ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.font = 'bold 30px Inter, sans-serif'; ctx.textAlign = 'right';
             ctx.fillText('Palette Space', 950, 950);
 
             const link = document.createElement('a');
-            link.download = 'palette.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
+            link.download = 'palette.png'; link.href = canvas.toDataURL('image/png'); link.click();
             showToast('Картинка сохранена!');
         }
 
@@ -608,43 +948,25 @@
 
             if (!isCurrentlyFav) {
                 if (favCount < MAX_FAV) {
-                    btn.classList.add('active');
-                    btn.innerText = '★';
+                    btn.classList.add('active'); btn.innerText = '★';
                     wrapper.setAttribute('data-fav', 'true');
                     savedPalettes.push({ colors: currentColors });
-                    saveToLocalStorage();
-                    favCount++;
-                } else {
-                    showToast(`Лимит избранного (${MAX_FAV})`);
-                }
+                    saveToLocalStorage(); favCount++;
+                } else showToast(`Лимит (${MAX_FAV})`);
             } else {
-                btn.classList.remove('active');
-                btn.innerText = '☆';
+                btn.classList.remove('active'); btn.innerText = '☆';
                 wrapper.setAttribute('data-fav', 'false');
                 const index = savedPalettes.findIndex(p => p.colors.join('') === currentColors.join(''));
-                if (index !== -1) {
-                    savedPalettes.splice(index, 1);
-                    saveToLocalStorage();
-                }
+                if (index !== -1) { savedPalettes.splice(index, 1); saveToLocalStorage(); }
                 favCount--;
             }
             updateCounter();
-            if (currentTab === 'fav' && wrapper.getAttribute('data-fav') === 'false') {
-                wrapper.classList.add('hidden');
-            }
-
-            if (favCount >= MAX_FAV && !secretUnlocked) {
-                showSecretIsland();
-            }
+            if (currentTab === 'fav' && wrapper.getAttribute('data-fav') === 'false') wrapper.classList.add('hidden');
+            if (favCount >= MAX_FAV && !secretUnlocked) showSecretIsland();
         }
 
-        function updateCounter() {
-            document.getElementById('fav-counter').innerText = `★ ${favCount} / ${MAX_FAV}`;
-        }
-
-        function saveToLocalStorage() {
-            localStorage.setItem('spacePalettes', JSON.stringify(savedPalettes));
-        }
+        function updateCounter() { document.getElementById('fav-counter').innerText = `★ ${favCount} / ${MAX_FAV}`; }
+        function saveToLocalStorage() { localStorage.setItem('spacePalettes', JSON.stringify(savedPalettes)); }
 
         function generateNew() {
             const firstCard = document.querySelector('.card-wrapper:not(.hidden)');
@@ -657,110 +979,43 @@
                 let hasLocked = false;
 
                 oldColors.forEach((c, i) => {
-                    if (lockItems[i] && lockItems[i].classList.contains('locked')) {
-                        newColors.push(c);
-                        hasLocked = true;
-                    } else {
-                        newColors.push(getRandomColor());
-                    }
+                    if (lockItems[i] && lockItems[i].classList.contains('locked')) { newColors.push(c); hasLocked = true; }
+                    else newColors.push(getRandomColor());
                 });
 
-                if (!hasLocked) {
-                    newColors = [];
-                    for (let i = 0; i < colorCount; i++) newColors.push(getRandomColor());
-                } else {
-                     if (newColors.length < colorCount) {
-                         while(newColors.length < colorCount) newColors.push(getRandomColor());
-                     } else {
-                         newColors = newColors.slice(0, colorCount);
-                     }
+                if (!hasLocked) { newColors = []; for (let i = 0; i < colorCount; i++) newColors.push(getRandomColor()); }
+                else {
+                     if (newColors.length < colorCount) while(newColors.length < colorCount) newColors.push(getRandomColor());
+                     else newColors = newColors.slice(0, colorCount);
                 }
-            } else {
-                for (let i = 0; i < colorCount; i++) newColors.push(getRandomColor());
-            }
+            } else for (let i = 0; i < colorCount; i++) newColors.push(getRandomColor());
 
-            const container = document.getElementById('palette-container');
-            const newCard = buildCard(newColors);
-            container.insertBefore(newCard, container.firstChild);
-            
-            addToHistory(newColors);
-            if (currentTab !== 'all') switchTab('all');
-            showToast(`Создана новая палитра (${colorCount} цв.)!`);
-            updateCounter();
+            addPaletteToContainer(newColors, `Создана новая палитра (${colorCount} цв.)!`);
         }
 
-        function switchTab(tab) {
-            currentTab = tab;
-            document.getElementById('tab-all').classList.remove('active-tab');
-            document.getElementById('tab-fav').classList.remove('active-tab');
-            if(tab === 'all') document.getElementById('tab-all').classList.add('active-tab');
-            if(tab === 'fav') document.getElementById('tab-fav').classList.add('active-tab');
-
-            const cards = document.querySelectorAll('.card-wrapper');
-            const title = document.getElementById('section-title');
-
-            if (tab === 'all') {
-                title.innerText = 'Все палитры';
-                cards.forEach(c => c.classList.remove('hidden'));
-            } else if (tab === 'fav') {
-                title.innerText = 'Ваше избранное';
-                cards.forEach(c => {
-                    if (c.getAttribute('data-fav') === 'true') c.classList.remove('hidden');
-                    else c.classList.add('hidden');
-                });
-                if (favCount === 0) showToast('В избранном пока пусто');
-            }
-        }
-
-        function isDark(hex) {
-            const r = parseInt(hex.substr(1, 2), 16);
-            const g = parseInt(hex.substr(3, 2), 16);
-            const b = parseInt(hex.substr(5, 2), 16);
-            return (r * 299 + g * 587 + b * 114) / 1000 < 128;
-        }
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.innerText = msg;
-            t.style.display = 'block';
-            setTimeout(() => { t.style.display = 'none'; }, 2000);
-        }
-
+        // --- СЕКРЕТНЫЙ ОСТРОВОК ---
         function showSecretIsland() {
             const island = document.getElementById('secretIsland');
             island.classList.add('show');
-            if (!secretUnlocked) {
-                localStorage.setItem('secretUnlocked', 'true');
-                secretUnlocked = true;
-            }
-            const starsContainer = document.getElementById('islandStars');
-            starsContainer.innerHTML = '';
+            if (!secretUnlocked) { localStorage.setItem('secretUnlocked', 'true'); secretUnlocked = true; }
+            const starsContainer = document.getElementById('islandStars'); starsContainer.innerHTML = '';
             for (let i = 0; i < 20; i++) {
-                const star = document.createElement('div');
-                star.className = 'island-star';
+                const star = document.createElement('div'); star.className = 'island-star';
                 star.innerText = ['✦', '✧', '★'][Math.floor(Math.random() * 3)];
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = (Math.random() * 2) + 's';
-                starsContainer.appendChild(star);
+                star.style.left = Math.random() * 100 + '%'; star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = (Math.random() * 2) + 's'; starsContainer.appendChild(star);
             }
         }
-
-        function closeIsland() {
-            document.getElementById('secretIsland').classList.remove('show');
-        }
+        function closeIsland() { document.getElementById('secretIsland').classList.remove('show'); }
 
         function initStars() {
             const container = document.getElementById('stars-container');
             const isMobile = window.innerWidth < 1024;
             const starCount = isMobile ? 25 : 80;
-
             for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
+                const star = document.createElement('div'); star.className = 'star';
                 star.innerText = ['✦', '✧', '★', '☆', '✴'][Math.floor(Math.random() * 5)];
-                star.style.left = (Math.random() * 90 + 10) + '%';
-                star.style.top = (Math.random() * 90 + 5) + '%';
+                star.style.left = (Math.random() * 90 + 10) + '%'; star.style.top = (Math.random() * 90 + 5) + '%';
                 star.style.fontSize = (Math.random() * (isMobile ? 15 : 20) + (isMobile ? 10 : 12)) + 'px';
                 const colors = ['#ffffff', 'var(--accent)', '#a1a1aa'];
                 star.style.color = colors[Math.floor(Math.random() * colors.length)];
@@ -770,16 +1025,11 @@
                     e.stopPropagation();
                     const randomX = (Math.random() - 0.5) * (isMobile ? 200 : 500);
                     const randomY = (Math.random() - 0.5) * (isMobile ? 200 : 500);
-                    
                     star.classList.add('flying');
                     star.style.transform = `translate(${randomX}px, ${randomY}px) scale(4) rotate(360deg)`;
-                    
                     setTimeout(() => {
-                        star.classList.remove('flying');
-                        star.style.transition = 'none';
-                        star.style.transform = 'none';
-                        star.style.left = (Math.random() * 90 + 10) + '%';
-                        star.style.top = (Math.random() * 90 + 5) + '%';
+                        star.classList.remove('flying'); star.style.transition = 'none'; star.style.transform = 'none';
+                        star.style.left = (Math.random() * 90 + 10) + '%'; star.style.top = (Math.random() * 90 + 5) + '%';
                         star.style.opacity = Math.random() * 0.5 + 0.2;
                         setTimeout(() => star.style.transition = 'all 1.2s cubic-bezier(0.25, 1, 0.5, 1)', 50);
                     }, 1200);
@@ -788,58 +1038,36 @@
             }
         }
 
-        // --- УПРАВЛЕНИЕ ПОЛЗУНКОМ КОЛЕСИКОМ МЫШИ ---
-        // Теперь обработчик висит на самом контейнере и на самом инпуте, чтобы точно перехватить колесо
+        // --- УПРАВЛЕНИЕ ПОЛЗУНКОМ ---
         const colorCountInput = document.getElementById('colorCount');
         const colorCountDisplay = document.getElementById('colorCountDisplay');
-
         function handleWheel(e) {
-            e.preventDefault(); // Жестко блокируем прокрутку страницы
-            
+            e.preventDefault();
             let currentVal = parseInt(colorCountInput.value);
-            
-            if (e.deltaY < 0) {
-                if (currentVal < parseInt(colorCountInput.max)) {
-                    colorCountInput.value = currentVal + 1;
-                }
-            } else {
-                if (currentVal > parseInt(colorCountInput.min)) {
-                    colorCountInput.value = currentVal - 1;
-                }
-            }
+            if (e.deltaY < 0 && currentVal < parseInt(colorCountInput.max)) colorCountInput.value = currentVal + 1;
+            else if (e.deltaY > 0 && currentVal > parseInt(colorCountInput.min)) colorCountInput.value = currentVal - 1;
             colorCountDisplay.innerText = colorCountInput.value;
         }
-
-        // Навешиваем на оба элемента
         document.getElementById('sliderContainer').addEventListener('wheel', handleWheel, { passive: false });
         colorCountInput.addEventListener('wheel', handleWheel, { passive: false });
 
+        // --- ЗАГРУЗКА ---
         window.onload = function() {
             const container = document.getElementById('palette-container');
-            
             savedPalettes.forEach((p) => {
                 const card = buildCard(p.colors, true);
-                container.appendChild(card);
-                favCount++;
+                container.appendChild(card); favCount++;
             });
-
             if (savedPalettes.length === 0) {
                 for (let i = 0; i < 3; i++) {
-                    const colors = [];
-                    const colorCount = Math.floor(Math.random() * 4) + 3;
+                    const colors = []; const colorCount = Math.floor(Math.random() * 4) + 3;
                     for (let j = 0; j < colorCount; j++) colors.push(getRandomColor());
-                    container.appendChild(buildCard(colors));
-                    addToHistory(colors);
+                    container.appendChild(buildCard(colors)); addToHistory(colors);
                 }
             }
-            
-            if (favCount >= MAX_FAV && !secretUnlocked) {
-                setTimeout(showSecretIsland, 1000);
-            }
-            
-            initStars();
-            updateCounter();
-            updateHistoryButtons();
+            if (favCount >= MAX_FAV && !secretUnlocked) setTimeout(showSecretIsland, 1000);
+            initStars(); updateCounter(); updateHistoryButtons();
+            switchTab('all');
         };
     </script>
 </body>
