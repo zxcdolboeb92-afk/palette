@@ -27,34 +27,34 @@
         /* ШАПКА */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 40px; background: rgba(10,10,10,0.9);
+            padding: 15px 20px; background: rgba(10,10,10,0.9);
             border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 100;
             backdrop-filter: blur(10px);
         }
-        .logo { font-weight: 800; font-size: 18px; }
+        .logo { font-weight: 800; font-size: 18px; white-space: nowrap; }
         .logo span { color: var(--accent); }
         
-        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
         .nav-links button { font-size: 14px; color: #a1a1aa; font-weight: 500; transition: 0.2s; }
         .nav-links button:hover { color: #fff; }
         .nav-links button.active-tab { color: var(--accent); }
         
         .btn-primary {
             background-color: var(--accent); color: #fff !important;
-            padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: 0.2s;
-            display: flex; align-items: center; gap: 8px;
+            padding: 10px 15px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: 0.2s;
+            display: flex; align-items: center; gap: 6px; white-space: nowrap;
         }
         .btn-primary:hover { background-color: #9d4edd; transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-glow); }
-        .btn-primary .star-icon { font-size: 18px; line-height: 1; }
+        .btn-primary .star-icon { font-size: 16px; line-height: 1; }
 
         /* ГЛАВНЫЙ ЭКРАН */
         .hero { 
-            position: relative; max-width: 1200px; margin: 0 auto; padding: 80px 40px; 
-            min-height: 450px; display: flex; align-items: center; 
+            position: relative; max-width: 1200px; margin: 0 auto; padding: 60px 20px; 
+            min-height: 350px; display: flex; align-items: center; 
         }
         .hero-content { max-width: 600px; position: relative; z-index: 2; }
-        .hero-title { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 20px; letter-spacing: -2px; }
-        .hero-subtitle { font-size: 18px; color: #a1a1aa; line-height: 1.6; }
+        .hero-title { font-size: 42px; font-weight: 800; line-height: 1.1; margin-bottom: 15px; letter-spacing: -1px; }
+        .hero-subtitle { font-size: 16px; color: #a1a1aa; line-height: 1.6; }
 
         /* ЗВЕЗДОЧКИ */
         .stars-container { 
@@ -72,50 +72,50 @@
         @keyframes float { 0% { transform: translateY(0px) rotate(0deg); } 100% { transform: translateY(-15px) rotate(10deg); } }
 
         /* СЕКЦИЯ ЦВЕТОВОГО КРУГА */
-        .itten-section { max-width: 1200px; margin: 0 auto; padding: 0 40px 40px; position: relative; z-index: 5; }
+        .itten-section { max-width: 1200px; margin: 0 auto; padding: 0 20px 30px; position: relative; z-index: 5; }
         .itten-container {
             background: rgba(10, 10, 10, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(184, 100, 255, 0.15); border-radius: 20px; padding: 30px; 
-            display: flex; gap: 40px; align-items: center; flex-wrap: wrap;
+            border: 1px solid rgba(184, 100, 255, 0.15); border-radius: 20px; padding: 20px; 
+            display: flex; gap: 20px; align-items: center; flex-wrap: wrap;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 0 20px rgba(184, 100, 255, 0.05);
+            justify-content: center; /* Центрируем на мобилках */
         }
-        .itten-wheel-wrapper { position: relative; width: 200px; height: 200px; display: flex; justify-content: center; align-items: center; }
+        .itten-wheel-wrapper { position: relative; width: 180px; height: 180px; display: flex; justify-content: center; align-items: center; }
         .itten-wheel {
-            width: 200px; height: 200px; border-radius: 50%; position: relative;
+            width: 180px; height: 180px; border-radius: 50%; position: relative;
             background: conic-gradient(#ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080, #ff0000);
             box-shadow: 0 0 30px rgba(255,255,255,0.1), inset 0 0 20px rgba(0,0,0,0.5);
             cursor: crosshair; animation: spin 20s linear infinite; transition: box-shadow 0.3s;
         }
-        .itten-wheel:hover { animation-play-state: paused; box-shadow: 0 0 40px var(--accent-glow), inset 0 0 20px rgba(0,0,0,0.5); }
+        .itten-wheel:active { animation-play-state: paused; box-shadow: 0 0 40px var(--accent-glow), inset 0 0 20px rgba(0,0,0,0.5); }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .itten-wheel::after {
             content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 120px; height: 120px; background: #0a0a0a; border-radius: 50%; box-shadow: inset 0 0 10px rgba(0,0,0,1);
+            width: 100px; height: 100px; background: #0a0a0a; border-radius: 50%; box-shadow: inset 0 0 10px rgba(0,0,0,1);
             pointer-events: none;
         }
         .itten-wheel-wrapper::before {
-            content: '✦'; position: absolute; z-index: 10; font-size: 40px; color: var(--accent);
+            content: '✦'; position: absolute; z-index: 10; font-size: 35px; color: var(--accent);
             text-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 20px var(--accent); pointer-events: none;
             animation: spin-center 10s linear infinite reverse; 
         }
         @keyframes spin-center { 50% { transform: rotate(-180deg) scale(1.2); } 100% { transform: rotate(-360deg) scale(1); } }
         
-        .itten-controls { flex: 1; min-width: 300px; }
-        .itten-controls h3 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
-        .itten-controls p { color: #a1a1aa; margin-bottom: 20px; font-size: 15px; }
-        .itten-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+        .itten-controls { flex: 1; min-width: 280px; text-align: center; }
+        .itten-controls h3 { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
+        .itten-controls p { color: #a1a1aa; margin-bottom: 15px; font-size: 14px; }
+        .itten-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
         .itten-btn {
             background: rgba(255,255,255,0.05); border: 1px solid #444; color: #fff;
-            padding: 10px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; transition: 0.2s;
+            padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: 0.2s;
         }
         .itten-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); color: var(--accent); }
 
         /* КАРТОЧКИ */
-        .palette-section { max-width: 1200px; margin: 0 auto; padding: 40px; }
-        .section-title { font-size: 32px; font-weight: 800; margin-bottom: 30px; }
-        .palette-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .palette-section { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .section-title { font-size: 24px; font-weight: 800; margin-bottom: 20px; }
+        .palette-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
 
-        /* Обертка карточки для позиционирования панели замков */
         .card-wrapper {
             position: relative;
             animation: fadeIn 0.5s ease;
@@ -125,28 +125,27 @@
 
         .color-card {
             background: rgba(255,255,255,0.03); border: 1px solid #333;
-            border-radius: 16px; padding: 20px; transition: 0.3s;
+            border-radius: 16px; padding: 15px; transition: 0.3s;
             position: relative; z-index: 2; height: 100%;
         }
         .card-wrapper:hover .color-card { border-color: #555; background: rgba(255,255,255,0.05); }
 
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .card-header h3 { font-size: 18px; }
-        .card-actions { display: flex; gap: 10px; align-items: center; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .card-header h3 { font-size: 16px; }
+        .card-actions { display: flex; gap: 15px; align-items: center; }
         
-        .action-btn { font-size: 20px; color: #555; transition: 0.2s; padding: 4px; }
+        .action-btn { font-size: 22px; color: #555; transition: 0.2s; padding: 4px; }
         .action-btn:hover { transform: scale(1.15); color: #fff; }
         .fav-btn.active { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
 
         /* Кружочки */
-        .swatches-row { display: flex; flex-wrap: wrap; gap: 10px; cursor: pointer; }
+        .swatches-row { display: flex; flex-wrap: wrap; gap: 10px; cursor: pointer; justify-content: center; }
         .swatch-wrapper { position: relative; }
-        .color-swatch { width: 45px; height: 45px; border-radius: 50%; transition: 0.2s; display: flex; justify-content: center; align-items: center; }
-        .swatch-wrapper:hover .color-swatch { transform: scale(1.1); }
+        .color-swatch { width: 50px; height: 50px; border-radius: 50%; transition: 0.2s; display: flex; justify-content: center; align-items: center; }
+        .swatch-wrapper:active .color-swatch { transform: scale(1.1); }
         
-        /* Визуальный индикатор замка на самом кружочке (просто для отображения статуса) */
         .lock-indicator {
-            position: absolute; top: -5px; right: -5px; background: #000; border: 1px solid #555;
+            position: absolute; top: -2px; right: -2px; background: #000; border: 1px solid #555;
             border-radius: 50%; width: 20px; height: 20px; font-size: 10px;
             display: flex; justify-content: center; align-items: center;
             opacity: 0; transition: 0.2s; pointer-events: none;
@@ -154,12 +153,12 @@
         .swatch-wrapper.locked .lock-indicator { opacity: 1; border-color: var(--accent); color: var(--accent); }
 
         /* Развернутые полоски */
-        .strip-container { display: none; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .strip-container { display: none; flex-direction: column; gap: 8px; margin-top: 10px; }
         .strip-container.active { display: flex; }
         .color-strip {
             display: flex; justify-content: space-between; align-items: center;
-            height: 45px; border-radius: 12px; padding: 0 15px; 
-            font-family: monospace; font-size: 14px; font-weight: bold; color: #000;
+            height: 45px; border-radius: 10px; padding: 0 15px; 
+            font-family: monospace; font-size: 13px; font-weight: bold; color: #000;
             cursor: pointer; transition: 0.2s;
         }
         .color-strip:hover { transform: translateX(5px); }
@@ -174,75 +173,42 @@
 
         /* --- ЖИДКИЙ ОСТРОВ (ПАНЕЛЬ ЗАМКОВ) --- */
         .lock-panel {
-            position: absolute;
-            left: 0; top: 50%;
-            transform: translateY(-50%) translateX(-10px); /* Прячем чуть левее */
-            background: #111;
+            position: static; /* На мобильных панель будет прямо в карточке */
+            background: rgba(255,255,255,0.03);
             border: 1px solid #333;
-            border-radius: 0 16px 16px 0; /* Скругление только справа */
-            padding: 15px 10px;
+            border-top: none;
+            border-radius: 0 0 16px 16px;
+            padding: 10px 15px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            z-index: 1; /* Под карточкой */
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+            gap: 8px;
+            margin-top: -5px; /* Прилипает к карточке снизу */
+            z-index: 1;
+            transition: 0.3s;
         }
 
-        /* Выезд при наведении на всю обертку */
-        .card-wrapper:hover .lock-panel {
-            transform: translateY(-50%) translateX(-100%); /* Выезжаем влево */
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        /* Элемент внутри панели */
         .lock-item {
             display: flex;
             align-items: center;
             gap: 10px;
             background: rgba(255,255,255,0.05);
-            padding: 5px 10px;
+            padding: 8px 10px;
             border-radius: 8px;
             cursor: pointer;
             transition: 0.2s;
             user-select: none;
         }
-        .lock-item:hover {
-            background: rgba(255,255,255,0.1);
-        }
+        .lock-item:hover { background: rgba(255,255,255,0.1); }
+        .lock-item:active { background: rgba(255,255,255,0.15); }
 
-        /* Сам цвет в панели */
-        .lock-color-dot {
-            width: 20px; height: 20px; border-radius: 50%;
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
-        }
-
-        /* Номер цвета */
-        .lock-number {
-            font-size: 12px;
-            font-family: monospace;
-            font-weight: bold;
-            color: #a1a1aa;
-            width: 15px;
-        }
-
-        /* Иконка замка в панели */
-        .lock-icon-btn {
-            font-size: 14px;
-            color: #555;
-            transition: 0.2s;
-        }
-        .lock-item.locked .lock-icon-btn {
-            color: var(--accent);
-            text-shadow: 0 0 10px var(--accent-glow);
-        }
+        .lock-color-dot { width: 20px; height: 20px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2); }
+        .lock-number { font-size: 13px; font-family: monospace; font-weight: bold; color: #a1a1aa; width: 20px; }
+        .lock-icon-btn { font-size: 16px; color: #555; transition: 0.2s; margin-left: auto;}
+        .lock-item.locked .lock-icon-btn { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
 
         /* История в шапке */
-        .history-btns { display: flex; gap: 5px; margin-left: 15px; border-left: 1px solid #333; padding-left: 15px; }
-        .history-btn { color: #a1a1aa; font-size: 20px; font-weight: bold; transition: 0.2s; }
+        .history-btns { display: flex; gap: 5px; margin-left: 5px; border-left: 1px solid #333; padding-left: 5px; }
+        .history-btn { color: #a1a1aa; font-size: 18px; font-weight: bold; transition: 0.2s; padding: 0 5px;}
         .history-btn:hover:not(:disabled) { color: #fff; }
         .history-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
@@ -250,13 +216,61 @@
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             background: var(--accent); color: #fff; padding: 10px 20px; border-radius: 8px;
             font-weight: bold; display: none; z-index: 9999; box-shadow: 0 5px 15px var(--accent-glow);
+            width: 90%; text-align: center;
+        }
+
+        /* --- МЕДИА-ЗАПРОСЫ ДЛЯ ПК И ПЛАНШЕТОВ --- */
+        @media (min-width: 769px) {
+            .navbar { padding: 20px 40px; }
+            .nav-links { gap: 20px; }
+            .hero { padding: 80px 40px; min-height: 450px; }
+            .hero-title { font-size: 56px; letter-spacing: -2px; }
+            .itten-section { padding: 0 40px 40px; }
+            .itten-container { justify-content: flex-start; gap: 40px; }
+            .itten-wheel-wrapper { width: 200px; height: 200px; }
+            .itten-wheel { width: 200px; height: 200px; }
+            .itten-wheel::after { width: 120px; height: 120px; }
+            .itten-wheel-wrapper::before { font-size: 40px; }
+            .itten-controls { text-align: left; }
+            .itten-buttons { justify-content: flex-start; }
+            .palette-section { padding: 40px; }
+            .section-title { font-size: 32px; margin-bottom: 30px; }
+            .palette-container { gap: 20px; }
+            .color-card { padding: 20px; }
+            .card-header h3 { font-size: 18px; }
+            .swatches-row { justify-content: flex-start; }
+            .color-swatch { width: 45px; height: 45px; }
+            .lock-indicator { top: -5px; right: -5px; }
+
+            /* Включаем Жидкий Остров (Выезд слева) только для ПК */
+            .lock-panel {
+                position: absolute;
+                left: 0; top: 50%;
+                transform: translateY(-50%) translateX(-10px);
+                background: #111;
+                border: 1px solid #333;
+                border-radius: 0 16px 16px 0;
+                padding: 15px 10px;
+                margin-top: 0;
+                box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+                z-index: 1;
+                opacity: 0;
+                pointer-events: none;
+                transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            }
+            .card-wrapper:hover .lock-panel {
+                transform: translateY(-50%) translateX(-100%);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .lock-icon-btn { margin-left: 0; }
         }
     </style>
 </head>
 <body>
 
     <header class="navbar">
-        <div class="logo"><span>🎨</span> Palette Space</div>
+        <div class="logo"><span>🎨</span> Palette</div>
         <nav class="nav-links">
             <button onclick="switchTab('all')" id="tab-all" class="active-tab">Все палитры</button>
             <button onclick="switchTab('fav')" id="tab-fav">Избранное</button>
@@ -266,9 +280,8 @@
                 <button class="history-btn" id="redoBtn" onclick="redo()" title="Вперед" disabled>↷</button>
             </div>
 
-            <button id="fav-counter" style="color: var(--accent); font-weight: 800; cursor: default; margin-left: 15px;">★ 0 / 20</button>
+            <button id="fav-counter" style="color: var(--accent); font-weight: 800; cursor: default;">★ 0/20</button>
         </nav>
-        <button onclick="generateNew()" class="btn-primary"><span class="star-icon">✦</span> Создать палитру</button>
     </header>
 
     <main class="hero">
@@ -285,8 +298,8 @@
                 <div class="itten-wheel" id="colorWheel" title="Кликни в любую точку круга"></div>
             </div>
             <div class="itten-controls">
-                <h3>Генератор по кругу Иттена</h3>
-                <p>Кликни по кругу, чтобы выбрать базовый цвет, или выбери готовую схему ниже.</p>
+                <h3>Круг Иттена</h3>
+                <p>Кликни по кругу или выбери схему:</p>
                 <div class="itten-buttons">
                     <button class="itten-btn" onclick="generateItten('complementary')">Комплементарная</button>
                     <button class="itten-btn" onclick="generateItten('triad')">Триада</button>
@@ -373,6 +386,8 @@
         }
 
         const colorWheel = document.getElementById('colorWheel');
+        
+        // На мобилках касание не должно останавливать навигацию, поэтому используем touchstart + click
         colorWheel.addEventListener('click', function(e) {
             const rect = this.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
@@ -503,9 +518,6 @@
             wrapper.setAttribute('data-colors', JSON.stringify(colors));
 
             wrapper.innerHTML = `
-                <div class="lock-panel">
-                    ${lockPanelHTML}
-                </div>
                 <div class="color-card">
                     <div class="card-header">
                         <h3>Палитра</h3>
@@ -516,6 +528,9 @@
                     </div>
                     <div class="swatches-row">${circlesHTML}</div>
                     <div class="strip-container">${stripsHTML}</div>
+                </div>
+                <div class="lock-panel">
+                    ${lockPanelHTML}
                 </div>
             `;
 
@@ -538,7 +553,7 @@
             return wrapper;
         }
 
-        // Переключение замка (из панели)
+        // Переключение замка
         function toggleLock(index, element, event) {
             event.stopPropagation();
             element.classList.toggle('locked');
@@ -711,21 +726,24 @@
 
         function initStars() {
             const container = document.getElementById('stars-container');
-            for (let i = 0; i < 35; i++) {
+            const isMobile = window.innerWidth < 768;
+            const starCount = isMobile ? 15 : 35; // Меньше звезд на телефоне, чтобы не лагало
+
+            for (let i = 0; i < starCount; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 star.innerText = ['✦', '✧', '★', '☆', '✴'][Math.floor(Math.random() * 5)];
                 star.style.left = (Math.random() * 90 + 10) + '%';
                 star.style.top = (Math.random() * 90 + 5) + '%';
-                star.style.fontSize = (Math.random() * 25 + 15) + 'px';
+                star.style.fontSize = (Math.random() * (isMobile ? 15 : 25) + (isMobile ? 10 : 15)) + 'px';
                 const colors = ['#ffffff', 'var(--accent)', '#a1a1aa'];
                 star.style.color = colors[Math.floor(Math.random() * colors.length)];
                 star.style.opacity = Math.random() * 0.4 + 0.3;
 
                 star.onclick = function(e) {
                     e.stopPropagation();
-                    const randomX = (Math.random() - 0.5) * 400;
-                    const randomY = (Math.random() - 0.5) * 400;
+                    const randomX = (Math.random() - 0.5) * (isMobile ? 200 : 400);
+                    const randomY = (Math.random() - 0.5) * (isMobile ? 200 : 400);
                     
                     star.classList.add('flying');
                     star.style.transform = `translate(${randomX}px, ${randomY}px) scale(4) rotate(360deg)`;
