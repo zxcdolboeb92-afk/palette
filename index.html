@@ -68,6 +68,7 @@
         }
         .star:hover { transform: scale(1.6) rotate(45deg); color: #ffffff; text-shadow: 0 0 30px #fff, 0 0 60px var(--accent); }
         .star.flying { opacity: 0; transform: scale(4) rotate(360deg); filter: blur(5px); }
+        @keyframes float { 0% { transform: translateY(0px) rotate(0deg); } 100% { transform: translateY(-15px) rotate(10deg); } }
 
         /* СЕКЦИЯ ЦВЕТОВОГО КРУГА */
         .itten-section { max-width: 1200px; margin: 0 auto; padding: 0 40px 40px; position: relative; z-index: 5; }
@@ -119,23 +120,22 @@
             position: relative;
         }
         .color-card.hidden { display: none !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .card-header h3 { font-size: 18px; }
         .card-actions { display: flex; gap: 10px; align-items: center; }
         
-        /* Кнопки в карточке (избранное и скачать) */
         .action-btn { font-size: 20px; color: #555; transition: 0.2s; padding: 4px; }
         .action-btn:hover { transform: scale(1.15); color: #fff; }
         .fav-btn.active { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
 
         /* Кружочки с замочками */
-        .swatches-row { display: flex; flex-wrap: wrap; gap: 10px; }
-        .swatch-wrapper { position: relative; cursor: pointer; }
+        .swatches-row { display: flex; flex-wrap: wrap; gap: 10px; cursor: pointer; }
+        .swatch-wrapper { position: relative; }
         .color-swatch { width: 45px; height: 45px; border-radius: 50%; transition: 0.2s; display: flex; justify-content: center; align-items: center; }
-        .color-swatch:hover { transform: scale(1.1); }
+        .swatch-wrapper:hover .color-swatch { transform: scale(1.1); }
         
-        /* Замочек */
         .lock-icon {
             position: absolute; top: -5px; right: -5px; background: #000; border: 1px solid #555;
             border-radius: 50%; width: 20px; height: 20px; font-size: 10px;
@@ -166,7 +166,7 @@
 
         /* История в шапке */
         .history-btns { display: flex; gap: 5px; margin-left: 15px; border-left: 1px solid #333; padding-left: 15px; }
-        .history-btn { color: #a1a1aa; font-size: 18px; transition: 0.2s; }
+        .history-btn { color: #a1a1aa; font-size: 20px; font-weight: bold; transition: 0.2s; }
         .history-btn:hover:not(:disabled) { color: #fff; }
         .history-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
@@ -185,7 +185,6 @@
             <button onclick="switchTab('all')" id="tab-all" class="active-tab">Все палитры</button>
             <button onclick="switchTab('fav')" id="tab-fav">Избранное</button>
             
-            <!-- История -->
             <div class="history-btns">
                 <button class="history-btn" id="undoBtn" onclick="undo()" title="Назад" disabled>↶</button>
                 <button class="history-btn" id="redoBtn" onclick="redo()" title="Вперед" disabled>↷</button>
@@ -235,7 +234,6 @@
         let currentTab = 'all';
         let savedPalettes = JSON.parse(localStorage.getItem('spacePalettes')) || [];
         
-        // История
         let history = [];
         let historyIndex = -1;
 
@@ -277,15 +275,6 @@
             return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
         }
 
-        // Контраст (WCAG)
-        function getContrastYIQ(hexcolor) {
-            var r = parseInt(hexcolor.substr(1,2),16);
-            var g = parseInt(hexcolor.substr(3,2),16);
-            var b = parseInt(hexcolor.substr(5,2),16);
-            var yiq = ((r*299)+(g*587)+(b*114))/1000;
-            return (yiq >= 128) ? 'dark' : 'light'; // 'dark' значит текст должен быть черным
-        }
-
         function getLuminance(hex) {
             let rgb = hex.replace('#', '').match(/.{1,2}/g).map(val => parseInt(val, 16) / 255);
             rgb = rgb.map(val => val <= 0.03928 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4));
@@ -307,7 +296,6 @@
             return `<span class="badge badge-fail">Fail</span>`;
         }
 
-        // --- КЛИК ПО КРУГУ ---
         const colorWheel = document.getElementById('colorWheel');
         colorWheel.addEventListener('click', function(e) {
             const rect = this.getBoundingClientRect();
@@ -359,9 +347,7 @@
             showToast(`Создана палитра: ${msgPrefix}`);
         }
 
-        // --- ИСТОРИЯ ---
         function addToHistory(colors) {
-            // Удаляем все, что было впереди, если мы нажали Undo
             history = history.slice(0, historyIndex + 1);
             history.push(colors);
             historyIndex++;
@@ -384,13 +370,11 @@
 
         function renderHistoryState() {
             const container = document.getElementById('palette-container');
-            container.innerHTML = ''; // Очищаем всё
+            container.innerHTML = ''; 
             
-            // Восстанавливаем только текущий элемент истории
             const card = buildCard(history[historyIndex]);
             container.appendChild(card);
             
-            // Восстанавливаем избранное
             savedPalettes.forEach(p => container.appendChild(buildCard(p.colors, true)));
 
             updateHistoryButtons();
@@ -402,16 +386,11 @@
             document.getElementById('redoBtn').disabled = historyIndex >= history.length - 1;
         }
 
-        // --- КАРТОЧКА ---
         function buildCard(colors, isSaved = false) {
             let circlesHTML = '';
             let stripsHTML = '';
 
             colors.forEach((c, i) => {
-                // Бейджи контрастности
-                const badgeBlack = getContrastBadge(c, '#000000');
-                const badgeWhite = getContrastBadge(c, '#ffffff');
-                
                 circlesHTML += `
                     <div class="swatch-wrapper" onclick="toggleLock(this, event)">
                         <div class="color-swatch" style="background: ${c};" title="Скопировать: ${c}"></div>
@@ -420,13 +399,12 @@
                 `;
                 
                 const darkClass = isDark(c) ? 'dark' : '';
-                const textColor = isDark(c) ? '#fff' : '#000';
                 
                 stripsHTML += `
                     <div class="color-strip ${darkClass}" style="background: ${c};" onclick="event.stopPropagation(); showToast('Цвет ${c} скопирован!')">
                         <span>${i + 1}. ${c}</span>
                         <div class="contrast-badges">
-                            ${getContrastBadge(c, '#000000').replace('badge-pass', 'badge-pass').replace('badge-fail', 'badge-fail')}
+                            ${getContrastBadge(c, '#000000')}
                             ${getContrastBadge(c, '#ffffff')}
                         </div>
                     </div>
@@ -453,9 +431,8 @@
             const circlesRow = card.querySelector('.swatches-row');
             const stripsCol = card.querySelector('.strip-container');
 
-            // Разворот при клике на пустое место
             circlesRow.onclick = function(e) {
-                if(e.target.closest('.swatch-wrapper')) return; // Если кликнули на кружок, не разворачиваем
+                if(e.target.closest('.swatch-wrapper')) return; 
                 circlesRow.style.display = 'none';
                 stripsCol.classList.add('active');
             };
@@ -469,12 +446,9 @@
             return card;
         }
 
-        // --- ЗАМОРОЗКА ЦВЕТА ---
         function toggleLock(element, event) {
             event.stopPropagation();
             element.classList.toggle('locked');
-            
-            // Копируем цвет при клике
             const color = element.querySelector('.color-swatch').style.backgroundColor;
             navigator.clipboard.writeText(rgbToHex(color));
             showToast(`Цвет скопирован!`);
@@ -487,7 +461,6 @@
             return "#" + ((1 << 24) + (parseInt(parts[1]) << 16) + (parseInt(parts[2]) << 8) + parseInt(parts[3])).toString(16).slice(1).toUpperCase();
         }
 
-        // --- СКАЧИВАНИЕ КАРТИНКИ ---
         function downloadPalette(btn) {
             const card = btn.closest('.color-card');
             const colors = JSON.parse(card.getAttribute('data-colors'));
@@ -497,17 +470,14 @@
             canvas.height = 1000;
             const ctx = canvas.getContext('2d');
 
-            // Фон
             ctx.fillStyle = '#0a0a0a';
             ctx.fillRect(0, 0, 1000, 1000);
 
-            // Цветные полосы
             const stripeHeight = 1000 / colors.length;
             colors.forEach((c, i) => {
                 ctx.fillStyle = c;
                 ctx.fillRect(0, i * stripeHeight, 1000, stripeHeight);
                 
-                // Текст (HEX)
                 ctx.fillStyle = isDark(c) ? '#ffffff' : '#000000';
                 ctx.font = 'bold 40px Inter, sans-serif';
                 ctx.textAlign = 'center';
@@ -515,13 +485,11 @@
                 ctx.fillText(c, 500, i * stripeHeight + stripeHeight / 2);
             });
 
-            // Подпись
             ctx.fillStyle = 'rgba(255,255,255,0.8)';
             ctx.font = 'bold 30px Inter, sans-serif';
             ctx.textAlign = 'right';
             ctx.fillText('Palette Space', 950, 950);
 
-            // Скачивание
             const link = document.createElement('a');
             link.download = 'palette.png';
             link.href = canvas.toDataURL('image/png');
@@ -529,7 +497,6 @@
             showToast('Картинка сохранена!');
         }
 
-        // --- ИЗБРАННОЕ ---
         function toggleFav(btn) {
             const card = btn.closest('.color-card');
             const isCurrentlyFav = card.getAttribute('data-fav') === 'true';
@@ -571,7 +538,6 @@
             localStorage.setItem('spacePalettes', JSON.stringify(savedPalettes));
         }
 
-        // --- ГЕНЕРАЦИЯ НОВОЙ (С УЧЕТОМ ЗАМОРОЗКИ) ---
         function generateNew() {
             const firstCard = document.querySelector('.color-card:not(.hidden)');
             let newColors = [];
@@ -610,8 +576,101 @@
             updateCounter();
         }
 
-        // --- ВКЛАДКИ ---
         function switchTab(tab) {
             currentTab = tab;
             document.getElementById('tab-all').classList.remove('active-tab');
-            document.getElementById('tab-fav').classList.remove('active-t
+            document.getElementById('tab-fav').classList.remove('active-tab');
+            if(tab === 'all') document.getElementById('tab-all').classList.add('active-tab');
+            if(tab === 'fav') document.getElementById('tab-fav').classList.add('active-tab');
+
+            const cards = document.querySelectorAll('.color-card');
+            const title = document.getElementById('section-title');
+
+            if (tab === 'all') {
+                title.innerText = 'Все палитры';
+                cards.forEach(c => c.classList.remove('hidden'));
+            } else if (tab === 'fav') {
+                title.innerText = 'Ваше избранное';
+                cards.forEach(c => {
+                    if (c.getAttribute('data-fav') === 'true') c.classList.remove('hidden');
+                    else c.classList.add('hidden');
+                });
+                if (favCount === 0) showToast('В избранном пока пусто');
+            }
+        }
+
+        function isDark(hex) {
+            const r = parseInt(hex.substr(1, 2), 16);
+            const g = parseInt(hex.substr(3, 2), 16);
+            const b = parseInt(hex.substr(5, 2), 16);
+            return (r * 299 + g * 587 + b * 114) / 1000 < 128;
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        function initStars() {
+            const container = document.getElementById('stars-container');
+            for (let i = 0; i < 35; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.innerText = ['✦', '✧', '★', '☆', '✴'][Math.floor(Math.random() * 5)];
+                star.style.left = (Math.random() * 90 + 10) + '%';
+                star.style.top = (Math.random() * 90 + 5) + '%';
+                star.style.fontSize = (Math.random() * 25 + 15) + 'px';
+                const colors = ['#ffffff', 'var(--accent)', '#a1a1aa'];
+                star.style.color = colors[Math.floor(Math.random() * colors.length)];
+                star.style.opacity = Math.random() * 0.4 + 0.3;
+
+                star.onclick = function(e) {
+                    e.stopPropagation();
+                    const randomX = (Math.random() - 0.5) * 400;
+                    const randomY = (Math.random() - 0.5) * 400;
+                    
+                    star.classList.add('flying');
+                    star.style.transform = `translate(${randomX}px, ${randomY}px) scale(4) rotate(360deg)`;
+                    
+                    setTimeout(() => {
+                        star.classList.remove('flying');
+                        star.style.transition = 'none';
+                        star.style.transform = 'none';
+                        star.style.left = (Math.random() * 90 + 10) + '%';
+                        star.style.top = (Math.random() * 90 + 5) + '%';
+                        star.style.opacity = Math.random() * 0.4 + 0.3;
+                        setTimeout(() => star.style.transition = 'all 1.2s cubic-bezier(0.25, 1, 0.5, 1)', 50);
+                    }, 1200);
+                };
+                container.appendChild(star);
+            }
+        }
+
+        window.onload = function() {
+            const container = document.getElementById('palette-container');
+            
+            savedPalettes.forEach((p) => {
+                const card = buildCard(p.colors, true);
+                container.appendChild(card);
+                favCount++;
+            });
+
+            if (savedPalettes.length === 0) {
+                for (let i = 0; i < 3; i++) {
+                    const colors = [];
+                    const colorCount = Math.floor(Math.random() * 5) + 2;
+                    for (let j = 0; j < colorCount; j++) colors.push(getRandomColor());
+                    container.appendChild(buildCard(colors));
+                    addToHistory(colors);
+                }
+            }
+            
+            initStars();
+            updateCounter();
+            updateHistoryButtons();
+        };
+    </script>
+</body>
+</html>
