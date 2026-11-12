@@ -188,4 +188,194 @@
         };
     </script>
 </body>
+</html><!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palette Space</title>
+    <!-- Шрифт -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    
+    <!-- ВСЕ СТИЛИ ВНУТРИ ФАЙЛА -->
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a; /* Черный фон */
+            color: #ffffff;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 70% 30%, rgba(201, 255, 52, 0.05) 0%, rgba(10, 10, 10, 1) 50%);
+        }
+
+        a, button { text-decoration: none; color: inherit; font-family: inherit; cursor: pointer; border: none; background: none; }
+
+        /* ШАПКА */
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 40px; background: #0a0a0a;
+            border-bottom: 1px solid #222;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-weight: 800; font-size: 18px; }
+        .logo span { color: #c9ff34; }
+        
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links a, .nav-links button { font-size: 14px; color: #a1a1aa; }
+        .nav-links a:hover, .nav-links button:hover { color: #fff; }
+        
+        .btn-primary {
+            background-color: #c9ff34; color: #000 !important;
+            padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px;
+        }
+
+        /* ГЛАВНЫЙ ЭКРАН */
+        .hero { max-width: 1200px; margin: 0 auto; padding: 60px 40px; }
+        .hero-title { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+        .hero-subtitle { font-size: 18px; color: #a1a1aa; line-height: 1.6; margin-bottom: 30px; }
+
+        /* КАРТОЧКИ */
+        .palette-section { max-width: 1200px; margin: 0 auto; padding: 40px; }
+        .section-title { font-size: 32px; font-weight: 800; margin-bottom: 30px; }
+        .palette-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+
+        .color-card {
+            background: #111; border: 1px solid #333;
+            border-radius: 16px; padding: 20px;
+        }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .card-header h3 { font-size: 18px; }
+        .fav-btn { font-size: 24px; color: #555; }
+        .fav-btn.active { color: #c9ff34; }
+
+        .swatches-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; cursor: pointer; }
+        .color-swatch { width: 45px; height: 45px; border-radius: 50%; }
+
+        .strip-container { display: none; flex-direction: column; gap: 8px; }
+        .strip-container.active { display: flex; }
+        .color-strip {
+            display: flex; align-items: center; height: 40px; border-radius: 6px; padding: 0 15px;
+            font-family: monospace; font-size: 14px; font-weight: bold; color: #000;
+        }
+        .color-strip.dark { color: #fff; }
+
+        #toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #c9ff34; color: #000; padding: 10px 20px; border-radius: 8px;
+            font-weight: bold; display: none; z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo"><span>🎨</span> Palette Space</div>
+        <nav class="nav-links">
+            <a href="#">Главная</a>
+            <a href="#palettes">Палитры ⌄</a>
+            <button onclick="generateNew()">Генератор</button>
+            <button id="fav-counter" style="color: #c9ff34; font-weight: bold;">★ 0 / 10</button>
+        </nav>
+        <button onclick="generateNew()" class="btn-primary">Создать палитру</button>
+    </header>
+
+    <main class="hero">
+        <h1 class="hero-title">Цвета, которые<br>создают будущее</h1>
+        <p class="hero-subtitle">
+            Исследуйте, создавайте и сохраняйте идеальные цветовые палитры. Кликните по кружочкам, чтобы развернуть их в полоски с номерами.
+        </p>
+        <a href="#palettes" class="btn-primary" style="display:inline-block; margin-top: 20px;">Смотреть палитры</a>
+    </main>
+
+    <section id="palettes" class="palette-section">
+        <h2 class="section-title">Популярные палитры</h2>
+        <div id="palette-container" class="palette-container"></div>
+    </section>
+
+    <div id="toast">Уведомление</div>
+
+    <script>
+        let favCount = 0;
+        const MAX_FAV = 10;
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) color += letters[Math.floor(Math.random() * 16)];
+            return color;
+        }
+
+        function isDark(hex) {
+            const r = parseInt(hex.substr(1, 2), 16);
+            const g = parseInt(hex.substr(3, 2), 16);
+            const b = parseInt(hex.substr(5, 2), 16);
+            return (r * 299 + g * 587 + b * 114) / 1000 < 128;
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        function createCard() {
+            const colorCount = Math.floor(Math.random() * 5) + 2;
+            let circlesHTML = '';
+            let stripsHTML = '';
+
+            for (let i = 0; i < colorCount; i++) {
+                const c = getRandomColor();
+                circlesHTML += `<div class="color-swatch" style="background: ${c};"></div>`;
+                const darkClass = isDark(c) ? 'dark' : '';
+                stripsHTML += `<div class="color-strip ${darkClass}" style="background: ${c};">${i + 1}. ${c.toUpperCase()}</div>`;
+            }
+
+            const card = document.createElement('div');
+            card.className = 'color-card';
+            card.innerHTML = `
+                <div class="card-header">
+                    <h3>Палитра</h3>
+                    <button class="fav-btn" onclick="toggleFav(this)">☆</button>
+                </div>
+                <div class="swatches-row" onclick="this.style.display='none'; this.nextElementSibling.classList.add('active');">
+                    ${circlesHTML}
+                </div>
+                <div class="strip-container" onclick="this.classList.remove('active'); this.previousElementSibling.style.display='flex';">
+                    ${stripsHTML}
+                </div>
+            `;
+            return card;
+        }
+
+        function generateNew() {
+            const container = document.getElementById('palette-container');
+            container.insertBefore(createCard(), container.firstChild);
+            showToast('Создана новая палитра!');
+        }
+
+        function toggleFav(btn) {
+            if (!btn.classList.contains('active')) {
+                if (favCount < MAX_FAV) {
+                    btn.classList.add('active');
+                    btn.innerText = '★';
+                    favCount++;
+                } else {
+                    showToast('Лимит (10)');
+                }
+            } else {
+                btn.classList.remove('active');
+                btn.innerText = '☆';
+                favCount--;
+            }
+            document.getElementById('fav-counter').innerText = `★ ${favCount} / ${MAX_FAV}`;
+        }
+
+        window.onload = function() {
+            const container = document.getElementById('palette-container');
+            for (let i = 0; i < 3; i++) container.appendChild(createCard());
+        };
+    </script>
+</body>
 </html>
