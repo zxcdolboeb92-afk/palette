@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой проект</title>
-    <!-- Подключаем шрифт Inter (как на OpenRouter) -->
+    <title>Палитра цветов | Neon Space</title>
+    <!-- Подключаем шрифт Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800;900&display=swap" rel="stylesheet">
@@ -15,62 +15,102 @@
     <!-- ШАПКА САЙТА -->
     <header class="navbar">
         <div class="logo">
-            <span class="logo-icon">O</span> openrouter
+            <span class="logo-icon">🎨</span> Palette Space
         </div>
         <nav class="nav-links">
-            <a href="#">Поиск</a>
-            <a href="#">Модели ⌄</a>
-            <a href="#">Оценки ⌄</a>
-            <a href="#">Документы</a>
-            <a href="#">Чат</a>
+            <a href="#">Главная</a>
+            <a href="#">Палитры ⌄</a>
+            <a href="#">Генератор</a>
+            <a href="#">Избранное</a>
         </nav>
-        <a href="#" class="btn btn-primary">Панель управления</a>
+        <a href="#" class="btn btn-primary">Создать палитру</a>
     </header>
 
-    <!-- ГЛАВНЫЙ ЭКРАН (HERO SECTION) -->
+    <!-- ГЛАВНЫЙ ЭКРАН -->
     <main class="hero">
         <!-- Левая часть: Текст -->
         <div class="hero-content">
             <h1 class="hero-title">
-                Будущее за<br>
-                мультимодельным<br>
-                подходом
+                Цвета, которые<br>
+                создают<br>
+                будущее
             </h1>
             <p class="hero-subtitle">
-                Безопасно запускайте все свои ИИ-нагрузки на одной нейтральной платформе с лучшей моделью и оптимальным соотношением интеллекта и затрат.
+                Исследуйте, создавайте и сохраняйте идеальные цветовые палитры для ваших дизайн-проектов. Вдохновляйтесь космическими оттенками и неоновыми акцентами.
             </p>
             
             <div class="hero-buttons">
-                <a href="#" class="btn btn-primary">Получить ключ API</a>
-                <a href="#" class="btn btn-secondary">Использовать своего агента</a>
+                <a href="#" class="btn btn-primary">Смотреть палитры</a>
+                <a href="#" class="btn btn-secondary">Случайный цвет</a>
             </div>
 
             <!-- Статистика -->
             <div class="stats">
                 <div class="stat-item">
-                    <div class="stat-number">800T+</div>
-                    <div class="stat-label">месячные токены</div>
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">палитр</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">10M+</div>
-                    <div class="stat-label">пользователей</div>
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">оттенков</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">600+</div>
-                    <div class="stat-label">моделей</div>
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">доступ</div>
                 </div>
             </div>
         </div>
 
-        <!-- Правая часть: Визуал (Абстрактная сфера/логотип) -->
+        <!-- Правая часть: Визуал (Палитра в виде свечения) -->
         <div class="hero-visual">
             <div class="glow-sphere"></div>
-            <div class="floating-icon icon-1">🤖</div>
-            <div class="floating-icon icon-2">🌐</div>
+            <div class="floating-icon icon-1">🎨</div>
+            <div class="floating-icon icon-2">🖌️</div>
             <div class="floating-icon icon-3">✨</div>
-            <div class="floating-icon icon-4">⚡</div>
+            <div class="floating-icon icon-4">🌈</div>
         </div>
     </main>
+
+    <!-- БЛОК С ПАЛИТРАМИ (ЦВЕТА) -->
+    <section class="palette-section">
+        <h2 class="section-title">Популярные палитры</h2>
+        <div class="palette-container">
+            
+            <!-- Палитра 1 -->
+            <div class="color-card">
+                <div class="swatches-row">
+                    <div class="color-swatch" style="background: #c9ff34;"></div>
+                    <div class="color-swatch" style="background: #1a1a1a;"></div>
+                    <div class="color-swatch" style="background: #ffffff;"></div>
+                </div>
+                <h3>Neon Void</h3>
+                <p>Кислотный акцент на глубоком черном</p>
+            </div>
+
+            <!-- Палитра 2 -->
+            <div class="color-card">
+                <div class="swatches-row">
+                    <div class="color-swatch" style="background: #ff5733;"></div>
+                    <div class="color-swatch" style="background: #2d00f7;"></div>
+                    <div class="color-swatch" style="background: #f20089;"></div>
+                </div>
+                <h3>Cyber Sunset</h3>
+                <p>Яркие неоновые цвета для смелых идей</p>
+            </div>
+
+            <!-- Палитра 3 -->
+            <div class="color-card">
+                <div class="swatches-row">
+                    <div class="color-swatch" style="background: #00f5d4;"></div>
+                    <div class="color-swatch" style="background: #00bbf9;"></div>
+                    <div class="color-swatch" style="background: #9b5de5;"></div>
+                </div>
+                <h3>Deep Ocean</h3>
+                <p>Холодные оттенки для технологичных сайтов</p>
+            </div>
+
+        </div>
+    </section>
 
 </body>
 </html>
