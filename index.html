@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- ПЕРЕМЕННЫЕ ТЕМ --- */
         :root {
             --accent: #b864ff;
             --accent-glow: rgba(184, 100, 255, 0.4);
@@ -21,9 +20,6 @@
             --panel-bg: rgba(20, 20, 20, 0.85);
             --panel-border: rgba(255, 255, 255, 0.1);
             --bg-gradient: radial-gradient(circle at 70% 30%, rgba(170, 0, 255, 0.08) 0%, rgba(10, 10, 10, 1) 50%);
-            --star-color-1: #ffffff;
-            --star-color-2: #b864ff;
-            --star-color-3: #a1a1aa;
         }
 
         body.light-theme {
@@ -37,9 +33,6 @@
             --panel-bg: rgba(255, 255, 255, 0.85);
             --panel-border: rgba(0, 0, 0, 0.1);
             --bg-gradient: radial-gradient(circle at 70% 30%, rgba(184, 100, 255, 0.15) 0%, rgba(244, 244, 245, 1) 50%);
-            --star-color-1: #7c3aed; 
-            --star-color-2: #9333ea;
-            --star-color-3: #6b7280;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -55,7 +48,7 @@
 
         a, button { text-decoration: none; color: inherit; font-family: inherit; cursor: pointer; border: none; background: none; }
 
-        /* --- ШАПКА --- */
+        /* ШАПКА */
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 30px; background: var(--bg-color);
@@ -75,7 +68,6 @@
         }
         .btn-primary:hover { background-color: #9d4edd; transform: translateY(-1px); }
 
-        /* Тумблер темы */
         .theme-toggle { 
             position: relative; width: 64px; height: 32px; 
             background: rgba(128, 128, 128, 0.2); border: 1px solid var(--panel-border); 
@@ -89,12 +81,12 @@
         .light-theme .theme-toggle::before { transform: translateX(32px); background: #ffcc00; }
         .theme-icon { font-size: 14px; z-index: 2; pointer-events: none; }
 
-        /* --- ГЛАВНЫЙ ЭКРАН --- */
+        /* ГЛАВНЫЙ ЭКРАН */
         .hero { padding: 40px 30px; position: relative; min-height: 350px; display: flex; align-items: center; }
         .hero-title { font-size: 52px; font-weight: 800; line-height: 1.1; margin-bottom: 15px; }
         .hero-subtitle { font-size: 18px; color: var(--text-muted); }
 
-        /* --- ЗВЕЗДЫ --- */
+        /* ЗВЕЗДЫ */
         .stars-container { position: absolute; top: 0; right: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
         .star {
             position: absolute; pointer-events: auto; cursor: crosshair; user-select: none;
@@ -104,7 +96,7 @@
         .star:hover { transform: scale(1.6) rotate(45deg); }
         @keyframes floatStar { 0% { transform: translateY(0px) rotate(0deg); } 100% { transform: translateY(-15px) rotate(10deg); } }
 
-        /* --- СЕКЦИИ --- */
+        /* СЕКЦИИ */
         .itten-section, .photo-section { padding: 0 30px 30px; display: none; }
         .itten-section.active, .photo-section.active { display: block; }
         .itten-container, .photo-container { 
@@ -132,7 +124,6 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes spin-center { 50% { transform: rotate(-180deg) scale(1.2); } 100% { transform: rotate(-360deg) scale(1); } }
 
-        /* Ползунок и кнопки в круге */
         .slider-container { 
             display: flex; align-items: center; gap: 15px; margin-bottom: 20px; 
             background: var(--input-bg); padding: 10px 15px; border-radius: 8px; width: fit-content; 
@@ -143,7 +134,6 @@
             background: var(--accent); cursor: pointer; 
         }
         
-        /* ВОЗВРАЩАЕМ СТИЛИ КНОПКАМ ИТТЕНА */
         .itten-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
         .itten-btn {
             background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text-main);
@@ -151,7 +141,7 @@
         }
         .itten-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* --- КАРТОЧКИ --- */
+        /* КАРТОЧКИ */
         .palette-section { padding: 20px 30px; }
         .section-title { font-size: 28px; font-weight: 800; margin-bottom: 20px; }
         .palette-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
@@ -186,9 +176,6 @@
             font-family: monospace; font-size: 12px; font-weight: bold; color: #000; 
         }
         .color-strip.dark { color: #fff; }
-        .badge { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; }
-        .badge-pass { background: #0a6b1e; color: #fff; }
-        .badge-fail { background: #8b1a1a; color: #fff; }
         
         .lock-panel { display: flex; flex-direction: column; gap: 8px; max-height: 0; opacity: 0; overflow: hidden; transition: all 0.4s; }
         .card-wrapper:hover .lock-panel { max-height: 420px; opacity: 1; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--card-border); }
@@ -198,7 +185,7 @@
         .lock-icon-btn { font-size: 16px; color: var(--text-muted); margin-left: auto; }
         .lock-item.locked .lock-icon-btn { color: var(--accent); }
 
-        /* --- ПРЕДПРОСМОТР --- */
+        /* ПРЕДПРОСМОТР */
         .preview-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 10000; display: none; justify-content: center; align-items: center; }
         .preview-modal.active { display: flex; }
         .preview-island { background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 24px; width: 900px; max-width: 95%; display: flex; flex-direction: column; }
@@ -206,7 +193,6 @@
         .preview-controls { padding: 20px; display: flex; gap: 20px; align-items: center; background: var(--input-bg); }
         .bg-color-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
         .bg-color-btn.active { border-color: var(--text-main); }
-        
         .preview-canvas { padding: 40px; display: flex; justify-content: center; align-items: center; min-height: 400px; transition: background 0.3s; }
         .mockup-ui { padding: 30px; border-radius: 16px; width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .mockup-btn { padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; }
@@ -220,7 +206,7 @@
         <div class="preview-island">
             <div class="preview-header">
                 <h3>Предпросмотр</h3>
-                <button class="close-preview" onclick="closePreview()">✕</button>
+                <button onclick="closePreview()">✕</button>
             </div>
             <div class="preview-controls">
                 <div class="bg-colors" id="bgColors">
@@ -228,7 +214,7 @@
                     <button class="bg-color-btn" style="background: #34c759;" onclick="setPreviewBg('#34c759', this)"></button>
                     <button class="bg-color-btn" style="background: #007aff;" onclick="setPreviewBg('#007aff', this)"></button>
                     <button class="bg-color-btn" style="background: #000000;" onclick="setPreviewBg('#000000', this)"></button>
-                    <button class="bg-color-btn white-btn" style="background: #ffffff; border: 2px solid #ccc;" onclick="setPreviewBg('#ffffff', this)"></button>
+                    <button class="bg-color-btn" style="background: #ffffff; border: 2px solid #ccc;" onclick="setPreviewBg('#ffffff', this)"></button>
                 </div>
             </div>
             <div class="preview-canvas" id="previewCanvas">
@@ -247,6 +233,7 @@
             <button onclick="switchTab('all')" class="active-tab">Все палитры</button>
             <button onclick="switchTab('fav')">Избранное</button>
             <button onclick="switchTab('itten')">Круг Иттена</button>
+            <button onclick="switchTab('photo')">📷 Из фото</button>
             <button id="fav-counter" style="color: var(--accent); font-weight: 800;">★ 0/20</button>
         </nav>
         <div style="display: flex; gap: 15px; align-items: center;">
@@ -277,13 +264,23 @@
                     <label>Цветов: <span id="colorCountDisplay">3</span></label>
                     <input type="range" id="colorCount" min="2" max="8" value="3" oninput="document.getElementById('colorCountDisplay').innerText = this.value">
                 </div>
-                <!-- Вернули стилизованные кнопки -->
                 <div class="itten-buttons">
                     <button class="itten-btn" onclick="generateItten('complementary')">Комплементарная</button>
                     <button class="itten-btn" onclick="generateItten('triad')">Триада</button>
                     <button class="itten-btn" onclick="generateItten('tetrad')">Тетрада</button>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section class="photo-section" id="section-photo">
+        <div class="photo-container" style="flex-direction: column; align-items: flex-start;">
+            <h3>Палитра из фотографии</h3>
+            <p style="color: var(--text-muted); margin-bottom: 15px;">Загрузите картинку, и мы вытащим из неё цвета.</p>
+            <label class="itten-btn" style="cursor: pointer; display: inline-block;">
+                Выбрать фото
+                <input type="file" id="imageInput" accept="image/*" style="display: none;">
+            </label>
         </div>
     </section>
 
@@ -351,9 +348,11 @@
         function switchTab(tab) {
             document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active-tab'));
             document.getElementById('section-itten').classList.remove('active');
+            document.getElementById('section-photo').classList.remove('active');
             document.getElementById('palettes').style.display = 'none';
 
             if (tab === 'itten') { document.getElementById('section-itten').classList.add('active'); }
+            else if (tab === 'photo') { document.getElementById('section-photo').classList.add('active'); }
             else {
                 document.getElementById('palettes').style.display = 'block';
                 document.querySelectorAll('.card-wrapper').forEach(c => {
@@ -363,20 +362,16 @@
             }
         }
 
-        // --- КРУГ ИТТЕНА (Возвращен правильный выбор цвета) ---
+        // Круг Иттена
         document.getElementById('colorWheel').addEventListener('click', function(e) {
             const rect = this.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
-            
-            // Высчитываем угол клика
             let angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
             if (angle < 0) angle += 360;
             
-            // Берем количество цветов
             const count = parseInt(document.getElementById('colorCount').value);
             let colors = [];
-            // Генерируем цвета с шагом (как триада, но по клику)
             const angleStep = 360 / count;
             for (let i = 0; i < count; i++) {
                 colors.push(hslToHex((angle + i * angleStep) % 360, 70, 50));
@@ -410,6 +405,43 @@
             document.getElementById('palettes').scrollIntoView({ behavior: 'smooth' });
             showToast('Создана палитра!');
         }
+
+        // Загрузка из фото
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 100; canvas.height = 100;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, 100, 100);
+                    const data = ctx.getImageData(0, 0, 100, 100).data;
+                    const colorMap = {};
+                    for (let i = 0; i < data.length; i += 4) {
+                        if (data[i+3] < 128) continue;
+                        const q = v => Math.min(255, Math.round(v / 20) * 20);
+                        const hex = rgbToHex(q(data[i]), q(data[i+1]), q(data[i+2]));
+                        colorMap[hex] = (colorMap[hex] || 0) + 1;
+                    }
+                    const sorted = Object.keys(colorMap).sort((a, b) => colorMap[b] - colorMap[a]);
+                    const finalColors = [];
+                    for (let hex of sorted) {
+                        if (finalColors.length >= 5) break;
+                        let unique = true;
+                        for (let c of finalColors) if (Math.hypot(...[1,3,5].map(i => parseInt(c.substr(i,2),16) - parseInt(hex.substr(i,2),16))) < 40) { unique = false; break; }
+                        if (unique) finalColors.push(hex);
+                    }
+                    while (finalColors.length < 5) finalColors.push(getRandomColor());
+                    addPaletteToContainer(finalColors);
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+        function rgbToHex(r, g, b) { return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase(); }
 
         function buildCard(colors, isSaved = false, existingId = null) {
             let circlesHTML = '', stripsHTML = '', lockHTML = '';
@@ -465,20 +497,15 @@
             if (p) { p.colors = colors; localStorage.setItem('spacePalettes', JSON.stringify(savedPalettes)); }
         }
 
-        function copyHex(hex) {
-            navigator.clipboard.writeText(hex).then(() => showToast(hex + ' скопирован!'));
-        }
+        function copyHex(hex) { navigator.clipboard.writeText(hex).then(() => showToast(hex + ' скопирован!')); }
 
-        // --- ПРЕДПРОСМОТР ---
         function openPreview(btn) {
             const colors = JSON.parse(btn.closest('.card-wrapper').getAttribute('data-colors'));
             let vibrant = colors[0], maxSat = 0;
             colors.forEach(c => { let s = hexToHsl(c)[1]; if (s > maxSat) { maxSat = s; vibrant = c; } });
 
             const ui = document.getElementById('mockupUI');
-            ui.style.backgroundColor = '#ffffff';
-            ui.style.color = '#000000';
-            
+            ui.style.backgroundColor = '#ffffff'; ui.style.color = '#000000';
             const btnMock = document.getElementById('mockupBtn');
             btnMock.style.backgroundColor = vibrant;
             btnMock.style.color = isDark(vibrant) ? '#ffffff' : '#000000';
@@ -521,7 +548,7 @@
             element.closest('.card-wrapper').querySelector(`#swatch-${index}`).classList.toggle('locked');
         }
 
-        // --- ЗВЕЗДЫ (Правильная анимация) ---
+        // ИСПРАВЛЕННАЯ АНИМАЦИЯ ЗВЕЗД
         function initStars() {
             const container = document.getElementById('stars-container');
             container.innerHTML = '';
@@ -536,37 +563,53 @@
                 
                 star.onclick = function(e) {
                     e.stopPropagation();
-                    // Запоминаем текущее положение
+                    
+                    // Получаем текущее положение звезды на экране
                     const rect = star.getBoundingClientRect();
                     const parentRect = container.getBoundingClientRect();
                     
-                    // Отключаем парение
+                    // Переводим в локальные координаты контейнера
+                    const startX = rect.left - parentRect.left;
+                    const startY = rect.top - parentRect.top;
+                    
+                    // Отключаем анимацию парения
                     star.style.animation = 'none';
-                    // Жестко фиксируем позицию
-                    star.style.left = (rect.left - parentRect.left) + 'px';
-                    star.style.top = (rect.top - parentRect.top) + 'px';
-                    star.style.transform = 'scale(1)';
-
-                    // Даем браузеру 1 кадр, чтобы он запомнил позицию
+                    
+                    // Фиксируем текущее положение (в пикселях)
+                    star.style.left = startX + 'px';
+                    star.style.top = startY + 'px';
+                    star.style.transform = 'scale(1) rotate(0deg)';
+                    
+                    // Ждем 1 кадр, чтобы браузер применил новые координаты
                     requestAnimationFrame(() => {
+                        // Включаем плавный переход
                         star.style.transition = 'all 0.8s ease-out';
-                        star.style.transform = 'scale(4) translate(' + (Math.random() - 0.5) * 200 + 'px, ' + (Math.random() - 0.5) * 200 + 'px) rotate(360deg)';
+                        
+                        // Рассчитываем случайное смещение для полета
+                        const moveX = (Math.random() - 0.5) * 300;
+                        const moveY = (Math.random() - 0.5) * 300;
+                        
+                        // Запускаем полет
+                        star.style.transform = `translate(${moveX}px, ${moveY}px) scale(3) rotate(360deg)`;
                         star.style.opacity = '0';
-
+                        
+                        // Через 800мс телепортируем и возрождаем
                         setTimeout(() => {
-                            // Возвращаем на новое место
                             star.style.transition = 'none';
                             star.style.transform = 'none';
                             star.style.opacity = '0';
+                            // Новое случайное место
                             star.style.left = (Math.random() * 90 + 5) + '%';
                             star.style.top = (Math.random() * 80 + 10) + '%';
                             
+                            // Возвращаем видимость
                             setTimeout(() => {
-                                star.style.transition = 'all 0.3s';
+                                star.style.transition = 'opacity 0.3s';
                                 star.style.opacity = Math.random() * 0.5 + 0.3;
+                                
+                                // Включаем анимацию парения обратно
                                 setTimeout(() => { 
                                     star.style.animation = 'floatStar 4s infinite ease-in-out alternate'; 
-                                    star.style.transition = ''; 
                                 }, 50);
                             }, 50);
                         }, 800);
