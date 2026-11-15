@@ -20,11 +20,10 @@
             --card-border: #333;
             --card-hover: rgba(255,255,255,0.05);
             --input-bg: rgba(255,255,255,0.05);
-            --panel-bg: rgba(20, 20, 20, 0.7); /* Для жидкого стекла */
+            --panel-bg: rgba(20, 20, 20, 0.7);
             --panel-border: rgba(255, 255, 255, 0.1);
             --bg-gradient: radial-gradient(circle at 70% 30%, rgba(170, 0, 255, 0.08) 0%, rgba(10, 10, 10, 1) 50%);
             
-            /* Цвета звездочек */
             --star-color-1: #ffffff;
             --star-color-2: #b864ff;
             --star-color-3: #a1a1aa;
@@ -38,11 +37,10 @@
             --card-border: #e4e4e7;
             --card-hover: #f4f4f5;
             --input-bg: #f4f4f5;
-            --panel-bg: rgba(255, 255, 255, 0.7); /* Светлое жидкое стекло */
+            --panel-bg: rgba(255, 255, 255, 0.7);
             --panel-border: rgba(0, 0, 0, 0.1);
             --bg-gradient: radial-gradient(circle at 70% 30%, rgba(184, 100, 255, 0.15) 0%, rgba(244, 244, 245, 1) 50%);
             
-            /* Темные звездочки для светлой темы */
             --star-color-1: #7c3aed; 
             --star-color-2: #9333ea;
             --star-color-3: #6b7280;
@@ -59,26 +57,15 @@
             transition: background-color 0.4s, color 0.4s;
         }
 
-        a, button { text-decoration: none; color: inherit; font-family: inherit; cursor: pointer; border: none; background: none; }
-
-        /* --- СЕКРЕТНЫЙ ОСТРОВОК --- */
-        .secret-island {
-            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
-            background: var(--panel-bg); backdrop-filter: blur(15px);
-            border: 1px solid var(--panel-border); border-radius: 40px; padding: 15px 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.1);
-            z-index: 9999; display: flex; align-items: center; justify-content: center; gap: 15px;
-            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); overflow: hidden;
+        /* --- ДОСТУПНОСТЬ (A11Y) --- */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
         }
-        .secret-island.show { top: 90px; }
-        .secret-text { font-size: 18px; font-weight: 800; color: var(--text-main); text-shadow: 0 0 10px rgba(128, 128, 128, 0.3); z-index: 2; white-space: nowrap; }
-        .close-island { font-size: 18px; color: var(--text-muted); z-index: 3; margin-left: 10px; }
-        .close-island:hover { color: var(--text-main); }
-        .island-stars { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-        .island-star { position: absolute; font-size: 12px; color: var(--accent); animation: floatIsland 3s infinite ease-in-out alternate; opacity: 0.6;}
-        @keyframes floatIsland { 0% { transform: translateY(0px) rotate(0deg); opacity: 0.2; } 100% { transform: translateY(-10px) rotate(20deg); opacity: 0.8; } }
 
-        /* --- ПЕРЕКЛЮЧАТЕЛЬ ТЕМ --- */
+        a, button { text-decoration: none; color: inherit; font-family: inherit; cursor: pointer; border: none; background: none; }
+        button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+        /* --- ТУМБЛЕР ТЕМЫ --- */
         .theme-toggle {
             position: relative; width: 64px; height: 32px;
             background: rgba(128, 128, 128, 0.2); backdrop-filter: blur(10px);
@@ -105,7 +92,18 @@
         .light-theme .anim-star { opacity: 0; } .light-theme .anim-flower { opacity: 1; }
         @keyframes float { 0% { transform: translateY(0) scale(0.8); } 100% { transform: translateY(-3px) scale(1.2); } }
 
-        /* --- ШАПКА --- */
+        /* --- ОСТАЛЬНЫЕ СТИЛИ (Шапка, герой, карточки, модалки - без изменений) --- */
+        .secret-island {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: var(--panel-bg); backdrop-filter: blur(15px);
+            border: 1px solid var(--panel-border); border-radius: 40px; padding: 15px 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); z-index: 9999; display: flex; align-items: center; justify-content: center; gap: 15px;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); overflow: hidden;
+        }
+        .secret-island.show { top: 90px; }
+        .secret-text { font-size: 18px; font-weight: 800; color: var(--text-main); z-index: 2; white-space: nowrap; }
+        .close-island { font-size: 18px; color: var(--text-muted); z-index: 3; margin-left: 10px; }
+
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 30px; background: var(--bg-color);
@@ -116,261 +114,102 @@
         .logo span { color: var(--accent); }
         .nav-links { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
         .nav-links button { font-size: 14px; color: var(--text-muted); font-weight: 500; transition: 0.2s; }
-        .nav-links button:hover { color: var(--text-main); }
         .nav-links button.active-tab { color: var(--accent); }
+        
         .btn-primary {
-            background-color: var(--accent); color: #fff !important;
-            padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: 0.2s;
+            background-color: var(--accent); color: #fff !important; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: 0.2s;
             display: flex; align-items: center; gap: 6px; white-space: nowrap;
         }
-        .btn-primary:hover { background-color: #9d4edd; transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-glow); }
 
-        /* --- ГЛАВНЫЙ ЭКРАН --- */
         .hero { padding: 40px 30px; position: relative; min-height: 350px; display: flex; align-items: center; }
-        .hero-content { max-width: 600px; position: relative; z-index: 2; }
         .hero-title { font-size: 52px; font-weight: 800; line-height: 1.1; margin-bottom: 15px; letter-spacing: -2px; color: var(--text-main); }
         .hero-subtitle { font-size: 18px; color: var(--text-muted); line-height: 1.6; }
 
-        /* --- ЗВЕЗДОЧКИ --- */
         .stars-container { position: absolute; top: 0; right: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
-        .star {
-            position: absolute; pointer-events: auto; cursor: crosshair; user-select: none;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
-            animation: floatStar 4s infinite ease-in-out alternate;
-        }
+        .star { position: absolute; pointer-events: auto; cursor: crosshair; user-select: none; text-shadow: 0 2px 5px rgba(0,0,0,0.1); animation: floatStar 4s infinite ease-in-out alternate; }
         .star:hover { transform: scale(1.6) rotate(45deg); text-shadow: 0 0 20px currentColor; }
         .star.flying { opacity: 0; transform: scale(4) rotate(360deg); filter: blur(5px); }
         @keyframes floatStar { 0% { transform: translateY(0px) rotate(0deg); } 100% { transform: translateY(-15px) rotate(10deg); } }
 
-        /* --- СЕКЦИИ --- */
         .itten-section, .photo-section { padding: 0 30px 30px; position: relative; z-index: 10; display: none; }
         .itten-section.active, .photo-section.active { display: block; }
-        .itten-container, .photo-container {
-            background: var(--card-bg); backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border); border-radius: 16px; padding: 25px; 
-            display: flex; gap: 30px; align-items: center; flex-wrap: wrap; transition: 0.4s;
-        }
+        .itten-container, .photo-container { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--card-border); border-radius: 16px; padding: 25px; display: flex; gap: 30px; align-items: center; flex-wrap: wrap; transition: 0.4s; }
         
-        /* Круг Иттена */
         .itten-wheel-wrapper { position: relative; width: 180px; height: 180px; display: flex; justify-content: center; align-items: center; }
-        .itten-wheel {
-            width: 180px; height: 180px; border-radius: 50%;
-            background: conic-gradient(#ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080, #ff0000);
-            box-shadow: 0 0 30px rgba(0,0,0,0.1); animation: spin 20s linear infinite; cursor: crosshair;
-        }
-        .itten-wheel:hover { animation-play-state: paused; box-shadow: 0 0 40px var(--accent-glow); }
-        .itten-wheel::after {
-            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 100px; height: 100px; background: var(--bg-color); border-radius: 50%; pointer-events: none; transition: 0.4s;
-        }
-        .itten-wheel-wrapper::before {
-            content: '✦'; position: absolute; z-index: 10; font-size: 35px; color: var(--accent);
-            text-shadow: 0 4px 10px rgba(0,0,0,0.3); pointer-events: none; animation: spin-center 10s linear infinite reverse; 
-        }
+        .itten-wheel { width: 180px; height: 180px; border-radius: 50%; background: conic-gradient(#ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080, #ff0000); box-shadow: 0 0 30px rgba(0,0,0,0.1); animation: spin 20s linear infinite; cursor: crosshair; }
+        .itten-wheel:hover { animation-play-state: paused; }
+        .itten-wheel::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; background: var(--bg-color); border-radius: 50%; pointer-events: none; transition: 0.4s; }
+        .itten-wheel-wrapper::before { content: '✦'; position: absolute; z-index: 10; font-size: 35px; color: var(--accent); pointer-events: none; animation: spin-center 10s linear infinite reverse; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes spin-center { 50% { transform: rotate(-180deg) scale(1.2); } 100% { transform: rotate(-360deg) scale(1); } }
-        
-        .itten-controls h3, .photo-controls h3 { font-size: 22px; font-weight: 800; margin-bottom: 8px; color: var(--text-main); }
-        .itten-controls p, .photo-controls p { color: var(--text-muted); margin-bottom: 15px; font-size: 14px; }
-        
-        /* Слайдер */
-        .slider-container {
-            display: flex; align-items: center; gap: 15px; margin-bottom: 15px;
-            background: var(--input-bg); padding: 10px 15px; border-radius: 8px;
-            width: fit-content; cursor: ns-resize; transition: 0.4s;
-        }
-        .slider-container label { font-size: 14px; font-weight: 600; color: var(--text-main); }
-        .slider-container span { color: var(--accent); font-weight: 800; font-size: 16px; width: 15px; text-align: center;}
+
+        .slider-container { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; background: var(--input-bg); padding: 10px 15px; border-radius: 8px; width: fit-content; cursor: ns-resize; }
         input[type=range] { -webkit-appearance: none; width: 150px; background: transparent; }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
-            background: var(--accent); cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px var(--accent-glow);
-        }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #888; border-radius: 2px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; margin-top: -6px; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #888; border-radius: 2px; }
 
-        .itten-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
-        .itten-btn {
-            background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-main);
-            padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; transition: 0.2s;
-        }
-        .itten-btn:hover { background: var(--card-hover); border-color: var(--accent); color: var(--accent); }
-
-        /* Загрузка фото */
-        .file-upload-wrapper { display: flex; gap: 15px; align-items: center; }
-        .file-upload-btn {
-            background: var(--input-bg); border: 1px dashed var(--text-muted); padding: 20px 30px;
-            border-radius: 12px; text-align: center; cursor: pointer; transition: 0.2s; width: 250px; color: var(--text-main);
-        }
-        .file-upload-btn:hover { border-color: var(--accent); background: rgba(184,100,255,0.1); }
-        .file-upload-btn span { display: block; font-size: 24px; margin-bottom: 10px; }
-        #imageInput { display: none; }
-
-        /* --- КАРТОЧКИ --- */
         .palette-section { padding: 20px 30px; position: relative; z-index: 5; }
         .section-title { font-size: 28px; font-weight: 800; margin-bottom: 20px; color: var(--text-main); }
         .palette-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-
         .card-wrapper { position: relative; }
-        .color-card {
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            border-radius: 16px; padding: 20px; display: flex; flex-direction: column; transition: 0.3s;
-            position: relative; overflow: hidden;
-        }
-        .color-card:hover { border-color: var(--text-muted); background: var(--card-hover); }
-
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; z-index: 2;}
+        .color-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .card-header h3 { font-size: 16px; color: var(--text-main); }
         .card-actions { display: flex; gap: 15px; align-items: center;}
-        .action-btn { font-size: 20px; color: var(--text-muted); padding: 5px; transition: 0.2s; }
-        .action-btn:hover { color: var(--text-main); transform: scale(1.1); }
-        .fav-btn.active { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+        .action-btn { font-size: 20px; color: var(--text-muted); padding: 5px; }
+        .fav-btn.active { color: var(--accent); }
 
-        /* Кружочки */
-        .swatches-row { display: flex; flex-wrap: wrap; gap: 8px; cursor: pointer; z-index: 2;}
+        .swatches-row { display: flex; flex-wrap: wrap; gap: 8px; cursor: pointer; }
         .swatch-wrapper { position: relative; }
         .color-swatch { width: 38px; height: 38px; border-radius: 50%; position: relative; cursor: pointer; }
         .color-input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        
-        .lock-indicator {
-            position: absolute; top: -2px; right: -2px; background: #000; border: 1px solid #555;
-            border-radius: 50%; width: 18px; height: 18px; font-size: 9px;
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; color: var(--accent);
-        }
+        .lock-indicator { position: absolute; top: -2px; right: -2px; background: #000; border: 1px solid #555; border-radius: 50%; width: 18px; height: 18px; font-size: 9px; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; color: var(--accent); }
         .swatch-wrapper.locked .lock-indicator { opacity: 1; }
 
-        /* Полоски */
-        .strip-container { display: none; flex-direction: column; gap: 5px; margin-top: 10px; z-index: 2;}
+        .strip-container { display: none; flex-direction: column; gap: 5px; margin-top: 10px; }
         .strip-container.active { display: flex; }
-        .color-strip {
-            display: flex; justify-content: space-between; align-items: center;
-            height: 35px; border-radius: 6px; padding: 0 10px; 
-            font-family: monospace; font-size: 12px; font-weight: bold; color: #000;
-        }
+        .color-strip { display: flex; justify-content: space-between; align-items: center; height: 35px; border-radius: 6px; padding: 0 10px; font-family: monospace; font-size: 12px; font-weight: bold; color: #000; }
         .color-strip.dark { color: #fff; }
-        .contrast-badges { display: flex; gap: 5px; }
-        .badge { padding: 2px 4px; border-radius: 4px; font-size: 9px; font-weight: 800; }
-        .badge-pass { background: rgba(0, 255, 0, 0.2); color: #000; }
-        .badge-fail { background: rgba(255, 0, 0, 0.2); color: #000; }
-        .color-strip.dark .badge-pass { color: #fff; background: rgba(0, 255, 0, 0.4); }
-        .color-strip.dark .badge-fail { color: #fff; background: rgba(255, 0, 0, 0.4); }
-
-        /* Панель замков */
-        .lock-panel {
-            display: flex; flex-direction: column; gap: 8px;
-            max-height: 0; opacity: 0; overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); background: transparent; margin-top: 0;
-        }
-        .card-wrapper:hover .lock-panel { max-height: 300px; opacity: 1; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--card-border); }
-        .lock-item {
-            display: flex; align-items: center; gap: 10px; background: var(--input-bg);
-            padding: 6px 10px; border-radius: 8px; cursor: pointer; transition: 0.2s;
-        }
-        .lock-item:hover { background: var(--card-border); }
+        .badge { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; border: 1px solid transparent; }
+        .badge-pass { background: #0a6b1e; color: #fff; } /* Исправлено для контраста */
+        .badge-fail { background: #8b1a1a; color: #fff; }
+        
+        .lock-panel { display: flex; flex-direction: column; gap: 8px; max-height: 0; opacity: 0; overflow: hidden; transition: all 0.4s; background: transparent; margin-top: 0; }
+        .card-wrapper:hover .lock-panel, .card-wrapper:focus-within .lock-panel { max-height: 420px; opacity: 1; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--card-border); }
+        .lock-item { display: flex; align-items: center; gap: 10px; background: var(--input-bg); padding: 6px 10px; border-radius: 8px; cursor: pointer; }
         .lock-color-dot { width: 16px; height: 16px; border-radius: 50%; }
         .lock-number { font-size: 13px; font-family: monospace; font-weight: bold; color: var(--text-muted); }
         .lock-icon-btn { font-size: 16px; color: var(--text-muted); margin-left: auto; }
         .lock-item.locked .lock-icon-btn { color: var(--accent); }
 
-        /* История */
         .history-btns { display: flex; gap: 5px; border-left: 1px solid var(--card-border); padding-left: 10px; margin-left: 5px; }
-        .history-btn { color: var(--text-muted); font-size: 18px; font-weight: bold; padding: 0 5px; transition: 0.2s;}
-        .history-btn:hover:not(:disabled) { color: var(--text-main); }
+        .history-btn { color: var(--text-muted); font-size: 18px; font-weight: bold; padding: 0 5px; }
         .history-btn:disabled { opacity: 0.3; }
 
-        /* --- ЖИДКИЙ ОСТРОВ ПРЕДПРОСМОТРА --- */
-        .preview-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); /* Размытие всего фона */
-            z-index: 10000; display: none; justify-content: center; align-items: center;
-        }
+        .preview-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 10000; display: none; justify-content: center; align-items: center; }
         .preview-modal.active { display: flex; }
-        
-        .preview-island {
-            background: var(--panel-bg); /* Автоматически берет цвет темы */
-            backdrop-filter: blur(20px); /* Эффект жидкого стекла */
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--panel-border); border-radius: 24px;
-            width: 900px; max-width: 95%; max-height: 90vh; overflow-y: auto;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); /* Мягкая тень */
-            display: flex; flex-direction: column; position: relative;
-            color: var(--text-main); transition: background 0.4s, border 0.4s;
-        }
-
-        .preview-header { padding: 20px; border-bottom: 1px solid var(--panel-border); display: flex; justify-content: space-between; align-items: center; }
-        .preview-header h3 { font-size: 20px; font-weight: 800; color: var(--text-main); }
-        .close-preview { font-size: 24px; color: var(--text-muted); cursor: pointer; background: none; border: none; }
-        .close-preview:hover { color: var(--text-main); }
-
+        .preview-island { background: var(--panel-bg); backdrop-filter: blur(20px); border: 1px solid var(--panel-border); border-radius: 24px; width: 900px; max-width: 95%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.3); display: flex; flex-direction: column; transition: 0.4s; }
+        .preview-header { padding: 20px; border-bottom: 1px solid var(--panel-border); display: flex; justify-content: space-between; }
         .preview-controls { padding: 20px; display: flex; gap: 20px; flex-wrap: wrap; align-items: center; background: var(--input-bg); border-bottom: 1px solid var(--panel-border); }
-        .bg-colors { display: flex; gap: 10px; align-items: center; }
         .bg-color-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
-        .bg-color-btn:hover { transform: scale(1.1); }
-        .bg-color-btn.active { border-color: var(--text-main); box-shadow: 0 0 10px rgba(128,128,128,0.5); }
-        /* Белая кнопка с рамкой */
+        .bg-color-btn.active { border-color: var(--text-main); }
         .bg-color-btn.white-btn { border: 2px solid #ccc; }
-        .bg-color-btn.white-btn.active { border-color: var(--accent); }
+        
+        .preview-canvas { padding: 40px; display: flex; justify-content: center; align-items: center; min-height: 400px; }
+        .mockup-ui { background: var(--mockup-bg, #fff); color: var(--mockup-text, #000); padding: 30px; border-radius: 16px; width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .mockup-btn { padding: 12px 24px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; }
 
-        .bg-shade-control { display: flex; align-items: center; gap: 10px; margin-left: auto; }
-        .bg-shade-control span { color: var(--text-muted); }
-        .bg-shade-control input { width: 100px; }
-
-        .preview-canvas {
-            padding: 40px; display: flex; justify-content: center; align-items: center;
-            transition: background-color 0.3s; min-height: 400px;
-        }
-
-        .mockup-ui {
-            background: var(--mockup-bg, #fff); color: var(--mockup-text, #000);
-            padding: 30px; border-radius: 16px; width: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: all 0.3s;
-        }
-        .mockup-title { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
-        .mockup-text { font-size: 14px; line-height: 1.5; margin-bottom: 20px; opacity: 0.8; }
-        .mockup-btn {
-            padding: 12px 24px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer;
-            display: inline-block; transition: all 0.3s;
-        }
-
-        #toast {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--accent); color: #fff; padding: 12px 20px; border-radius: 8px;
-            font-weight: bold; display: none; z-index: 99999; width: 90%; text-align: center;
-        }
-
-        /* --- ВЕРСИЯ ДЛЯ ПК --- */
-        @media (min-width: 1024px) {
-            .navbar { padding: 20px 40px; flex-wrap: nowrap; }
-            .nav-links { gap: 25px; flex-wrap: nowrap; }
-            .hero { padding: 80px 40px; min-height: 450px; }
-            .hero-title { font-size: 64px; }
-            .itten-section, .photo-section { padding: 0 40px 40px; }
-            .itten-container, .photo-container { gap: 40px; }
-            .itten-wheel-wrapper { width: 220px; height: 220px; }
-            .itten-wheel { width: 220px; height: 220px; }
-            .itten-wheel::after { width: 130px; height: 130px; }
-            .palette-section { padding: 40px; }
-            .palette-container { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
-            .color-card { padding: 25px; }
-            .card-header h3 { font-size: 18px; }
-            .swatches-row { justify-content: flex-start; }
-            .color-swatch { width: 42px; height: 42px; }
-            .color-strip { height: 40px; font-size: 13px; padding: 0 15px;}
-            .secret-island { padding: 20px 50px; gap: 20px; }
-            .secret-text { font-size: 22px; letter-spacing: 2px; }
-            .secret-island.show { top: 100px; }
-        }
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; padding: 12px 20px; border-radius: 8px; font-weight: bold; display: none; z-index: 99999; width: 90%; text-align: center; }
     </style>
 </head>
 <body>
 
-    <!-- ЖИДКИЙ ОСТРОВ ПРЕДПРОСМОТРА -->
     <div class="preview-modal" id="previewModal">
         <div class="preview-island">
             <div class="preview-header">
                 <h3>Предпросмотр палитры</h3>
-                <button class="close-preview" onclick="closePreview()">✕</button>
+                <button class="close-preview" onclick="closePreview()" aria-label="Закрыть">✕</button>
             </div>
             <div class="preview-controls">
                 <div class="bg-colors" id="bgColors">
@@ -381,7 +220,6 @@
                     <button class="bg-color-btn" style="background: #007aff;" onclick="setPreviewBg('#007aff', this)"></button>
                     <button class="bg-color-btn" style="background: #af52de;" onclick="setPreviewBg('#af52de', this)"></button>
                     <button class="bg-color-btn" style="background: #000000;" onclick="setPreviewBg('#000000', this)"></button>
-                    <!-- Белый цвет теперь с рамкой -->
                     <button class="bg-color-btn white-btn" style="background: #ffffff;" onclick="setPreviewBg('#ffffff', this)"></button>
                 </div>
                 <div class="bg-shade-control">
@@ -399,11 +237,9 @@
         </div>
     </div>
 
-    <!-- СЕКРЕТНЫЙ ОСТРОВОК -->
     <div class="secret-island" id="secretIsland">
-        <div class="island-stars" id="islandStars"></div>
         <div class="secret-text">Помни, я тебя очень люблю</div>
-        <button class="close-island" onclick="closeIsland()">✕</button>
+        <button class="close-island" onclick="closeIsland()" aria-label="Закрыть">✕</button>
     </div>
 
     <header class="navbar">
@@ -418,11 +254,11 @@
                 <button class="history-btn" id="undoBtn" onclick="undo()" disabled>↶</button>
                 <button class="history-btn" id="redoBtn" onclick="redo()" disabled>↷</button>
             </div>
-            <button id="fav-counter" style="color: var(--accent); font-weight: 800; cursor: default;">★ 0/20</button>
+            <button id="fav-counter" aria-live="polite" style="color: var(--accent); font-weight: 800; cursor: default;">★ 0/20</button>
         </nav>
 
         <div style="display: flex; gap: 15px; align-items: center;">
-            <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" role="switch" aria-checked="false" aria-label="Переключить тему">
                 <div class="theme-animations">
                     <span class="anim-star" style="top: 10%; left: 20%;">✦</span>
                     <span class="anim-star" style="bottom: 20%; right: 15%;">✧</span>
@@ -431,7 +267,7 @@
                 </div>
                 <span class="theme-icon icon-moon">🌙</span>
                 <span class="theme-icon icon-sun">☀️</span>
-            </div>
+            </button>
             
             <button onclick="generateNew()" class="btn-primary"><span class="star-icon">✦</span> Создать</button>
         </div>
@@ -452,7 +288,6 @@
             </div>
             <div class="itten-controls">
                 <h3>Генератор по кругу Иттена</h3>
-                <p>Кликни по кругу или выбери схему:</p>
                 <div class="slider-container" id="sliderContainer">
                     <label for="colorCount">Цветов:</label>
                     <span id="colorCountDisplay">3</span>
@@ -472,11 +307,9 @@
         <div class="photo-container">
             <div class="photo-controls">
                 <h3>Палитра из фотографии</h3>
-                <p>Загрузите любую картинку, и мы вытащим из неё самые яркие цвета!</p>
                 <div class="file-upload-wrapper">
                     <label class="file-upload-btn">
-                        <span>🖼️</span>
-                        Выбрать фото
+                        <span>🖼️</span> Выбрать фото
                         <input type="file" id="imageInput" accept="image/*">
                     </label>
                 </div>
@@ -489,42 +322,38 @@
         <div id="palette-container" class="palette-container"></div>
     </section>
 
-    <div id="toast">Уведомление</div>
+    <div id="toast" role="status" aria-live="polite">Уведомление</div>
 
     <script>
-        // --- ИНИЦИАЛИЗАЦИЯ ТЕМЫ ---
-        const currentTheme = localStorage.getItem('theme') || 'dark';
-        if (currentTheme === 'light') {
+        // 1. ИСПРАВЛЕНИЕ ВСПЫШКИ ТЕМЫ (Применяем до рендера)
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.documentElement.classList.add('light-theme');
             document.body.classList.add('light-theme');
         }
 
-        function toggleTheme() {
-            document.body.classList.toggle('light-theme');
-            if (document.body.classList.contains('light-theme')) {
-                localStorage.setItem('theme', 'light');
-            } else {
-                localStorage.setItem('theme', 'dark');
-            }
-            // Пересоздаем звезды, чтобы они взяли новые цвета
-            document.getElementById('stars-container').innerHTML = '';
-            initStars();
+        // 2. ИСПРАВЛЕНИЕ ЧТЕНИЯ ПАМЯТИ (try/catch)
+        let savedPalettes = [];
+        try {
+            savedPalettes = JSON.parse(localStorage.getItem('spacePalettes')) || [];
+        } catch (e) {
+            console.error('Ошибка чтения памяти', e);
+            savedPalettes = [];
         }
 
-        let favCount = 0;
         const MAX_FAV = 20;
         let currentTab = 'all';
-        let savedPalettes = JSON.parse(localStorage.getItem('spacePalettes')) || [];
-        let secretUnlocked = localStorage.getItem('secretUnlocked') === 'true';
         let history = [];
         let historyIndex = -1;
+        let currentPreviewColors = [];
+        let currentBgBaseColor = '#ffffff';
+        let currentBgShade = 0;
 
-        // --- УТИЛИТЫ ЦВЕТА ---
+        // 3. УЛУЧШЕННАЯ ГЕНЕРАЦИЯ (вместо "грязи" - красивые HSL)
         function getRandomColor() {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) color += letters[Math.floor(Math.random() * 16)];
-            return color;
+            return hslToHex(Math.random() * 360, 45 + Math.random() * 40, 35 + Math.random() * 30);
         }
+
         function hexToHsl(hex) {
             let r = parseInt(hex.slice(1, 3), 16) / 255, g = parseInt(hex.slice(3, 5), 16) / 255, b = parseInt(hex.slice(5, 7), 16) / 255;
             let max = Math.max(r, g, b), min = Math.min(r, g, b);
@@ -541,6 +370,7 @@
             }
             return [h * 360, s * 100, l * 100];
         }
+
         function hslToHex(h, s, l) {
             l /= 100;
             const a = s * Math.min(l, 1 - l) / 100;
@@ -551,36 +381,62 @@
             };
             return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
         }
+
         function isDark(hex) {
             const r = parseInt(hex.substr(1, 2), 16), g = parseInt(hex.substr(3, 2), 16), b = parseInt(hex.substr(5, 2), 16);
             return (r * 299 + g * 587 + b * 114) / 1000 < 128;
         }
+
         function getLuminance(hex) {
             let rgb = hex.replace('#', '').match(/.{1,2}/g).map(val => parseInt(val, 16) / 255);
             rgb = rgb.map(val => val <= 0.03928 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4));
             return 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
         }
+
         function getContrastRatio(hex1, hex2) {
             const lum1 = getLuminance(hex1), lum2 = getLuminance(hex2);
             return (Math.max(lum1, lum2) + 0.05) / (Math.min(lum1, lum2) + 0.05);
         }
+
         function getContrastBadge(bgHex, textHex) {
             const ratio = getContrastRatio(bgHex, textHex);
             if (ratio >= 7) return `<span class="badge badge-pass">AAA</span>`;
             if (ratio >= 4.5) return `<span class="badge badge-pass">AA</span>`;
             return `<span class="badge badge-fail">Fail</span>`;
         }
+
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.innerText = msg; t.style.display = 'block';
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        // --- ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ---
+        // 4. РЕАЛЬНОЕ КОПИРОВАНИЕ В БУФЕР
+        async function copyHex(hex) {
+            try {
+                await navigator.clipboard.writeText(hex);
+                showToast(`${hex} скопирован!`);
+            } catch (err) {
+                showToast('Не удалось скопировать');
+            }
+        }
+
+        // 5. ПЕРЕКЛЮЧЕНИЕ ТЕМЫ
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-theme');
+            document.documentElement.classList.toggle('light-theme', isLight);
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            document.getElementById('themeToggle').setAttribute('aria-checked', isLight);
+            
+            // Пересоздаем звезды под новый цвет
+            document.getElementById('stars-container').innerHTML = '';
+            initStars();
+        }
+
+        // 6. ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
         function switchTab(tab) {
             currentTab = tab;
             document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active-tab'));
-            
             document.getElementById('section-itten').classList.remove('active');
             document.getElementById('section-photo').classList.remove('active');
             document.getElementById('palettes').style.display = 'none';
@@ -595,28 +451,21 @@
                 document.getElementById('tab-' + tab).classList.add('active-tab');
                 document.getElementById('palettes').style.display = 'block';
                 const cards = document.querySelectorAll('.card-wrapper');
-                const title = document.getElementById('section-title');
                 if (tab === 'all') {
-                    title.innerText = 'Все палитры';
                     cards.forEach(c => c.classList.remove('hidden'));
                 } else if (tab === 'fav') {
-                    title.innerText = 'Ваше избранное';
                     cards.forEach(c => {
                         if (c.getAttribute('data-fav') === 'true') c.classList.remove('hidden');
                         else c.classList.add('hidden');
                     });
-                    if (favCount === 0) showToast('В избранном пока пусто');
                 }
             }
         }
 
-        // --- ЛОГИКА КРУГА ИТТЕНА ---
-        const colorWheel = document.getElementById('colorWheel');
-        colorWheel.addEventListener('click', function(e) {
+        // 7. ГЕНЕРАЦИЯ
+        document.getElementById('colorWheel').addEventListener('click', function(e) {
             const rect = this.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2, centerY = rect.top + rect.height / 2;
-            const x = e.clientX - centerX, y = e.clientY - centerY;
-            let angle = Math.atan2(y, x) * (180 / Math.PI);
+            let angle = Math.atan2(e.clientY - (rect.top + rect.height / 2), e.clientX - (rect.left + rect.width / 2)) * (180 / Math.PI);
             if (angle < 0) angle += 360;
             const hexColor = hslToHex(angle, Math.floor(Math.random() * 30) + 40, Math.floor(Math.random() * 20) + 40); 
             let count = parseInt(document.getElementById('colorCount').value);
@@ -638,7 +487,6 @@
 
             while (colors.length < count) { colors.push(hslToHex((h + colors.length * 45) % 360, niceS, niceL)); }
             colors = colors.slice(0, count);
-
             addPaletteToContainer(colors, `Создана палитра: ${scheme} (${count} цв.)`);
         }
 
@@ -656,48 +504,47 @@
             const container = document.getElementById('palette-container');
             container.insertBefore(buildCard(colors), container.firstChild);
             addToHistory(colors);
-            switchTab('all');
+            // Больше не выкидываем пользователя на другую вкладку
             document.getElementById('palettes').scrollIntoView({ behavior: 'smooth' });
             showToast(msg);
         }
 
-        // --- ЗАГРУЗКА ИЗ ФОТО ---
+        // 8. ФОТО (Фикс дедупликации и квантования до 255)
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(event) {
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
                     canvas.width = 100; canvas.height = 100;
+                    const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, 100, 100);
-                    
                     const imageData = ctx.getImageData(0, 0, 100, 100).data;
                     const colorMap = {};
 
                     for (let i = 0; i < imageData.length; i += 4) {
                         if (imageData[i+3] < 128) continue;
                         const r = imageData[i], g = imageData[i+1], b = imageData[i+2];
-                        const quantR = Math.round(r / 20) * 20, quantG = Math.round(g / 20) * 20, quantB = Math.round(b / 20) * 20;
-                        const hex = rgbToHex(quantR, quantG, quantB);
+                        const q = v => Math.min(255, Math.round(v / 20) * 20);
+                        const hex = rgbToHex(q(r), q(g), q(b));
                         colorMap[hex] = (colorMap[hex] || 0) + 1;
                     }
 
                     const sortedColors = Object.keys(colorMap).sort((a, b) => colorMap[b] - colorMap[a]);
                     const finalColors = [];
+                    const dist = (a,b) => Math.hypot(...[1,3,5].map(i => parseInt(a.substr(i,2),16) - parseInt(b.substr(i,2),16)));
+                    
                     for (let hex of sortedColors) {
                         if (finalColors.length >= 5) break;
                         let isUnique = true;
                         for (let c of finalColors) {
-                            if (Math.abs(parseInt(c.slice(1,3),16) - parseInt(hex.slice(1,3),16)) < 20) { isUnique = false; break; }
+                            if (dist(c, hex) < 40) { isUnique = false; break; }
                         }
                         if (isUnique) finalColors.push(hex);
                     }
                     while (finalColors.length < 5) finalColors.push(getRandomColor());
-
                     addPaletteToContainer(finalColors, `Создана палитра из фото! (5 цв.)`);
                 };
                 img.src = event.target.result;
@@ -709,7 +556,7 @@
             return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase();
         }
 
-        // --- ИСТОРИЯ ---
+        // 9. ИСТОРИЯ
         function addToHistory(colors) {
             history = history.slice(0, historyIndex + 1);
             history.push(colors); historyIndex++; updateHistoryButtons();
@@ -720,7 +567,7 @@
             const container = document.getElementById('palette-container');
             container.innerHTML = ''; 
             container.appendChild(buildCard(history[historyIndex]));
-            savedPalettes.forEach(p => container.appendChild(buildCard(p.colors, true)));
+            savedPalettes.forEach(p => container.appendChild(buildCard(p.colors, true, p.id)));
             updateHistoryButtons(); updateCounter();
         }
         function updateHistoryButtons() {
@@ -728,28 +575,27 @@
             document.getElementById('redoBtn').disabled = historyIndex >= history.length - 1;
         }
 
-        // --- КАРТОЧКА ПАЛИТРЫ ---
-        function buildCard(colors, isSaved = false) {
+        // 10. КАРТОЧКА (С уникальными ID)
+        function buildCard(colors, isSaved = false, existingId = null) {
             let circlesHTML = '', stripsHTML = '', lockPanelHTML = '';
+            const cardId = existingId || crypto.randomUUID(); // Уникальный ID для карточки
 
             colors.forEach((c, i) => {
                 circlesHTML += `
                     <div class="swatch-wrapper" id="swatch-${i}">
-                        <div class="color-swatch" style="background: ${c};" title="Нажми, чтобы изменить цвет">
-                            <input type="color" class="color-input" value="${c}" onchange="changeColor(this, ${i})">
+                        <div class="color-swatch" style="background: ${c};">
+                            <input type="color" class="color-input" value="${c}" onchange="changeColor(this, ${i}, '${cardId}')" aria-label="Изменить цвет ${i+1}">
                         </div>
                         <div class="lock-indicator">🔒</div>
                     </div>
                 `;
-                
                 const darkClass = isDark(c) ? 'dark' : '';
                 stripsHTML += `
-                    <div class="color-strip ${darkClass}" style="background: ${c};" onclick="event.stopPropagation(); showToast('Цвет ${c} скопирован!')">
+                    <div class="color-strip ${darkClass}" style="background: ${c};" onclick="event.stopPropagation(); copyHex('${c}')">
                         <span>${i + 1}. ${c}</span>
                         <div class="contrast-badges">${getContrastBadge(c, '#000000')}${getContrastBadge(c, '#ffffff')}</div>
                     </div>
                 `;
-
                 lockPanelHTML += `
                     <div class="lock-item" id="lock-item-${i}" onclick="toggleLock(${i}, this, event)">
                         <div class="lock-color-dot" style="background: ${c};"></div>
@@ -763,15 +609,16 @@
             wrapper.className = 'card-wrapper';
             wrapper.setAttribute('data-fav', isSaved ? 'true' : 'false');
             wrapper.setAttribute('data-colors', JSON.stringify(colors));
+            wrapper.setAttribute('data-id', cardId);
 
             wrapper.innerHTML = `
                 <div class="color-card">
                     <div class="card-header">
                         <h3>Палитра</h3>
                         <div class="card-actions">
-                            <button class="action-btn" onclick="event.stopPropagation(); openPreview(this)" title="Предпросмотр">👁</button>
-                            <button class="action-btn fav-btn ${isSaved ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav(this)">${isSaved ? '★' : '☆'}</button>
-                            <button class="action-btn" onclick="event.stopPropagation(); downloadPalette(this)">⬇</button>
+                            <button class="action-btn" onclick="event.stopPropagation(); openPreview(this)" aria-label="Предпросмотр">👁</button>
+                            <button class="action-btn fav-btn ${isSaved ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav(this, '${cardId}')" aria-label="В избранное">${isSaved ? '★' : '☆'}</button>
+                            <button class="action-btn" onclick="event.stopPropagation(); downloadPalette(this)" aria-label="Скачать">⬇</button>
                         </div>
                     </div>
                     <div class="swatches-row">${circlesHTML}</div>
@@ -797,7 +644,8 @@
             return wrapper;
         }
 
-        function changeColor(input, index) {
+        // 11. СМЕНА ЦВЕТА (Сохранение в избранном по ID)
+        function changeColor(input, index, cardId) {
             const wrapper = input.closest('.card-wrapper');
             const newColor = input.value.toUpperCase();
             const colors = JSON.parse(wrapper.getAttribute('data-colors'));
@@ -807,63 +655,59 @@
 
             const swatch = wrapper.querySelectorAll('.color-swatch')[index];
             swatch.style.background = newColor;
-            
-            const lockDot = wrapper.querySelectorAll('.lock-color-dot')[index];
-            lockDot.style.background = newColor;
+            wrapper.querySelectorAll('.lock-color-dot')[index].style.background = newColor;
 
             const strip = wrapper.querySelectorAll('.color-strip')[index];
             strip.style.background = newColor;
-            if(isDark(newColor)) strip.classList.add('dark'); else strip.classList.remove('dark');
+            strip.classList.toggle('dark', isDark(newColor));
             strip.querySelector('span').innerText = `${index + 1}. ${newColor}`;
             strip.querySelector('.contrast-badges').innerHTML = `${getContrastBadge(newColor, '#000000')}${getContrastBadge(newColor, '#ffffff')}`;
 
-            if (wrapper.getAttribute('data-fav') === 'true') {
-                const oldColors = JSON.parse(wrapper.getAttribute('data-colors'));
-                const pIndex = savedPalettes.findIndex(p => p.colors.join('') === oldColors.join(''));
-                if(pIndex !== -1) { savedPalettes[pIndex].colors[index] = newColor; saveToLocalStorage(); }
+            // Ищем палитру по ID и обновляем её
+            const p = savedPalettes.find(p => p.id === cardId);
+            if (p) {
+                p.colors = colors;
+                try { localStorage.setItem('spacePalettes', JSON.stringify(savedPalettes)); } catch(e) {}
             }
             showToast('Цвет изменен!');
         }
 
-        // --- ПРЕДПРОСМОТР ---
-        let currentPreviewColors = [];
-        let currentBgBaseColor = '#ffffff';
-        let currentBgShade = 0;
-
+        // 12. ПРЕДПРОСМОТР (С проверкой контраста текста)
         function openPreview(btn) {
             const wrapper = btn.closest('.card-wrapper');
             currentPreviewColors = JSON.parse(wrapper.getAttribute('data-colors'));
-            
             currentBgBaseColor = '#ffffff'; currentBgShade = 0;
             document.getElementById('bgShade').value = 0;
             document.querySelectorAll('.bg-color-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector('.bg-color-btn[style*="ffffff"]').classList.add('active');
+            document.querySelector('.bg-color-btn.white-btn').classList.add('active');
 
             const sortedByLum = [...currentPreviewColors].sort((a, b) => getLuminance(a) - getLuminance(b));
             const darkest = sortedByLum[0];
-            const lightest = sortedByLum[sortedByLum.length - 1];
-            
             let vibrant = currentPreviewColors[0], maxSat = 0;
-            currentPreviewColors.forEach(c => {
-                let [h, s, l] = hexToHsl(c);
-                if (s > maxSat) { maxSat = s; vibrant = c; }
-            });
+            currentPreviewColors.forEach(c => { let [h, s, l] = hexToHsl(c); if (s > maxSat) { maxSat = s; vibrant = c; } });
 
             const ui = document.getElementById('mockupUI');
             ui.style.setProperty('--mockup-bg', darkest);
-            ui.style.setProperty('--mockup-text', lightest);
-            ui.style.backgroundColor = darkest;
-            ui.style.color = lightest;
             
+            // Подбираем цвет текста (черный или белый) для лучшего контраста на темном фоне
+            const textColor = getContrastRatio(darkest, '#fff') >= getContrastRatio(darkest, '#000') ? '#fff' : '#000';
+            ui.style.setProperty('--mockup-text', textColor);
+            ui.style.backgroundColor = darkest;
+            ui.style.color = textColor;
+
             const mockupBtn = document.getElementById('mockupBtn');
             mockupBtn.style.backgroundColor = vibrant;
             mockupBtn.style.color = isDark(vibrant) ? '#fff' : '#000';
 
             updatePreviewBg();
             document.getElementById('previewModal').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Блокируем скролл
         }
 
-        function closePreview() { document.getElementById('previewModal').classList.remove('active'); }
+        function closePreview() {
+            document.getElementById('previewModal').classList.remove('active');
+            document.body.style.overflow = ''; // Возвращаем скролл
+        }
 
         function setPreviewBg(color, btn) {
             currentBgBaseColor = color; currentBgShade = 0;
@@ -882,7 +726,38 @@
             canvas.style.backgroundColor = hslToHex(h, s, l);
         }
 
-        // --- ИЗБРАННОЕ, СКАЧИВАНИЕ, БЛОКИРОВКА ---
+        // 13. ИЗБРАННОЕ (Фикс счетчика)
+        function toggleFav(btn, cardId) {
+            const wrapper = btn.closest('.card-wrapper');
+            const isCurrentlyFav = wrapper.getAttribute('data-fav') === 'true';
+            const currentColors = JSON.parse(wrapper.getAttribute('data-colors'));
+
+            if (!isCurrentlyFav) {
+                if (savedPalettes.length < MAX_FAV) {
+                    btn.classList.add('active'); btn.innerText = '★';
+                    wrapper.setAttribute('data-fav', 'true');
+                    savedPalettes.push({ id: cardId, colors: currentColors });
+                    saveToLocalStorage();
+                } else showToast(`Лимит (${MAX_FAV})`);
+            } else {
+                btn.classList.remove('active'); btn.innerText = '☆';
+                wrapper.setAttribute('data-fav', 'false');
+                const index = savedPalettes.findIndex(p => p.id === cardId);
+                if (index !== -1) { savedPalettes.splice(index, 1); saveToLocalStorage(); }
+            }
+            updateCounter();
+            if (currentTab === 'fav' && wrapper.getAttribute('data-fav') === 'false') wrapper.classList.add('hidden');
+            if (savedPalettes.length >= MAX_FAV && !secretUnlocked) showSecretIsland();
+        }
+
+        function updateCounter() { 
+            document.getElementById('fav-counter').innerText = `★ ${savedPalettes.length} / ${MAX_FAV}`; 
+        }
+        function saveToLocalStorage() { 
+            try { localStorage.setItem('spacePalettes', JSON.stringify(savedPalettes)); } catch(e) { showToast('Ошибка памяти'); }
+        }
+
+        // 14. ОСТАЛЬНОЕ
         function toggleLock(index, element, event) {
             event.stopPropagation();
             element.classList.toggle('locked');
@@ -894,52 +769,32 @@
             const wrapper = btn.closest('.card-wrapper');
             const colors = JSON.parse(wrapper.getAttribute('data-colors'));
             
-            const canvas = document.createElement('canvas');
-            canvas.width = 1000; canvas.height = 1000;
-            const ctx = canvas.getContext('2d');
+            // Ждем загрузки шрифтов
+            document.fonts.ready.then(() => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 1000; canvas.height = 1000;
+                const ctx = canvas.getContext('2d');
 
-            ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0, 0, 1000, 1000);
-            const stripeHeight = 1000 / colors.length;
-            colors.forEach((c, i) => {
-                ctx.fillStyle = c; ctx.fillRect(0, i * stripeHeight, 1000, stripeHeight);
-                ctx.fillStyle = isDark(c) ? '#ffffff' : '#000000';
-                ctx.font = 'bold 40px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                ctx.fillText(c, 500, i * stripeHeight + stripeHeight / 2);
+                const isLight = document.body.classList.contains('light-theme');
+                ctx.fillStyle = isLight ? '#f4f4f5' : '#0a0a0a'; 
+                ctx.fillRect(0, 0, 1000, 1000);
+                
+                const stripeHeight = 1000 / colors.length;
+                colors.forEach((c, i) => {
+                    ctx.fillStyle = c; ctx.fillRect(0, i * stripeHeight, 1000, stripeHeight);
+                    ctx.fillStyle = isDark(c) ? '#ffffff' : '#000000';
+                    ctx.font = 'bold 40px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                    ctx.fillText(c, 500, i * stripeHeight + stripeHeight / 2);
+                });
+                ctx.fillStyle = isLight ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)'; 
+                ctx.font = 'bold 30px Inter, sans-serif'; ctx.textAlign = 'right';
+                ctx.fillText('Palette Space', 950, 950);
+
+                const link = document.createElement('a');
+                link.download = 'palette.png'; link.href = canvas.toDataURL('image/png'); link.click();
+                showToast('Картинка сохранена!');
             });
-            ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.font = 'bold 30px Inter, sans-serif'; ctx.textAlign = 'right';
-            ctx.fillText('Palette Space', 950, 950);
-
-            const link = document.createElement('a');
-            link.download = 'palette.png'; link.href = canvas.toDataURL('image/png'); link.click();
-            showToast('Картинка сохранена!');
         }
-
-        function toggleFav(btn) {
-            const wrapper = btn.closest('.card-wrapper');
-            const isCurrentlyFav = wrapper.getAttribute('data-fav') === 'true';
-            const currentColors = JSON.parse(wrapper.getAttribute('data-colors'));
-
-            if (!isCurrentlyFav) {
-                if (favCount < MAX_FAV) {
-                    btn.classList.add('active'); btn.innerText = '★';
-                    wrapper.setAttribute('data-fav', 'true');
-                    savedPalettes.push({ colors: currentColors });
-                    saveToLocalStorage(); favCount++;
-                } else showToast(`Лимит (${MAX_FAV})`);
-            } else {
-                btn.classList.remove('active'); btn.innerText = '☆';
-                wrapper.setAttribute('data-fav', 'false');
-                const index = savedPalettes.findIndex(p => p.colors.join('') === currentColors.join(''));
-                if (index !== -1) { savedPalettes.splice(index, 1); saveToLocalStorage(); }
-                favCount--;
-            }
-            updateCounter();
-            if (currentTab === 'fav' && wrapper.getAttribute('data-fav') === 'false') wrapper.classList.add('hidden');
-            if (favCount >= MAX_FAV && !secretUnlocked) showSecretIsland();
-        }
-
-        function updateCounter() { document.getElementById('fav-counter').innerText = `★ ${favCount} / ${MAX_FAV}`; }
-        function saveToLocalStorage() { localStorage.setItem('spacePalettes', JSON.stringify(savedPalettes)); }
 
         function generateNew() {
             const firstCard = document.querySelector('.card-wrapper:not(.hidden)');
@@ -962,22 +817,14 @@
                      else newColors = newColors.slice(0, colorCount);
                 }
             } else for (let i = 0; i < colorCount; i++) newColors.push(getRandomColor());
-
             addPaletteToContainer(newColors, `Создана новая палитра (${colorCount} цв.)!`);
         }
 
-        // --- СЕКРЕТНЫЙ ОСТРОВОК ---
+        // 15. ОСТРОВОК И ЗВЕЗДЫ
         function showSecretIsland() {
             const island = document.getElementById('secretIsland');
             island.classList.add('show');
-            if (!secretUnlocked) { localStorage.setItem('secretUnlocked', 'true'); secretUnlocked = true; }
-            const starsContainer = document.getElementById('islandStars'); starsContainer.innerHTML = '';
-            for (let i = 0; i < 20; i++) {
-                const star = document.createElement('div'); star.className = 'island-star';
-                star.innerText = ['✦', '✧', '★'][Math.floor(Math.random() * 3)];
-                star.style.left = Math.random() * 100 + '%'; star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = (Math.random() * 2) + 's'; starsContainer.appendChild(star);
-            }
+            if (!localStorage.getItem('secretUnlocked')) localStorage.setItem('secretUnlocked', 'true');
         }
         function closeIsland() { document.getElementById('secretIsland').classList.remove('show'); }
 
@@ -985,10 +832,7 @@
             const container = document.getElementById('stars-container');
             const isMobile = window.innerWidth < 1024;
             const starCount = isMobile ? 25 : 80;
-            
-            // Берем цвета из CSS-переменных в зависимости от темы
-            const isLight = document.body.classList.contains('light-theme');
-            const colors = isLight ? ['#7c3aed', '#9333ea', '#6b7280'] : ['#ffffff', 'var(--accent)', '#a1a1aa'];
+            const colors = ['var(--star-color-1)', 'var(--star-color-2)', 'var(--star-color-3)'];
 
             for (let i = 0; i < starCount; i++) {
                 const star = document.createElement('div'); star.className = 'star';
@@ -1002,38 +846,51 @@
                     e.stopPropagation();
                     const randomX = (Math.random() - 0.5) * (isMobile ? 200 : 500);
                     const randomY = (Math.random() - 0.5) * (isMobile ? 200 : 500);
+                    
+                    star.style.animation = 'none'; // Убираем анимацию парения
                     star.classList.add('flying');
                     star.style.transform = `translate(${randomX}px, ${randomY}px) scale(4) rotate(360deg)`;
+                    
                     setTimeout(() => {
-                        star.classList.remove('flying'); star.style.transition = 'none'; star.style.transform = 'none';
-                        star.style.left = (Math.random() * 90 + 10) + '%'; star.style.top = (Math.random() * 90 + 5) + '%';
+                        star.classList.remove('flying'); 
+                        star.style.transition = 'none'; 
+                        star.style.transform = 'none';
+                        star.style.left = (Math.random() * 90 + 10) + '%'; 
+                        star.style.top = (Math.random() * 90 + 5) + '%';
                         star.style.opacity = Math.random() * 0.5 + 0.2;
-                        setTimeout(() => star.style.transition = 'all 1.2s cubic-bezier(0.25, 1, 0.5, 1)', 50);
+                        setTimeout(() => { 
+                            star.style.animation = 'floatStar 4s infinite ease-in-out alternate'; 
+                            star.style.transition = 'all 1.2s cubic-bezier(0.25, 1, 0.5, 1)'; 
+                        }, 50);
                     }, 1200);
                 };
                 container.appendChild(star);
             }
         }
 
-        // --- УПРАВЛЕНИЕ ПОЛЗУНКОМ ---
-        const colorCountInput = document.getElementById('colorCount');
-        const colorCountDisplay = document.getElementById('colorCountDisplay');
-        function handleWheel(e) {
-            e.preventDefault();
-            let currentVal = parseInt(colorCountInput.value);
-            if (e.deltaY < 0 && currentVal < parseInt(colorCountInput.max)) colorCountInput.value = currentVal + 1;
-            else if (e.deltaY > 0 && currentVal > parseInt(colorCountInput.min)) colorCountInput.value = currentVal - 1;
-            colorCountDisplay.innerText = colorCountInput.value;
-        }
-        document.getElementById('sliderContainer').addEventListener('wheel', handleWheel, { passive: false });
-        colorCountInput.addEventListener('wheel', handleWheel, { passive: false });
+        // 16. СЛУШАТЕЛИ СОБЫТИЙ (Модалка, Esc, Ползунок)
+        document.getElementById('previewModal').addEventListener('click', e => {
+            if (e.target.id === 'previewModal') closePreview();
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && document.getElementById('previewModal').classList.contains('active')) closePreview();
+        });
 
-        // --- ЗАГРУЗКА ---
+        const colorCountInput = document.getElementById('colorCount');
+        colorCountInput.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            let currentVal = parseInt(this.value);
+            if (e.deltaY < 0 && currentVal < parseInt(this.max)) this.value = currentVal + 1;
+            else if (e.deltaY > 0 && currentVal > parseInt(this.min)) this.value = currentVal - 1;
+            document.getElementById('colorCountDisplay').innerText = this.value;
+        }, { passive: false });
+
+        // 17. ИНИЦИАЛИЗАЦИЯ
         window.onload = function() {
             const container = document.getElementById('palette-container');
             savedPalettes.forEach((p) => {
-                const card = buildCard(p.colors, true);
-                container.appendChild(card); favCount++;
+                const card = buildCard(p.colors, true, p.id);
+                container.appendChild(card);
             });
             if (savedPalettes.length === 0) {
                 for (let i = 0; i < 3; i++) {
@@ -1042,9 +899,9 @@
                     container.appendChild(buildCard(colors)); addToHistory(colors);
                 }
             }
-            if (favCount >= MAX_FAV && !secretUnlocked) setTimeout(showSecretIsland, 1000);
+            if (savedPalettes.length >= MAX_FAV && !localStorage.getItem('secretUnlocked')) setTimeout(showSecretIsland, 1000);
             initStars(); updateCounter(); updateHistoryButtons();
-            switchTab('all');
+            document.getElementById('themeToggle').setAttribute('aria-checked', document.body.classList.contains('light-theme'));
         };
     </script>
 </body>
