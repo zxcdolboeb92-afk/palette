@@ -693,12 +693,13 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
   isolation: isolate;
   background:
     linear-gradient(118deg,
-      rgba(255,255,255,.20) 0%,
-      rgba(255,255,255,.04) 34%,
-      rgba(255,255,255,.13) 58%,
-      rgba(255,255,255,.02) 100%);
-  -webkit-backdrop-filter: blur(24px) saturate(190%) contrast(1.06);
-  backdrop-filter: blur(24px) saturate(190%) contrast(1.06);
+      rgba(255,255,255,.16) 0%,
+      rgba(255,255,255,.03) 34%,
+      rgba(255,255,255,.10) 58%,
+      rgba(255,255,255,.02) 100%),
+    var(--glass);
+  -webkit-backdrop-filter: blur(26px) saturate(180%);
+  backdrop-filter: blur(26px) saturate(180%);
   border: 1px solid rgba(255,255,255,.24);
   box-shadow:
     0 22px 60px rgba(0,0,0,.46),
@@ -722,9 +723,12 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
     visibility 0s linear 0s;
 }
 
-/* Капли */
+/* Капли.
+   z-index: -1 — важный момент: внутри .island с isolation:isolate
+   слой рисуется над фоном пилюли, но строго под текстом. С z-index: 0
+   фильтр «всплывал» над надписью и выбеливал её. */
 .island-fluid {
-  position: absolute; inset: 0; z-index: 0;
+  position: absolute; inset: 0; z-index: -1;
   filter: url(#goo);
   opacity: .22;
   pointer-events: none;
@@ -761,25 +765,31 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
   100%     { transform: translateX(72%) rotate(5deg); }
 }
 
-/* Пузырьки */
-.island-bubbles { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-.bubble {
-  position: absolute; bottom: 2px; width: 5px; height: 5px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.85);
-  box-shadow: 0 0 8px rgba(255,255,255,.7);
-  z-index: 1; opacity: 0; pointer-events: none;
-  animation: bubbleUp 4.6s linear infinite;
+/* Звёзды внутри островка — те же глифы и токены, что в hero */
+.island-stars {
+  position: absolute; inset: 0; z-index: 1;
+  overflow: hidden; border-radius: inherit;
+  pointer-events: none;
 }
-.bubble:nth-child(1) { left: 18%;  animation-delay: 0s;   }
-.bubble:nth-child(2) { left: 33%;  animation-delay: 1.4s; width: 4px; height: 4px; }
-.bubble:nth-child(3) { left: 52%;  animation-delay: 2.7s; width: 6px; height: 6px; }
-.bubble:nth-child(4) { left: 68%;  animation-delay: .7s;  width: 3px; height: 3px; }
-.bubble:nth-child(5) { left: 82%;  animation-delay: 3.4s; width: 4px; height: 4px; }
-@keyframes bubbleUp {
-  0%   { transform: translateY(0) scale(.5); opacity: 0; }
-  18%  { opacity: .9; }
-  100% { transform: translateY(-56px) scale(1.2); opacity: 0; }
+.istar {
+  position: absolute; bottom: 2px;
+  font-size: 10px; line-height: 1;
+  color: var(--star-1);
+  opacity: 0;
+  text-shadow: 0 0 7px var(--accent-glow);
+  animation: starDrift 5.4s ease-in-out infinite;
+}
+.istar:nth-child(1) { left: 9%;  font-size: 9px;  animation-delay: 0s;   }
+.istar:nth-child(2) { left: 22%; font-size: 13px; animation-delay: 1.9s; color: var(--star-2); }
+.istar:nth-child(3) { left: 41%; font-size: 8px;  animation-delay: 3.1s; color: var(--star-3); }
+.istar:nth-child(4) { left: 58%; font-size: 12px; animation-delay: .8s;  color: var(--star-2); }
+.istar:nth-child(5) { left: 72%; font-size: 9px;  animation-delay: 2.4s; }
+.istar:nth-child(6) { left: 88%; font-size: 11px; animation-delay: 4.2s; color: var(--star-3); }
+@keyframes starDrift {
+  0%   { transform: translateY(10px) scale(.55) rotate(-20deg); opacity: 0; }
+  16%  { opacity: .95; }
+  62%  { opacity: .85; }
+  100% { transform: translateY(-42px) scale(1.1) rotate(150deg); opacity: 0; }
 }
 
 /* Круги на воде */
@@ -807,10 +817,11 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
 :root.light .island {
   background:
     linear-gradient(118deg,
-      rgba(255,255,255,.95) 0%,
-      rgba(255,255,255,.62) 34%,
-      rgba(255,255,255,.88) 58%,
-      rgba(255,255,255,.55) 100%);
+      rgba(255,255,255,.70) 0%,
+      rgba(255,255,255,.20) 34%,
+      rgba(255,255,255,.55) 58%,
+      rgba(255,255,255,.15) 100%),
+    var(--glass);
   border-color: rgba(255,255,255,.95);
   box-shadow:
     0 22px 50px rgba(64,32,120,.20),
@@ -819,11 +830,7 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
     inset 0 -18px 30px -12px rgba(138,43,226,.22);
 }
 :root.light .island-sheen { opacity: .55; mix-blend-mode: normal; }
-:root.light .bubble {
-  background: rgba(138,43,226,.55);
-  box-shadow: none;
-}
-:root.light .island-fluid { opacity: .34; }
+:root.light .island-fluid { opacity: .30; }
 
 /* ============================================================
    БРЕЙКПОИНТЫ
@@ -996,12 +1003,13 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
     <span class="blob b4"></span>
   </div>
   <div class="island-sheen" aria-hidden="true"></div>
-  <div class="island-bubbles" aria-hidden="true">
-    <span class="bubble"></span>
-    <span class="bubble"></span>
-    <span class="bubble"></span>
-    <span class="bubble"></span>
-    <span class="bubble"></span>
+  <div class="island-stars" aria-hidden="true">
+    <span class="istar">✦</span>
+    <span class="istar">✧</span>
+    <span class="istar">✦</span>
+    <span class="istar">✧</span>
+    <span class="istar">★</span>
+    <span class="istar">✧</span>
   </div>
   <span class="island-text" id="islandText">Помни, я тебя очень люблю</span>
   <button class="icon-btn small" type="button" id="islandClose" aria-label="Скрыть">✕</button>
