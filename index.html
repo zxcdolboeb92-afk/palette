@@ -19,9 +19,8 @@
 })();
 </script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+<!-- Шрифт не грузится из сети: файл должен работать офлайн и из file://.
+     Inter используется, только если установлен в системе, иначе — системный стек. -->
 
 <style>
 /* ============================================================
@@ -108,6 +107,9 @@ body {
 }
 
 body.locked { overflow: hidden; }
+
+/* Якоря и scrollIntoView не прячутся под липкой шапкой. */
+#collection, .section, .panel, .hero { scroll-margin-top: calc(var(--nav-h, 72px) + 8px); }
 
 a, button, input, summary { font-family: inherit; color: inherit; }
 button { background: none; border: 0; cursor: pointer; }
@@ -553,18 +555,23 @@ input[type="range"]::-moz-range-thumb {
 /* Полоски */
 .strips { display: flex; flex-direction: column; gap: 4px; }
 .strip {
-  display: flex; align-items: center; gap: 8px;
-  height: 36px; padding: 0 10px; border-radius: 6px;
+  display: flex; align-items: center; gap: 4px;
+  height: 36px; padding: 0 6px 0 10px; border-radius: 6px;
   background: var(--c); color: var(--ink);
   font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   font-size: 12px; font-weight: 700;
   transition: transform var(--dur-2) var(--ease-spring),
               box-shadow var(--dur-2) var(--ease-out);
-  text-align: left; width: 100%;
+  width: 100%;
 }
 .strip:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,.18); }
-.strip:active { transform: scale(.985); }
-.strip-hex { flex: 1 1 auto; letter-spacing: .3px; }
+.strip-copy {
+  flex: 1 1 auto; min-width: 0; height: 100%;
+  display: flex; align-items: center; gap: 8px;
+  font: inherit; color: inherit; text-align: left;
+}
+.strip-copy:active { opacity: .8; }
+.strip-hex { flex: 1 1 auto; min-width: 0; letter-spacing: .3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .strip-ratio { font-size: 10.5px; font-variant-numeric: tabular-nums; }
 .strip-badge {
   font-size: 8.5px; font-weight: 800; letter-spacing: .4px;
@@ -572,6 +579,50 @@ input[type="range"]::-moz-range-thumb {
   background: var(--ink); color: var(--c);
 }
 .strip-badge.low { background: var(--ink); color: var(--c); }
+.strip-edit {
+  flex: 0 0 auto; width: 24px; height: 24px; border-radius: 5px;
+  display: grid; place-content: center; font-size: 11px; line-height: 1;
+  color: inherit; opacity: .5;
+  transition: opacity var(--dur-1) var(--ease-soft), background var(--dur-1) var(--ease-soft),
+              transform var(--dur-2) var(--ease-spring);
+}
+.strip-edit:hover { opacity: 1; background: rgba(128,128,128,.22); }
+.strip-edit:active { transform: scale(.9); }
+.strip-input {
+  flex: 1 1 auto; min-width: 0; height: 26px; border-radius: 5px;
+  padding: 0 8px; border: 1px solid rgba(0,0,0,.25);
+  background: #FFFFFF; color: #111111;
+  font: inherit; font-size: 12px; letter-spacing: .3px;
+  text-transform: uppercase;
+}
+
+/* Горячие клавиши */
+.help-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.help-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 10px 2px; border-bottom: 1px solid var(--line); font-size: 13px;
+}
+.help-row:last-child { border-bottom: 0; }
+.help-row span { color: var(--muted); }
+.kbd {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 11px; font-weight: 700; letter-spacing: .2px;
+  padding: 3px 7px; border-radius: 6px;
+  background: var(--input); border: 1px solid var(--line-strong);
+  border-bottom-width: 2px; white-space: nowrap;
+}
+
+/* Экономия ресурсов на слабых машинах и в фоновой вкладке */
+.is-low-end .island-fluid { filter: none; opacity: .12; }
+.is-low-end .island-sheen,
+.is-low-end .wheel { animation: none; }
+.is-low-end .star,
+.is-low-end .istar { animation: none; opacity: .55; }
+.is-low-end .navbar,
+.is-low-end .island { -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.is-paused *,
+.is-paused *::before,
+.is-paused *::after { animation-play-state: paused !important; }
 
 /* Подвал карточки */
 .card-foot { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
@@ -595,6 +646,16 @@ input[type="range"]::-moz-range-thumb {
 .wcag.bump { animation: pop var(--dur-3) var(--ease-spring); }
 .wcag.pass { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
 .wcag.fail { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 40%, transparent); }
+
+/* Счётчик избранного — отдельная метрика, а не WCAG-чип: не зелёный «pass». */
+.fav-count {
+  font-size: 11px; font-weight: 700; white-space: nowrap;
+  padding: 4px 8px; border-radius: 999px;
+  border: 1px solid var(--line); color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.fav-count.bump { animation: pop var(--dur-3) var(--ease-spring); }
+.fav-count.fail { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 40%, transparent); }
 
 /* Меню и замки через <details> — бесплатная доступность */
 details { position: relative; }
@@ -732,6 +793,7 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
   padding: 12px 18px; border-bottom: 1px solid var(--line);
   background: var(--card); font-size: 12px;
 }
+.preview-group { display: flex; align-items: center; gap: 8px; }
 .preview-bar .lbl { color: var(--muted); font-weight: 600; }
 .bg-dots { display: flex; gap: 6px; flex-wrap: wrap; }
 .bg-dot {
@@ -799,11 +861,30 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
   border: 1px solid var(--line); font-size: 11.5px; color: var(--text);
 }
 .report-sw { width: 16px; height: 16px; border-radius: 50%; flex: 0 0 auto; box-shadow: inset 0 0 0 1px rgba(128,128,128,.3); }
-.report-hex { font-family: ui-monospace, monospace; letter-spacing: .2px; }
+.report-hex { font-family: ui-monospace, monospace; letter-spacing: .2px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .report-ratio { margin-left: auto; font-variant-numeric: tabular-nums; opacity: .8; }
 .report-tag { font-weight: 800; font-size: 9.5px; padding: 2px 5px; border-radius: 4px; }
 .report-tag.pass { background: color-mix(in srgb, var(--ok) 18%, transparent); color: var(--ok); }
 .report-tag.fail { background: color-mix(in srgb, var(--bad) 16%, transparent); color: var(--bad); }
+.report-role { font-weight: 700; font-size: 10px; letter-spacing: .3px; text-transform: uppercase; color: var(--muted); width: 54px; flex: 0 0 auto; }
+.report-lc { font-size: 10px; font-variant-numeric: tabular-nums; opacity: .65; min-width: 46px; text-align: right; }
+
+/* Оттенки 50–900 */
+.ramp-wrap { width: 100%; max-width: 720px; margin: 0 auto 18px; }
+.ramp-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.ramp-head .foot-btn { flex: 0 0 auto; }
+.ramp-head h4 {
+  font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 6px;
+}
+.ramp-head h4 span { font-family: ui-monospace, monospace; letter-spacing: 0; text-transform: none; }
+.ramp { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 3px; }
+.ramp-step { border-radius: 5px; overflow: hidden; }
+.ramp-step i { display: block; height: 40px; }
+.ramp-step span {
+  display: block; text-align: center; font-size: 9px; padding: 3px 0;
+  font-variant-numeric: tabular-nums; color: var(--muted);
+}
 
 /* ============================================================
    TOAST / ОСТРОВОК
@@ -811,6 +892,7 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
 .toast {
   position: fixed; left: 50%; bottom: 22px; z-index: 99999;
   transform: translate(-50%, 20px);
+  display: flex; align-items: center; justify-content: center;
   padding: 11px 18px; border-radius: 999px;
   background: var(--text); color: var(--bg);
   font-size: 13px; font-weight: 600;
@@ -820,8 +902,17 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
               transform var(--dur-3) var(--ease-spring);
   max-width: min(90vw, 480px); text-align: center;
 }
-.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
 .toast[data-kind="error"] { background: var(--bad); color: #fff; }
+.toast-action {
+  margin-left: 10px; padding: 4px 10px; border-radius: 999px;
+  font-size: 12px; font-weight: 700; white-space: nowrap;
+  background: rgba(255,255,255,.18); color: inherit;
+  border: 1px solid rgba(255,255,255,.28);
+  transition: background var(--dur-1) var(--ease-soft), transform var(--dur-2) var(--ease-spring);
+}
+.toast-action:hover { background: rgba(255,255,255,.28); }
+.toast-action:active { transform: scale(.95); }
 
 /* ============================================================
    ЖИДКИЙ ОСТРОВОК
@@ -999,6 +1090,35 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
   .swatch { width: 42px; height: 42px; }
   .strip { height: 40px; font-size: 12.5px; }
 }
+
+/* Узкие экраны: не три ряда в шапке, а два предсказуемых. */
+@media (max-width: 720px) {
+  .navbar { gap: 8px 10px; padding: 10px 14px; }
+  .logo { font-size: 16px; }
+  .nav-main { order: 3; flex: 1 1 100%; justify-content: center; }
+  .nav-tools { gap: 4px; flex: 1 1 auto; justify-content: flex-end; }
+  .sep { display: none; }
+  .nav-tools .btn-ghost { padding: 8px 10px; font-size: 12px; }
+}
+
+@media (max-width: 480px) {
+  .nav-tools .btn-label { display: none; }
+  .nav-tools .btn-primary,
+  .nav-tools .btn-ghost { padding: 8px 10px; }
+  .nav-tools { gap: 2px; order: 3; flex: 1 1 100%; justify-content: center; }
+  .nav-main { order: 2; flex: 0 1 auto; }
+  .tab-btn { padding: 6px 9px; font-size: 12px; }
+  .nav-tools .icon-btn { width: 30px; height: 30px; }
+  .theme-toggle { width: 48px; height: 28px; }
+  .theme-toggle::before { width: 20px; height: 20px; }
+  :root.light .theme-toggle::before { transform: translateX(20px); }
+  .fav-count { padding: 4px 6px; font-size: 10.5px; }
+}
+
+/* На тач-устройствах колесо не должно крутиться под пальцем. */
+@media (hover: none) {
+  .wheel { animation-play-state: paused; }
+}
 </style>
 </head>
 <body>
@@ -1015,13 +1135,13 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
   </nav>
 
   <div class="nav-tools">
-    <button class="btn btn-ghost" type="button" id="btnItten"
+    <button class="btn btn-ghost" type="button" id="btnItten" aria-label="Круг Иттена" title="Круг Иттена"
             aria-expanded="false" aria-controls="panelItten">
-      <span aria-hidden="true">◐</span> Круг Иттена
+      <span aria-hidden="true">◐</span> <span class="btn-label">Круг Иттена</span>
     </button>
-    <button class="btn btn-ghost" type="button" id="btnPhoto"
+    <button class="btn btn-ghost" type="button" id="btnPhoto" aria-label="Из фото" title="Из фото"
             aria-expanded="false" aria-controls="panelPhoto">
-      <span aria-hidden="true">🖼</span> Из фото
+      <span aria-hidden="true">🖼</span> <span class="btn-label">Из фото</span>
     </button>
 
     <span class="sep" aria-hidden="true"></span>
@@ -1031,7 +1151,10 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
 
     <span class="sep" aria-hidden="true"></span>
 
-    <span class="wcag pass" id="favCounter" aria-live="polite">★ 0 / 20</span>
+    <span class="fav-count" id="favCounter" aria-live="polite">★ 0 / 20</span>
+
+    <button class="icon-btn" type="button" id="btnHelp" aria-label="Горячие клавиши"
+            title="Горячие клавиши (?)" aria-keyshortcuts="?">?</button>
 
     <button class="theme-toggle" type="button" id="themeToggle"
             role="switch" aria-checked="false" aria-label="Светлая тема">
@@ -1039,8 +1162,9 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
       <span class="ic ic-sun" aria-hidden="true">☀️</span>
     </button>
 
-    <button class="btn btn-primary" type="button" id="btnCreate">
-      <span aria-hidden="true">✦</span> Создать
+    <button class="btn btn-primary" type="button" id="btnCreate" title="Создать палитру (G)"
+            aria-label="Создать палитру" aria-keyshortcuts="G">
+      <span aria-hidden="true">✦</span> <span class="btn-label">Создать</span>
     </button>
   </div>
 </header>
@@ -1093,7 +1217,13 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
     <div class="panel-inner">
       <div class="controls" style="flex:1 1 320px">
         <h2 id="photoTitle">Палитра из фотографии</h2>
-        <p class="hint">Загрузите или перетащите картинку. Цвета извлекаются в пространстве Lab — близкие оттенки схлопываются, доминирующие выходят вперёд.</p>
+        <p class="hint">Загрузите или перетащите картинку. Алгоритм k-means ищет доминирующие цвета, края кадра отбрасываются, чтобы фон не забивал палитру.</p>
+
+        <div class="range-box">
+          <label for="photoCount">Цветов</label>
+          <output id="photoCountOut" for="photoCount">5</output>
+          <input type="range" id="photoCount" min="3" max="8" step="1" value="5">
+        </div>
       </div>
 
       <input type="file" id="fileInput" accept="image/*" hidden>
@@ -1172,20 +1302,26 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
     </div>
 
     <div class="preview-bar">
-      <span class="lbl">Фон</span>
-      <div class="bg-dots" id="bgDots" role="group" aria-label="Цвет фона предпросмотра"></div>
+      <div class="preview-group">
+        <span class="lbl">Фон</span>
+        <div class="bg-dots" id="bgDots" role="group" aria-label="Цвет фона предпросмотра"></div>
+      </div>
 
-      <span class="lbl">Оттенок</span>
-      <input type="range" id="shade" min="-60" max="60" step="1" value="0" aria-label="Оттенок фона">
-      <output id="shadeOut" for="shade">0</output>
+      <div class="preview-group">
+        <label class="lbl" for="shade">Оттенок</label>
+        <input type="range" id="shade" min="-60" max="60" step="1" value="0" aria-label="Оттенок фона">
+        <output id="shadeOut" for="shade">0</output>
+      </div>
 
-      <label class="lbl" for="cvd">Зрение</label>
-      <select class="select" id="cvd">
-        <option value="none">Обычное</option>
-        <option value="deuteranopia">Дейтеранопия</option>
-        <option value="protanopia">Протанопия</option>
-        <option value="tritanopia">Тританопия</option>
-      </select>
+      <div class="preview-group">
+        <label class="lbl" for="cvd">Зрение</label>
+        <select class="select" id="cvd">
+          <option value="none">Обычное</option>
+          <option value="deuteranopia">Дейтеранопия</option>
+          <option value="protanopia">Протанопия</option>
+          <option value="tritanopia">Тританопия</option>
+        </select>
+      </div>
     </div>
 
     <div class="sheet-body" style="padding:0">
@@ -1200,6 +1336,14 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
         </div>
       </div>
       <div class="report-wrap">
+        <div class="ramp-wrap">
+          <div class="ramp-head">
+            <h4>Оттенки 50–900 · <span id="rampBase"></span></h4>
+            <button class="foot-btn" type="button" id="rampCopy">Копировать CSS</button>
+          </div>
+          <div class="ramp" id="ramp"></div>
+        </div>
+        <div class="report" id="roles"></div>
         <div class="report" id="report"></div>
       </div>
     </div>
@@ -1215,7 +1359,7 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
 <div class="modal" id="importModal" role="dialog" aria-modal="true" aria-labelledby="importTitle">
   <div class="sheet" style="max-width:560px">
     <div class="sheet-head">
-      <h2 id="importTitle">Импорт палитры</h2>
+      <h2 id="importTitle">Импорт палитр</h2>
       <button class="icon-btn" type="button" id="importClose" aria-label="Закрыть">✕</button>
     </div>
     <div class="sheet-body">
@@ -1223,12 +1367,37 @@ textarea:focus, .text-input:focus { border-color: var(--accent); }
         <label for="importText">HEX-цвета или JSON</label>
         <textarea id="importText" spellcheck="false" placeholder="#B864FF, #1A1A1E, #F5F5F7
 или
-{&quot;name&quot;:&quot;Моя палитра&quot;,&quot;colors&quot;:[&quot;#B864FF&quot;,&quot;#1A1A1E&quot;]}"></textarea>
+{&quot;name&quot;:&quot;Моя палитра&quot;,&quot;colors&quot;:[&quot;#B864FF&quot;,&quot;#1A1A1E&quot;]}
+или весь файл palette-space.json — добавятся все палитры"></textarea>
       </div>
+      <p class="hint" id="importHint" style="margin-top:8px"></p>
     </div>
     <div class="sheet-foot">
       <button class="btn" type="button" id="importCancel">Отмена</button>
       <button class="btn btn-primary" type="button" id="importConfirm">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== ГОРЯЧИЕ КЛАВИШИ ===================== -->
+<div class="modal" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="sheet" style="max-width:520px">
+    <div class="sheet-head">
+      <h2 id="helpTitle">Горячие клавиши</h2>
+      <button class="icon-btn" type="button" id="helpClose" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="sheet-body">
+      <ul class="help-list">
+        <li class="help-row"><span>Новая палитра</span><span><kbd class="kbd">G</kbd> или <kbd class="kbd">П</kbd></span></li>
+        <li class="help-row"><span>Отменить действие</span><span><kbd class="kbd">Ctrl</kbd> + <kbd class="kbd">Z</kbd></span></li>
+        <li class="help-row"><span>Повторить действие</span><span><kbd class="kbd">Ctrl</kbd> + <kbd class="kbd">Shift</kbd> + <kbd class="kbd">Z</kbd></span></li>
+        <li class="help-row"><span>Переставить цвет в палитре</span><span><kbd class="kbd">Alt</kbd> + <kbd class="kbd">←</kbd> / <kbd class="kbd">→</kbd></span></li>
+        <li class="help-row"><span>Закрыть окно или меню</span><span><kbd class="kbd">Esc</kbd></span></li>
+        <li class="help-row"><span>Эта справка</span><span><kbd class="kbd">?</kbd></span></li>
+      </ul>
+    </div>
+    <div class="sheet-foot">
+      <button class="btn btn-primary" type="button" id="helpDone">Понятно</button>
     </div>
   </div>
 </div>
@@ -1247,6 +1416,7 @@ const STORE_STATE = 'ps:state:v2';
 const STORE_THEME = 'ps:theme';
 const STORE_SECRET = 'ps:secret';
 const STORE_FIRST_FAV = 'ps:firstfav';
+const STORE_UNDO = 'ps:undo:v1';
 
 const MAX_FAV = 20;
 const MAX_PALETTES = 60;
@@ -1394,6 +1564,27 @@ function labDistance(a, b) {
   return Math.hypot(la[0] - lb[0], la[1] - lb[1], la[2] - lb[2]);
 }
 
+/** Обратное преобразование Lab → HEX (нужно k-means: центроиды живут в Lab). */
+function labToHex(lab) {
+  const fy = (lab[0] + 16) / 116;
+  const fx = fy + lab[1] / 500;
+  const fz = fy - lab[2] / 200;
+  const finv = t => {
+    const t3 = t * t * t;
+    return t3 > 0.008856 ? t3 : (t - 16 / 116) / 7.787;
+  };
+  const x = finv(fx) * 0.95047;
+  const y = finv(fy);
+  const z = finv(fz) * 1.08883;
+
+  const lin = [
+    x * 3.2406 + y * -1.5372 + z * -0.4986,
+    x * -0.9689 + y * 1.8758 + z * 0.0415,
+    x * 0.0557 + y * -0.2040 + z * 1.0570
+  ];
+  return rgbToHex.apply(null, lin.map(linearToSrgb));
+}
+
 /* Симуляция нарушений цветовосприятия (Machado 2009, severity 1.0), линейный RGB */
 const CVD_MATRIX = {
   protanopia: [
@@ -1419,6 +1610,217 @@ function simulateCVD(hex, type) {
   const lin = hexToRgb(hex).map(srgbToLinear);
   const out = m.map(row => row[0] * lin[0] + row[1] * lin[1] + row[2] * lin[2]);
   return rgbToHex.apply(null, out.map(linearToSrgb));
+}
+
+/* ---- OKLCH: перцептивно ровные оттенки ---- */
+function hexToOklab(hex) {
+  const lin = hexToRgb(hex).map(srgbToLinear);
+  const l = Math.cbrt(0.4122214708 * lin[0] + 0.5363325363 * lin[1] + 0.0514459929 * lin[2]);
+  const m = Math.cbrt(0.2119034982 * lin[0] + 0.6806995451 * lin[1] + 0.1073969566 * lin[2]);
+  const s = Math.cbrt(0.0883024619 * lin[0] + 0.2817188376 * lin[1] + 0.6299787005 * lin[2]);
+  return [
+    0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s,
+    1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+    0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s
+  ];
+}
+
+function oklabToHex(lab) {
+  const l_ = lab[0] + 0.3963377774 * lab[1] + 0.2158037573 * lab[2];
+  const m_ = lab[0] - 0.1055613458 * lab[1] - 0.0638541728 * lab[2];
+  const s_ = lab[0] - 0.0894841775 * lab[1] - 1.2914855480 * lab[2];
+  const l = l_ * l_ * l_, m = m_ * m_ * m_, s = s_ * s_ * s_;
+  return rgbToHex(
+    linearToSrgb(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s),
+    linearToSrgb(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s),
+    linearToSrgb(-0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s)
+  );
+}
+
+function hexToOklch(hex) {
+  const lab = hexToOklab(hex);
+  return [lab[0], Math.hypot(lab[1], lab[2]), (Math.atan2(lab[2], lab[1]) * 180 / Math.PI + 360) % 360];
+}
+
+function oklchToHex(L, C, h) {
+  const rad = h * Math.PI / 180;
+  return oklabToHex([L, C * Math.cos(rad), C * Math.sin(rad)]);
+}
+
+/**
+ * OKLCH → HEX с приведением в sRGB. При высокой chroma и крайней светлоте
+ * канал уходит за границу и цвет «схлопывается» в чёрный; здесь мы гасим
+ * chroma до тех пор, пока светлота не вернётся к заданной.
+ */
+function oklchToHexSafe(L, C, h) {
+  let c = Math.max(0, C);
+  for (let i = 0; i < 16; i++) {
+    const hex = oklchToHex(L, c, h);
+    if (Math.abs(hexToOklch(hex)[0] - L) < 0.05) return hex;
+    c *= 0.82;
+  }
+  return oklchToHex(L, 0, h);
+}
+
+/* Светлота ступеней подобрана так, чтобы рампа выглядела ровной,
+   а не «прыгала» на переходах. */
+const RAMP_STEPS = [
+  [50, 0.975], [100, 0.940], [200, 0.875], [300, 0.790], [400, 0.700],
+  [500, 0.610], [600, 0.530], [700, 0.455], [800, 0.385], [900, 0.310]
+];
+
+/** Рампа 50–900: hue сохраняется, chroma гаснет к светлым и тёмным краям. */
+function colorRamp(hex) {
+  const start = hexToOklch(hex);
+  return RAMP_STEPS.map(step => {
+    const L = step[1];
+    const edge = 1 - Math.min(1, Math.abs(L - start[0]) / 0.55);
+    const C = Math.min(start[1], 0.37) * (0.32 + 0.68 * edge);
+    return { step: step[0], hex: oklchToHexSafe(L, Math.max(0, C), start[2]) };
+  });
+}
+
+/* ---- APCA (черновик WCAG 3) ---- */
+function apcaY(hex) {
+  const c = hexToRgb(hex).map(v => Math.pow(v / 255, 2.4));
+  return 0.2126729 * c[0] + 0.7151522 * c[1] + 0.0721750 * c[2];
+}
+
+/** Возвращает Lc: 0…106, знак показывает направление (тёмный/светлый текст). */
+function apcaLc(textHex, bgHex) {
+  const blkThrs = 0.022, blkClmp = 1.414;
+  const normBG = 0.56, normTXT = 0.57, revTXT = 0.62, revBG = 0.65;
+  const scale = 1.14, loClip = 0.1, loBoW = 0.027, loWoB = 0.013;
+
+  let txtY = apcaY(textHex), bgY = apcaY(bgHex);
+  txtY = txtY > blkThrs ? txtY : txtY + Math.pow(blkThrs - txtY, blkClmp);
+  bgY = bgY > blkThrs ? bgY : bgY + Math.pow(blkThrs - bgY, blkClmp);
+  if (Math.abs(bgY - txtY) < 0.0005) return 0;
+
+  let out;
+  if (bgY > txtY) out = (Math.pow(bgY, normBG) - Math.pow(txtY, normTXT)) * scale;
+  else out = (Math.pow(bgY, revBG) - Math.pow(txtY, revTXT)) * scale;
+
+  if (out > -loClip && out < loClip) return 0;
+  out = out > 0 ? out - loBoW : out + loWoB;
+  return out * 100;
+}
+
+/** APCA-уровни: 75 — основной текст, 60 — крупный, 90 — максимум. */
+function apcaLevel(lc) {
+  const v = Math.abs(lc);
+  if (v >= 90) return 'AAA';
+  if (v >= 75) return 'AA';
+  if (v >= 60) return 'AA·L';
+  return 'FAIL';
+}
+
+/* ---- Роли палитры ---- */
+/**
+ * Раскладывает цвета по ролям интерфейса: фон, поверхность, текст,
+ * приглушённый, акцент. Это эвристика по светлоте и насыщенности —
+ * но она отвечает на вопрос «как этим пользоваться», а не «какие тут цвета».
+ */
+function paletteRoles(colors) {
+  if (!colors || !colors.length) return [];
+
+  const items = colors.map(c => ({ hex: c, l: luminance(c), s: hexToHsl(c)[1] }));
+  const byL = items.slice().sort((a, b) => a.l - b.l);
+  const dark = byL[0];
+  const light = byL[byL.length - 1];
+
+  const roles = [];
+  const used = new Set();
+  const add = (key, label, item) => {
+    if (!item || used.has(item.hex)) return;
+    used.add(item.hex);
+    roles.push({ key: key, label: label, hex: item.hex });
+  };
+
+  add('bg', 'Фон', light);
+  add('text', 'Текст', dark);
+
+  const rest = items.filter(x => !used.has(x.hex));
+
+  /* Акцент — самый насыщенный: блёклый цвет акцентом не бывает. */
+  const accent = rest
+    .filter(x => x.s >= 18)
+    .sort((a, b) => b.s - a.s)[0];
+
+  /* Поверхность — ближайший по светлоте к фону, обычно чуть темнее его. */
+  const surface = rest
+    .filter(x => x !== accent)
+    .sort((a, b) => Math.abs(a.l - light.l) - Math.abs(b.l - light.l))[0];
+
+  /* Приглушённый — то, что осталось ближе к середине шкалы. */
+  const midL = (light.l + dark.l) / 2;
+  const muted = rest
+    .filter(x => x !== accent && x !== surface)
+    .sort((a, b) => Math.abs(a.l - midL) - Math.abs(b.l - midL))[0];
+
+  add('surface', 'Поверхность', surface);
+  add('accent', 'Акцент', accent);
+  add('muted', 'Приглушённый', muted);
+
+  return roles;
+}
+
+/** Пары «текст на фоне», которые имеет смысл проверять. */
+function rolePairs(roles) {
+  const map = {};
+  roles.forEach(r => { map[r.key] = r.hex; });
+  const pairs = [];
+  const push = (label, fg, bg) => {
+    if (!fg || !bg) return;
+    const ratio = contrastRatio(fg, bg);
+    pairs.push({ label: label, fg: fg, bg: bg, ratio: ratio, lc: apcaLc(fg, bg) });
+  };
+  push('Текст / фон', map.text, map.bg);
+  push('Текст / поверхность', map.text, map.surface || map.bg);
+  push('Muted / фон', map.muted, map.bg);
+  if (map.accent) push('Кнопка / акцент', bestTextOn(map.accent), map.accent);
+  return pairs;
+}
+
+/** Минимальная различимость пары с учётом трёх типов дальтонизма. */
+function cvdMinDistance(a, b) {
+  let min = labDistance(a, b);
+  ['deuteranopia', 'protanopia', 'tritanopia'].forEach(type => {
+    min = Math.min(min, labDistance(simulateCVD(a, type), simulateCVD(b, type)));
+  });
+  return min;
+}
+
+/**
+ * Разводит цвета по светлоте, пока они не станут различимы при
+ * дальтонизме (ΔE ≥ 10). Hue сохраняется — меняется только L в OKLCH.
+ */
+function makeCvdSafe(colors) {
+  const out = [];
+
+  colors.forEach(hex => {
+    if (!out.length) { out.push(hex); return; }
+
+    const base = hexToOklch(hex);
+    const deltas = [0, .05, -.05, .10, -.10, .15, -.15, .20, -.20, .26, -.26, .32, -.32];
+    let fallback = hex;
+    let fallbackScore = -1;
+
+    for (const d of deltas) {
+      const L = Math.max(.18, Math.min(.94, base[0] + d));
+      const candidate = oklchToHexSafe(L, base[1], base[2]);
+
+      let score = Infinity;
+      out.forEach(prev => { score = Math.min(score, cvdMinDistance(prev, candidate)); });
+
+      if (score > fallbackScore) { fallbackScore = score; fallback = candidate; }
+      if (score >= 10) { fallback = candidate; break; }
+    }
+
+    out.push(fallback);
+  });
+
+  return out;
 }
 
 /* Имена оттенков для автоназвания */
@@ -1502,53 +1904,142 @@ const snapshot = () => JSON.stringify(state.palettes);
  */
 function commit(mutator, options) {
   const opts = options || {};
-  undoStack.push(snapshot());
+  const label = typeof opts.label === 'string' && opts.label ? opts.label : 'изменение';
+
+  undoStack.push({ snap: snapshot(), label: label });
   if (undoStack.length > MAX_UNDO) undoStack.shift();
   redoStack.length = 0;
 
   mutator();
 
+  let dropped = 0;
   if (state.palettes.length > MAX_PALETTES) {
-    const drop = state.palettes.length - MAX_PALETTES;
-    for (let i = 0; i < drop; i++) {
+    const before = state.palettes.length;
+    while (state.palettes.length > MAX_PALETTES) {
       const idx = state.palettes.map(p => p.saved).lastIndexOf(false);
-      if (idx === -1) break;
+      if (idx === -1) { state.palettes.length = MAX_PALETTES; break; }
       state.palettes.splice(idx, 1);
     }
+    dropped = Math.max(0, before - state.palettes.length);
   }
 
   persist();
+  saveUndoHistory();
+
   if (opts.render !== false) render();
   else syncChrome();
+
+  /* Тихая потеря данных — худший вид потери. Говорим прямо и даём отмену. */
+  if (dropped) {
+    toast('Лимит ' + MAX_PALETTES + ' палитр — удалена самая старая', 'error', {
+      label: 'Отменить',
+      fn: undo
+    });
+  }
 }
 
 function undo() {
   if (!undoStack.length) return;
-  redoStack.push(snapshot());
-  state.palettes = JSON.parse(undoStack.pop());
-  persist(); render();
-  toast('Отменено');
+  const entry = undoStack.pop();
+  redoStack.push({ snap: snapshot(), label: entry.label });
+  if (redoStack.length > MAX_UNDO) redoStack.shift();
+
+  state.palettes = JSON.parse(entry.snap);
+  persist(); saveUndoHistory(); render();
+  toast('Отменено: ' + entry.label);
 }
 
 function redo() {
   if (!redoStack.length) return;
-  undoStack.push(snapshot());
-  state.palettes = JSON.parse(redoStack.pop());
-  persist(); render();
-  toast('Повторено');
+  const entry = redoStack.pop();
+  undoStack.push({ snap: snapshot(), label: entry.label });
+  if (undoStack.length > MAX_UNDO) undoStack.shift();
+
+  state.palettes = JSON.parse(entry.snap);
+  persist(); saveUndoHistory(); render();
+  toast('Повторено: ' + entry.label);
+}
+
+/* Последние шаги переживают перезагрузку вкладки: обидно потерять
+   историю из-за случайного F5. Храним только 20 записей — это ~200 КБ. */
+function saveUndoHistory() {
+  try {
+    sessionStorage.setItem(STORE_UNDO, JSON.stringify(undoStack.slice(-20)));
+  } catch (e) { /* приватный режим или переполнение */ }
+}
+
+function loadUndoHistory() {
+  try {
+    const raw = sessionStorage.getItem(STORE_UNDO);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return;
+    undoStack = parsed
+      .filter(x => x && typeof x.snap === 'string')
+      .slice(-20)
+      .map(x => ({ snap: x.snap, label: String(x.label || 'изменение').slice(0, 60) }));
+  } catch (e) {
+    undoStack = [];
+  }
 }
 
 /* ============================================================
    4. TOAST + БУФЕР
    ============================================================ */
 let toastTimer = null;
-function toast(message, kind) {
+let toastQueue = [];
+let toastShowing = false;
+
+/**
+ * Сообщение внизу экрана. Третьим аргументом — действие:
+ * toast('Удалено', 'info', { label: 'Отменить', fn: undo }).
+ * Сообщения с действием важнее обычных: они встают вперёд очереди.
+ */
+function toast(message, kind, action) {
+  const item = {
+    message: message,
+    kind: kind || 'info',
+    action: action && typeof action.fn === 'function' ? action : null
+  };
+
+  if (toastShowing) {
+    if (!item.action) { toastQueue.push(item); return; }
+    toastQueue.length = 0;
+    hideToast();
+  }
+  showToast(item);
+}
+
+function showToast(item) {
   const node = $('#toast');
-  node.textContent = message;
-  node.setAttribute('data-kind', kind || 'info');
+  node.replaceChildren();
+  node.append(el('span', null, item.message));
+
+  if (item.action) {
+    const btn = el('button', { class: 'toast-action', type: 'button' }, item.action.label || 'Отменить');
+    btn.addEventListener('click', () => {
+      hideToast();
+      try { item.action.fn(); } catch (err) { console.error(err); }
+    });
+    node.append(btn);
+  }
+
+  node.setAttribute('data-kind', item.kind);
   node.classList.add('show');
+  toastShowing = true;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => node.classList.remove('show'), 2300);
+  toastTimer = setTimeout(hideToast, item.action ? 5200 : 2400);
+}
+
+function hideToast() {
+  const node = $('#toast');
+  node.classList.remove('show');
+  toastShowing = false;
+  clearTimeout(toastTimer);
+
+  if (toastQueue.length) {
+    showToast(toastQueue.shift());
+  }
 }
 
 async function copyText(text) {
@@ -1966,7 +2457,7 @@ function moveColor(id, from, to, restoreFocus) {
     p.colors.splice(to, 0, c);
     const l = p.locked.splice(from, 1)[0];
     p.locked.splice(to, 0, l);
-  }, { render: false });
+  }, { render: false, label: 'цвет переставлен' });
 
   redrawCard(p);
 
@@ -1979,23 +2470,98 @@ function moveColor(id, from, to, restoreFocus) {
 
 function buildStrips(p) {
   const col = el('div', { class: 'strips' });
+
   p.colors.forEach((c, i) => {
     const ratio = Math.max(contrastRatio(c, '#000000'), contrastRatio(c, '#FFFFFF'));
     const level = wcagLevel(ratio);
-    const btn = el('button', {
-      class: 'strip', type: 'button',
-      style: '--c:' + c + ';--ink:' + bestTextOn(c),
-      title: 'Скопировать ' + c
-    },
+
+    const row = el('div', { class: 'strip', style: '--c:' + c + ';--ink:' + bestTextOn(c) });
+
+    const copy = el('button', { class: 'strip-copy', type: 'button', title: 'Скопировать ' + c },
       el('span', { class: 'strip-hex' }, (i + 1) + '. ' + c),
       el('span', { class: 'strip-ratio' }, ratio.toFixed(1) + ':1'),
       el('span', { class: 'strip-badge' + (ratio < 4.5 ? ' low' : '') }, level),
       el('span', { class: 'sr-only' }, ' — скопировать')
     );
-    btn.addEventListener('click', () => copyHex(c));
-    col.append(btn);
+    copy.addEventListener('click', () => copyHex(c));
+
+    const edit = el('button', {
+      class: 'strip-edit', type: 'button',
+      'aria-label': 'Изменить цвет ' + c, title: 'Ввести HEX'
+    }, '✎');
+    edit.addEventListener('click', () => beginStripEdit(row, p, i, c));
+
+    row.append(copy, edit);
+    col.append(row);
   });
+
   return col;
+}
+
+/** Инлайновый ввод HEX: Enter — применить, Esc — отменить, blur — применить. */
+function beginStripEdit(row, p, index, current) {
+  if (row.querySelector('.strip-input')) return;
+  const copy = row.querySelector('.strip-copy');
+  if (!copy) return;
+
+  const input = el('input', {
+    class: 'strip-input', type: 'text', value: current,
+    maxlength: '7', spellcheck: 'false', autocomplete: 'off',
+    'aria-label': 'HEX-цвет ' + (index + 1)
+  });
+
+  copy.style.display = 'none';
+  row.insertBefore(input, copy);
+  input.focus();
+  input.select();
+
+  let finished = false;
+
+  const finish = apply => {
+    if (finished) return;
+
+    if (apply) {
+      const raw = input.value.trim();
+      const next = normalizeHex(raw);
+
+      if (raw && !next) {
+        toast('Нужен HEX вида #A1B2C3', 'error');
+        input.select();
+        return;
+      }
+
+      if (next && next !== current) {
+        finished = true;
+        setColor(p.id, index, next);
+        /* Карточка перерисована — возвращаем фокус на ту же полоску. */
+        requestAnimationFrame(() => {
+          const card = document.querySelector('.card[data-id="' + p.id + '"]');
+          const strip = card ? card.querySelectorAll('.strip')[index] : null;
+          const btn = strip ? strip.querySelector('.strip-edit') : null;
+          if (btn) btn.focus();
+        });
+        return;
+      }
+    }
+
+    finished = true;
+    input.remove();
+    copy.style.display = '';
+    const btn = row.querySelector('.strip-edit');
+    if (btn) btn.focus();
+  };
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      finish(true);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      finish(false);
+    }
+  });
+  input.addEventListener('blur', () => finish(true));
 }
 
 function buildLocks(p) {
@@ -2049,8 +2615,12 @@ function buildMenu(p) {
     pop.append(b);
   };
 
+  add('Скопировать ссылку', () => sharePalette(p));
+  add('Скачать SVG', () => downloadSvg(p));
+  add('Скачать GPL', () => downloadGpl(p));
   add('Сортировать по яркости', () => sortPalette(p.id));
   add('Перемешать цвета', () => shufflePalette(p.id));
+  add('Сделать CVD-безопасной', () => makePaletteCvdSafe(p.id));
   add('Копировать CSS', () => copyCss(p));
   add('Копировать JSON', () => copyJson(p));
   add('Дублировать', () => duplicatePalette(p.id));
@@ -2070,7 +2640,7 @@ function setColor(id, index, rawHex) {
 
   commit(() => {
     p.colors[index] = hex;
-  }, { render: false });
+  }, { render: false, label: 'цвет изменён' });
 
   redrawCard(p);
 }
@@ -2078,21 +2648,21 @@ function setColor(id, index, rawHex) {
 function toggleLock(id, index) {
   const p = paletteById(id);
   if (!p) return;
-  commit(() => { p.locked[index] = !p.locked[index]; }, { render: false });
+  commit(() => { p.locked[index] = !p.locked[index]; }, { render: false, label: 'замок цвета' });
   redrawCard(p);
 }
 
 function setView(id, view) {
   const p = paletteById(id);
   if (!p) return;
-  commit(() => { p.view = view; }, { render: false });
+  commit(() => { p.view = view; }, { render: false, label: 'вид палитры' });
   redrawCard(p);
 }
 
 function renamePalette(id, name) {
   const p = paletteById(id);
   if (!p) return;
-  commit(() => { p.name = name; }, { render: false });
+  commit(() => { p.name = name; }, { render: false, label: 'палитра переименована' });
   syncChrome();
 }
 
@@ -2104,7 +2674,7 @@ function sortPalette(id) {
     paired.sort((a, b) => luminance(a.c) - luminance(b.c));
     p.colors = paired.map(x => x.c);
     p.locked = paired.map(x => x.locked);
-  });
+  }, { label: 'сортировка по яркости' });
   toast('Отсортировано по яркости');
 }
 
@@ -2119,7 +2689,22 @@ function shufflePalette(id) {
     }
     p.colors = paired.map(x => x.c);
     p.locked = paired.map(x => x.locked);
-  });
+  }, { label: 'цвета перемешаны' });
+}
+
+function makePaletteCvdSafe(id) {
+  const p = paletteById(id);
+  if (!p) return;
+
+  const next = makeCvdSafe(p.colors);
+  if (next.every((c, i) => c === p.colors[i])) {
+    toast('Палитра уже различима при дальтонизме');
+    return;
+  }
+
+  commit(() => { p.colors = next; }, { render: false, label: 'CVD-безопасная палитра' });
+  redrawCard(p);
+  toast('Цвета разведены по светлоте');
 }
 
 function duplicatePalette(id) {
@@ -2135,7 +2720,7 @@ function duplicatePalette(id) {
       view: p.view,
       created: Date.now()
     });
-  });
+  }, { label: 'палитра продублирована' });
   toast('Копия создана');
 }
 
@@ -2145,8 +2730,8 @@ function removePalette(id) {
   commit(() => {
     const idx = state.palettes.findIndex(x => x.id === id);
     if (idx !== -1) state.palettes.splice(idx, 1);
-  });
-  toast('Палитра удалена');
+  }, { label: 'палитра удалена' });
+  toast('Палитра удалена', 'info', { label: 'Отменить', fn: undo });
 }
 
 function toggleFav(id) {
@@ -2159,7 +2744,7 @@ function toggleFav(id) {
     return;
   }
 
-  commit(() => { p.saved = !p.saved; });
+  commit(() => { p.saved = !p.saved; }, { label: p.saved ? 'убрано из избранного' : 'добавлено в избранное' });
 
   if (p.saved) {
     const savedTotal = state.palettes.filter(x => x.saved).length;
@@ -2240,7 +2825,8 @@ function buildSpread(baseHex, count) {
   return colors;
 }
 
-function addPalette(colors, name) {
+function addPalette(colors, name, options) {
+  const opts = options || {};
   const palette = {
     id: uid(),
     name: name || autoName(colors),
@@ -2250,9 +2836,45 @@ function addPalette(colors, name) {
     view: 'dots',
     created: Date.now()
   };
-  commit(() => { state.palettes.unshift(palette); });
-  document.getElementById('collection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  commit(() => { state.palettes.unshift(palette); }, { label: 'добавлена палитра' });
+
+  if (opts.scroll !== false) {
+    document.getElementById('collection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
   return palette;
+}
+
+/**
+ * Импорт нескольких палитр: не больше, чем осталось места до лимита.
+ * Возвращает, сколько удалось добавить.
+ */
+function addMany(list) {
+  const items = Array.isArray(list) ? list.filter(x => x && x.colors && x.colors.length) : [];
+  if (!items.length) return 0;
+
+  const room = Math.max(0, MAX_PALETTES - state.palettes.length);
+  const take = items.slice(0, room);
+  if (!take.length) {
+    toast('Лимит ' + MAX_PALETTES + ' палитр — сначала удалите что-нибудь', 'error');
+    return 0;
+  }
+
+  commit(() => {
+    /* unshift добавляет в начало — разворачиваем, чтобы сохранить порядок файла. */
+    take.slice().reverse().forEach(item => {
+      state.palettes.unshift({
+        id: uid(),
+        name: item.name || autoName(item.colors),
+        colors: item.colors.slice(),
+        locked: item.colors.map(() => false),
+        saved: false,
+        view: 'dots',
+        created: Date.now()
+      });
+    });
+  }, { label: take.length > 1 ? 'импорт палитр' : 'импорт палитры' });
+
+  return take.length;
 }
 
 /** Новый набор с учётом замков первой (самой свежей) палитры. */
@@ -2279,6 +2901,130 @@ function generateNew() {
    ============================================================ */
 let photoBusy = false;
 
+/** Центр-взвешенная выборка: края кадра часто заняты фоном, а не объектом. */
+function photoSamples(data, w, h) {
+  const insetX = Math.max(1, Math.round(w * 0.08));
+  const insetY = Math.max(1, Math.round(h * 0.08));
+  const innerW = Math.max(1, w - insetX * 2);
+  const innerH = Math.max(1, h - insetY * 2);
+  const stride = Math.max(1, Math.round(Math.sqrt((innerW * innerH) / 7000)));
+
+  const samples = [];
+  for (let y = insetY; y < h - insetY; y += stride) {
+    for (let x = insetX; x < w - insetX; x += stride) {
+      const i = (y * w + x) * 4;
+      if (data[i + 3] < 125) continue;
+
+      const nx = (x - w / 2) / (w / 2);
+      const ny = (y - h / 2) / (h / 2);
+      const weight = 1 - 0.5 * Math.min(1, Math.hypot(nx, ny));
+
+      const r = data[i], g = data[i + 1], b = data[i + 2];
+      samples.push({ lab: hexToLab(rgbToHex(r, g, b)), w: weight });
+    }
+  }
+  return samples;
+}
+
+/**
+ * k-means в Lab: farthest-first старт, 10 итераций, слияние близких
+ * кластеров. Возвращает до `want` различимых цветов.
+ */
+function photoPalette(data, w, h, want) {
+  const samples = photoSamples(data, w, h);
+  if (!samples.length) return [];
+
+  const k = Math.max(3, Math.min(8, want));
+
+  /* Первый центроид — самый «центральный» пиксель, дальше — farthest-first */
+  const centroids = [samples.reduce((a, b) => (b.w > a.w ? b : a)).lab.slice()];
+  while (centroids.length < k) {
+    let pick = null, bestDist = -1;
+    samples.forEach(s => {
+      let d = Infinity;
+      centroids.forEach(c => {
+        d = Math.min(d, Math.hypot(s.lab[0] - c[0], s.lab[1] - c[1], s.lab[2] - c[2]));
+      });
+      if (d > bestDist) { bestDist = d; pick = s; }
+    });
+    if (!pick) break;
+    centroids.push(pick.lab.slice());
+  }
+
+  const assign = new Array(samples.length).fill(0);
+
+  for (let iter = 0; iter < 10; iter++) {
+    let moved = false;
+
+    samples.forEach((s, si) => {
+      let best = 0, bestDist = Infinity;
+      centroids.forEach((c, ci) => {
+        const d = Math.pow(s.lab[0] - c[0], 2)
+          + Math.pow(s.lab[1] - c[1], 2)
+          + Math.pow(s.lab[2] - c[2], 2);
+        if (d < bestDist) { bestDist = d; best = ci; }
+      });
+      if (assign[si] !== best) { assign[si] = best; moved = true; }
+    });
+
+    const sums = centroids.map(() => ({ l: 0, a: 0, b: 0, w: 0 }));
+    samples.forEach((s, si) => {
+      const acc = sums[assign[si]];
+      acc.l += s.lab[0] * s.w;
+      acc.a += s.lab[1] * s.w;
+      acc.b += s.lab[2] * s.w;
+      acc.w += s.w;
+    });
+
+    centroids.forEach((c, ci) => {
+      const acc = sums[ci];
+      if (acc.w > 0) {
+        c[0] = acc.l / acc.w;
+        c[1] = acc.a / acc.w;
+        c[2] = acc.b / acc.w;
+      }
+    });
+
+    if (!moved && iter > 0) break;
+  }
+
+  const clusters = centroids.map((c, ci) => {
+    let weight = 0;
+    samples.forEach((s, si) => { if (assign[si] === ci) weight += s.w; });
+    return { lab: c.slice(), weight: weight };
+  }).filter(c => c.weight > 0).sort((a, b) => b.weight - a.weight);
+
+  /* Слияние визуально неразличимых кластеров (ΔE Lab < 8) */
+  const merged = [];
+  clusters.forEach(cl => {
+    const near = merged.find(m => Math.hypot(
+      m.lab[0] - cl.lab[0],
+      m.lab[1] - cl.lab[1],
+      m.lab[2] - cl.lab[2]
+    ) < 8);
+
+    if (near) {
+      const total = near.weight + cl.weight;
+      near.lab[0] = (near.lab[0] * near.weight + cl.lab[0] * cl.weight) / total;
+      near.lab[1] = (near.lab[1] * near.weight + cl.lab[1] * cl.weight) / total;
+      near.lab[2] = (near.lab[2] * near.weight + cl.lab[2] * cl.weight) / total;
+      near.weight = total;
+    } else {
+      merged.push({ lab: cl.lab.slice(), weight: cl.weight });
+    }
+  });
+
+  const picked = [];
+  merged.sort((a, b) => b.weight - a.weight).forEach(cl => {
+    if (picked.length >= k) return;
+    const hex = labToHex(cl.lab);
+    if (picked.every(x => labDistance(x, hex) >= 6)) picked.push(hex);
+  });
+
+  while (picked.length < Math.min(3, k)) picked.push(randomColor());
+  return picked;
+}
+
 async function paletteFromFile(file) {
   if (!file || !/^image\//.test(file.type)) {
     toast('Это не изображение', 'error');
@@ -2296,7 +3042,7 @@ async function paletteFromFile(file) {
     url = URL.createObjectURL(file);
     const img = await loadImage(url);
 
-    const MAX = 200;
+    const MAX = 240;
     const scale = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight));
     const w = Math.max(1, Math.round(img.naturalWidth * scale));
     const h = Math.max(1, Math.round(img.naturalHeight * scale));
@@ -2307,43 +3053,13 @@ async function paletteFromFile(file) {
     ctx.drawImage(img, 0, 0, w, h);
 
     const data = ctx.getImageData(0, 0, w, h).data;
-    const buckets = new Map();
+    const want = parseInt($('#photoCount').value, 10) || 5;
+    const picked = photoPalette(data, w, h, want);
 
-    for (let i = 0; i < data.length; i += 4) {
-      if (data[i + 3] < 125) continue;
-      const r = data[i], g = data[i + 1], b = data[i + 2];
-      /* 5 старших бит на канал — 32768 корзин, потом усредняем */
-      const key = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
-      const cur = buckets.get(key);
-      if (cur) { cur.r += r; cur.g += g; cur.b += b; cur.n++; }
-      else buckets.set(key, { r: r, g: g, b: b, n: 1 });
-    }
-
-    if (!buckets.size) {
+    if (!picked.length) {
       toast('Не удалось прочитать цвета', 'error');
       return;
     }
-
-    /* Кандидаты: средний цвет корзины + вес «частота × насыщенность» */
-    const candidates = [];
-    buckets.forEach(bk => {
-      const hex = rgbToHex(bk.r / bk.n, bk.g / bk.n, bk.b / bk.n);
-      const sat = hexToHsl(hex)[1];
-      const lum = luminance(hex);
-      const balance = 0.55 + 0.45 * (1 - Math.abs(lum - 0.5) * 2);
-      candidates.push({ hex: hex, score: Math.log2(bk.n + 1) * (0.4 + sat / 100) * balance });
-    });
-    candidates.sort((a, b) => b.score - a.score);
-
-    /* Жадный отбор с минимальной дистанцией в Lab */
-    const picked = [];
-    const MIN_DIST = 16;
-    for (const cand of candidates) {
-      if (picked.length >= 6) break;
-      if (picked.every(p => labDistance(p, cand.hex) >= MIN_DIST)) picked.push(cand.hex);
-    }
-
-    while (picked.length < 3) picked.push(randomColor());
 
     addPalette(picked, 'Из фото · ' + file.name.replace(/\.[^.]+$/, '').slice(0, 28));
     toast('Готово: ' + picked.length + ' цветов');
@@ -2468,6 +3184,88 @@ function paintPreview() {
       el('span', { class: 'report-tag ' + (pass ? 'pass' : 'fail') }, level)
     ));
   });
+
+  paintRoles(colors);
+  paintRamp(p);
+}
+
+/** Роли палитры + реальные пары «текст на фоне» с WCAG и APCA. */
+function paintRoles(colors) {
+  const wrap = $('#roles');
+  if (!wrap) return;
+
+  const roles = paletteRoles(colors);
+  const map = {};
+  roles.forEach(r => { map[r.key] = r.hex; });
+  const pairs = rolePairs(roles);
+  wrap.replaceChildren();
+
+  /* Для каждой роли проверяем ту пару, в которой она реально работает. */
+  const pairFor = role => {
+    if (role.key === 'bg') return { fg: map.text || '#000000', bg: role.hex };
+    if (role.key === 'surface') return { fg: map.text || '#000000', bg: role.hex };
+    if (role.key === 'accent') return { fg: bestTextOn(role.hex), bg: role.hex };
+    return { fg: role.hex, bg: map.bg || '#FFFFFF' };
+  };
+
+  wrap.append(el('h4', null, 'Роли палитры'));
+  roles.forEach(role => {
+    const pair = pairFor(role);
+    const ratio = contrastRatio(pair.fg, pair.bg);
+    const lc = apcaLc(pair.fg, pair.bg);
+
+    wrap.append(el('div', { class: 'report-row' },
+      el('span', { class: 'report-sw', style: 'background:' + role.hex }),
+      el('span', { class: 'report-role' }, role.label),
+      el('span', { class: 'report-hex' }, role.hex),
+      el('span', { class: 'report-ratio' }, ratio.toFixed(2) + ':1'),
+      el('span', { class: 'report-lc' }, 'Lc ' + Math.round(Math.abs(lc)))
+    ));
+  });
+
+  wrap.append(el('h4', { style: 'margin-top:8px' }, 'Что с чем сочетается'));
+  pairs.forEach(pair => {
+    const pass = pair.ratio >= 4.5;
+    wrap.append(el('div', { class: 'report-row', title: pair.label },
+      el('span', {
+        class: 'report-sw',
+        style: 'background:' + pair.fg + ';box-shadow:inset 0 0 0 3px ' + pair.bg
+      }),
+      el('span', { class: 'report-hex' }, pair.label),
+      el('span', { class: 'report-ratio' }, pair.ratio.toFixed(2) + ':1'),
+      el('span', { class: 'report-lc' }, 'Lc ' + Math.round(Math.abs(pair.lc))),
+      el('span', { class: 'report-tag ' + (pass ? 'pass' : 'fail') }, wcagLevel(pair.ratio))
+    ));
+  });
+}
+
+function rampToCss(ramp, name) {
+  const slug = String(name || 'brand')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'brand';
+
+  return ':root {\n' + ramp
+    .map(x => '  --' + slug + '-' + x.step + ': ' + x.hex + ';')
+    .join('\n') + '\n}';
+}
+
+function paintRamp(p) {
+  const wrap = $('#ramp');
+  if (!wrap) return;
+
+  const base = p.colors[0];
+  const ramp = colorRamp(base);
+  const baseOut = $('#rampBase');
+  if (baseOut) baseOut.textContent = base;
+
+  wrap.replaceChildren();
+  ramp.forEach(item => {
+    wrap.append(el('div', { class: 'ramp-step', title: item.hex },
+      el('i', { style: 'background:' + item.hex }),
+      el('span', null, String(item.step))
+    ));
+  });
 }
 
 /* ============================================================
@@ -2576,6 +3374,130 @@ function triggerDownload(blob, filename) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+/** Безопасное имя файла из названия палитры. */
+function safeFilename(name, ext) {
+  const base = String(name || 'palette')
+    .replace(/[^\w\-а-яА-ЯёЁ]+/gi, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60) || 'palette';
+  return base + '.' + ext;
+}
+
+function escapeXml(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;'
+  })[ch]);
+}
+
+/** SVG: открывается в Figma, Illustrator, Inkscape и просто в браузере. */
+function paletteToSvg(p) {
+  const W = 800, PAD = 40, HEAD = 104, ROW = 72;
+  const H = HEAD + p.colors.length * ROW + PAD;
+
+  const rows = p.colors.map((c, i) => {
+    const y = HEAD + i * ROW;
+    const ink = bestTextOn(c);
+    const ratio = Math.max(contrastRatio(c, '#000000'), contrastRatio(c, '#FFFFFF'));
+
+    return '  <rect x="' + PAD + '" y="' + y + '" width="' + (W - PAD * 2) + '" height="' + ROW + '" fill="' + c + '"/>\n'
+      + '  <text x="' + (PAD + 18) + '" y="' + (y + ROW / 2 + 7) + '" fill="' + ink
+      + '" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="20" font-weight="700">' + c + '</text>\n'
+      + '  <text x="' + (W - PAD - 18) + '" y="' + (y + ROW / 2 + 7) + '" fill="' + ink
+      + '" text-anchor="end" font-family="system-ui, sans-serif" font-size="13" opacity=".7">'
+      + ratio.toFixed(1) + ':1</text>';
+  }).join('\n');
+
+  const count = p.colors.length + ' ' + plural(p.colors.length, 'цвет', 'цвета', 'цветов');
+
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">\n'
+    + '  <title>' + escapeXml(p.name) + '</title>\n'
+    + '  <rect width="' + W + '" height="' + H + '" fill="#ffffff"/>\n'
+    + '  <text x="' + PAD + '" y="' + (PAD + 24) + '" fill="#111111" font-family="system-ui, sans-serif" font-size="24" font-weight="800">' + escapeXml(p.name) + '</text>\n'
+    + '  <text x="' + PAD + '" y="' + (PAD + 50) + '" fill="#666666" font-family="system-ui, sans-serif" font-size="13">Palette Space · ' + count + '</text>\n'
+    + rows + '\n</svg>\n';
+}
+
+function downloadSvg(p) {
+  triggerDownload(
+    new Blob([paletteToSvg(p)], { type: 'image/svg+xml;charset=utf-8' }),
+    safeFilename(p.name, 'svg')
+  );
+  toast('SVG сохранён');
+}
+
+/** GPL понимают GIMP, Krita, Inkscape, Affinity, Blender. */
+function paletteToGpl(p) {
+  const name = String(p.name || 'Palette').replace(/[\r\n]+/g, ' ').slice(0, 60);
+  const lines = ['GIMP Palette', 'Name: ' + name, 'Columns: ' + Math.min(p.colors.length, 8), '#'];
+
+  p.colors.forEach(c => {
+    const rgb = hexToRgb(c);
+    lines.push(
+      String(rgb[0]).padStart(3, ' ') + ' ' +
+      String(rgb[1]).padStart(3, ' ') + ' ' +
+      String(rgb[2]).padStart(3, ' ') + '\t' + c
+    );
+  });
+
+  return lines.join('\n') + '\n';
+}
+
+function downloadGpl(p) {
+  triggerDownload(
+    new Blob([paletteToGpl(p)], { type: 'text/plain;charset=utf-8' }),
+    safeFilename(p.name, 'gpl')
+  );
+  toast('GPL сохранён');
+}
+
+/* ---- Ссылка на палитру ---- */
+function paletteHash(p) {
+  return '#p=' + p.colors.map(c => c.slice(1).toLowerCase()).join(',') +
+    '&n=' + encodeURIComponent(p.name);
+}
+
+function paletteLink(p) {
+  return location.href.split('#')[0] + paletteHash(p);
+}
+
+function readSharedPalette() {
+  if (!/^#p=/.test(location.hash || '')) return null;
+
+  const colors = [];
+  let name = '';
+
+  location.hash.slice(1).split('&').forEach(part => {
+    if (part.indexOf('p=') === 0) {
+      part.slice(2).split(',').forEach(chunk => {
+        const hex = normalizeHex(chunk);
+        if (hex) colors.push(hex);
+      });
+    } else if (part.indexOf('n=') === 0) {
+      try { name = decodeURIComponent(part.slice(2)); } catch (e) { name = ''; }
+    }
+  });
+
+  if (!colors.length) return null;
+  return { colors: colors.slice(0, 8), name: name.slice(0, 48) };
+}
+
+async function sharePalette(p) {
+  const url = paletteLink(p);
+
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: p.name, text: 'Палитра «' + p.name + '»', url: url });
+      return;
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
+      /* Системный шэринг не сработал — падаем в буфер обмена. */
+    }
+  }
+
+  const ok = await copyText(url);
+  toast(ok ? 'Ссылка скопирована' : 'Не удалось скопировать ссылку', ok ? 'info' : 'error');
+}
+
 function paletteToCss(p, prefix) {
   const name = (prefix || 'palette') + '-' + (p.name || 'untitled')
     .toLowerCase().replace(/[^a-zа-я0-9]+/gi, '-').replace(/^-+|-+$/g, '');
@@ -2603,25 +3525,44 @@ function exportAll() {
   toast('Экспортировано ' + state.palettes.length + ' палитр');
 }
 
+/**
+ * Понимает файл экспорта целиком ({app, version, palettes}), массив палитр,
+ * объект одной палитры и просто список HEX.
+ * Возвращает { palettes: [{name, colors}], version }.
+ */
 function parseImport(text) {
   const t = String(text || '').trim();
   if (!t) return null;
 
-  /* JSON */
   try {
     const data = JSON.parse(t);
-    const list = Array.isArray(data) ? data : (data.palettes || [data]);
-    const first = list[0];
-    if (first && first.colors && Array.isArray(first.colors)) {
-      const colors = first.colors.map(normalizeHex).filter(Boolean);
-      if (colors.length) return { name: first.name, colors: colors.slice(0, 8) };
+    const rawList = Array.isArray(data)
+      ? data
+      : (Array.isArray(data.palettes) ? data.palettes : [data]);
+
+    const palettes = [];
+    rawList.forEach(raw => {
+      if (!raw || !Array.isArray(raw.colors)) return;
+      const colors = raw.colors.map(normalizeHex).filter(Boolean).slice(0, 8);
+      if (!colors.length) return;
+      palettes.push({
+        name: typeof raw.name === 'string' && raw.name.trim()
+          ? raw.name.trim().slice(0, 48)
+          : null,
+        colors: colors
+      });
+    });
+
+    if (palettes.length) {
+      const version = (!Array.isArray(data) && data && Number(data.version)) || null;
+      return { palettes: palettes, version: version };
     }
   } catch (e) { /* не JSON — пробуем hex-список */ }
 
   const found = t.match(/#?[0-9a-fA-F]{6}\b|#[0-9a-fA-F]{3}\b/g);
   if (!found) return null;
   const colors = found.map(normalizeHex).filter(Boolean).slice(0, 8);
-  return colors.length ? { name: null, colors: colors } : null;
+  return colors.length ? { palettes: [{ name: null, colors: colors }], version: null } : null;
 }
 
 /* ============================================================
@@ -2880,20 +3821,52 @@ function bindEvents() {
 
   $('#btnImport').addEventListener('click', () => {
     $('#importText').value = '';
+    $('#importHint').textContent = '';
     openModal('#importModal');
     setTimeout(() => $('#importText').focus(), 30);
   });
   $('#btnExportAll').addEventListener('click', exportAll);
+
+  $('#importText').addEventListener('input', () => {
+    const hint = $('#importHint');
+    const parsed = parseImport($('#importText').value);
+    if (!parsed) { hint.textContent = ''; return; }
+
+    const rows = parsed.palettes;
+    if (rows.length === 1) {
+      hint.textContent = 'Найдена 1 палитра · ' + rows[0].colors.length + ' ' +
+        plural(rows[0].colors.length, 'цвет', 'цвета', 'цветов');
+    } else {
+      const total = rows.reduce((n, x) => n + x.colors.length, 0);
+      hint.textContent = 'Найдено ' + rows.length + ' ' + plural(rows.length, 'палитра', 'палитры', 'палитр') +
+        ' · ' + total + ' ' + plural(total, 'цвет', 'цвета', 'цветов');
+    }
+    if (parsed.version && parsed.version > 2) {
+      hint.textContent += ' · формат новее, читаю известное';
+    }
+  });
 
   $('#importClose').addEventListener('click', () => closeModal('#importModal'));
   $('#importCancel').addEventListener('click', () => closeModal('#importModal'));
   $('#importConfirm').addEventListener('click', () => {
     const parsed = parseImport($('#importText').value);
     if (!parsed) { toast('Не нашёл ни одного цвета', 'error'); return; }
+
     closeModal('#importModal');
-    addPalette(parsed.colors, parsed.name || autoName(parsed.colors));
-    toast('Импортировано ' + parsed.colors.length + ' ' + plural(parsed.colors.length, 'цвет', 'цвета', 'цветов'));
+
+    const total = parsed.palettes.length;
+    const added = addMany(parsed.palettes);
+    if (!added) return;
+
+    if (total === 1) toast('Импортирована 1 палитра');
+    else if (added === total) toast('Импортировано ' + added + ' ' + plural(added, 'палитра', 'палитры', 'палитр'));
+    else toast('Добавлено ' + added + ' из ' + total + ' — сработал лимит', 'error');
   });
+
+  /* Шпаргалка по клавишам */
+  $('#btnHelp').addEventListener('click', () => openModal('#helpModal'));
+  $('#helpClose').addEventListener('click', () => closeModal('#helpModal'));
+  $('#helpDone').addEventListener('click', () => closeModal('#helpModal'));
 
   /* Иттен: слайдер */
   const countInput = $('#colorCount');
@@ -2949,6 +3922,13 @@ function bindEvents() {
     if (file) paletteFromFile(file);
   });
 
+  const photoCount = $('#photoCount');
+  if (photoCount) {
+    const syncPhotoCount = () => { $('#photoCountOut').textContent = photoCount.value; };
+    photoCount.addEventListener('input', syncPhotoCount);
+    syncPhotoCount();
+  }
+
   /* Фото: drag & drop */
   const drop = $('#dropzone');
   ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => {
@@ -2988,6 +3968,13 @@ function bindEvents() {
     if (p) copyCss(p);
   });
 
+  $('#rampCopy').addEventListener('click', async () => {
+    const p = paletteById(preview.paletteId);
+    if (!p) return;
+    const ok = await copyText(rampToCss(colorRamp(p.colors[0]), p.name));
+    toast(ok ? 'CSS-переменные скопированы' : 'Не удалось скопировать', ok ? 'info' : 'error');
+  });
+
   /* Островок */
   $('#islandClose').addEventListener('click', hideIsland);
   $('#island').addEventListener('click', spawnRipple);
@@ -3022,6 +4009,13 @@ function bindEvents() {
       if (!document.querySelector('.modal.open')) {
         e.preventDefault();
         generateNew();
+      }
+    }
+
+    if (!typing && !e.ctrlKey && !e.metaKey && !e.altKey && e.key === '?') {
+      if (!document.querySelector('.modal.open')) {
+        e.preventDefault();
+        openModal('#helpModal');
       }
     }
   });
@@ -3065,8 +4059,37 @@ function seedIfEmpty() {
   }
 }
 
+/** Дешёвый Android, экономия трафика или просьба меньше двигать — режем декор. */
+function detectLowEnd() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+
+  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if (conn && conn.saveData) return true;
+
+  return (navigator.hardwareConcurrency || 8) <= 4;
+}
+
 function init() {
   loadState();
+  loadUndoHistory();
+
+  /* Палитра, пришедшая по ссылке (#p=...), встаёт первой — до сида. */
+  const shared = readSharedPalette();
+  if (shared) {
+    state.palettes.unshift({
+      id: uid(),
+      name: shared.name || autoName(shared.colors),
+      colors: shared.colors,
+      locked: shared.colors.map(() => false),
+      saved: false,
+      view: 'dots',
+      created: Date.now()
+    });
+    try {
+      history.replaceState(null, '', location.pathname + location.search);
+    } catch (e) { /* file:// в некоторых браузерах запрещает replaceState */ }
+  }
+
   seedIfEmpty();
   bindEvents();
   syncTheme();
@@ -3074,14 +4097,20 @@ function init() {
   setPanel('itten', false);
   setPanel('photo', false);
   $('#countOut').textContent = $('#colorCount').value;
+  const photoCount = $('#photoCount');
+  if (photoCount) $('#photoCountOut').textContent = photoCount.value;
   syncNavHeight();
   render();
   initReveal();
   persist();
 
-  try {
-    if (localStorage.getItem(STORE_SECRET) === '1') { /* уже видел */ }
-  } catch (e) {}
+  if (shared) toast('Палитра из ссылки добавлена');
+
+  if (detectLowEnd()) document.documentElement.classList.add('is-low-end');
+
+  document.addEventListener('visibilitychange', () => {
+    document.documentElement.classList.toggle('is-paused', document.hidden);
+  });
 }
 
 init();
